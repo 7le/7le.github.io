@@ -1061,11 +1061,6 @@ pre .javascript .function {
   margin: 0 10px;
   list-style: none;
 }
-@media screen and (max-width: 767px) {
-  .menu .menu-item {
-    margin-top: 10px;
-  }
-}
 .menu .menu-item a {
   color: #fff;
   display: block;
@@ -1080,19 +1075,12 @@ pre .javascript .function {
 .menu .menu-item a:hover {
   border-bottom-color: #222;
 }
-@media a {
+@media screen and (max-width: 767px) {
   .menu .menu-item {
-    display: block;
-    font-size: 13px;
-    line-height: inherit;
-    border-bottom: 1px solid transparent;
-    transition-property: border-color;
-    transition-duration: 0.2s;
-    transition-timing-function: ease-in-out;
-    transition-delay: 0s;
+    margin-top: 10px;
   }
-  .menu .menu-item:hover {
-    border-bottom-color: #222;
+  .menu .menu-item a {
+    color: #000;
   }
 }
 .menu .menu-item .fa {
@@ -1706,7 +1694,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #8a2071;
+  background: #e5ffaf;
 }
 .links-of-blogroll {
   font-size: 13px;
