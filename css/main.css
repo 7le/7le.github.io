@@ -1080,6 +1080,21 @@ pre .javascript .function {
 .menu .menu-item a:hover {
   border-bottom-color: #222;
 }
+@media a {
+  .menu .menu-item {
+    display: block;
+    font-size: 13px;
+    line-height: inherit;
+    border-bottom: 1px solid transparent;
+    transition-property: border-color;
+    transition-duration: 0.2s;
+    transition-timing-function: ease-in-out;
+    transition-delay: 0s;
+  }
+  .menu .menu-item:hover {
+    border-bottom-color: #222;
+  }
+}
 .menu .menu-item .fa {
   margin-right: 5px;
 }
@@ -1691,7 +1706,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #fffce9;
+  background: #8a2071;
 }
 .links-of-blogroll {
   font-size: 13px;
