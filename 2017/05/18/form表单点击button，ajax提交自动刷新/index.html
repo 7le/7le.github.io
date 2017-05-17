@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="java" />
+  <meta name="keywords" content="前端," />
 
 
 
@@ -94,17 +94,17 @@
 
 
 
-<meta name="description" content="我只有一件事，就是忘记背后，努力面前的">
-<meta name="keywords">
+<meta name="description" content="学习的道路就是不停的踩坑…">
+<meta name="keywords" content="前端">
 <meta property="og:type" content="article">
-<meta property="og:title" content="'form表单点击button，ajax提交自动刷新'">
+<meta property="og:title" content="form表单点击button，ajax提交自动刷新">
 <meta property="og:url" content="http://yoursite.com/2017/05/18/form表单点击button，ajax提交自动刷新/index.html">
 <meta property="og:site_name" content="Shine">
-<meta property="og:description" content="我只有一件事，就是忘记背后，努力面前的">
-<meta property="og:updated_time" content="2017-05-17T16:05:37.006Z">
+<meta property="og:description" content="学习的道路就是不停的踩坑…">
+<meta property="og:updated_time" content="2017-05-17T16:35:54.665Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="'form表单点击button，ajax提交自动刷新'">
-<meta name="twitter:description" content="我只有一件事，就是忘记背后，努力面前的">
+<meta name="twitter:title" content="form表单点击button，ajax提交自动刷新">
+<meta name="twitter:description" content="学习的道路就是不停的踩坑…">
 
 
 
@@ -138,7 +138,7 @@
 
 
 
-  <title> 'form表单点击button，ajax提交自动刷新' | Shine </title>
+  <title> form表单点击button，ajax提交自动刷新 | Shine </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -266,7 +266,7 @@
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/18/form表单点击button，ajax提交自动刷新/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -288,7 +288,7 @@
             
             
               
-                'form表单点击button，ajax提交自动刷新'
+                form表单点击button，ajax提交自动刷新
               
             
           </h1>
@@ -339,7 +339,16 @@
       
 
       
-        
+        <blockquote>
+<p>学习的道路就是不停的踩坑…</p>
+</blockquote>
+<a id="more"></a>
+<p>话不多说，直接上代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">    //省略一对代码</div><div class="line">    &lt;div class=&quot;hr-line-dashed&quot;&gt;&lt;/div&gt;</div><div class="line">        &lt;div class=&quot;form-group&quot;&gt;</div><div class="line">            &lt;div class=&quot;col-sm-4 col-sm-offset-2&quot;&gt;</div><div class="line">            &lt;button class=&quot;btn btn-primary&quot;  onclick=&quot;submitAcc()&quot;&gt;保存内容&lt;/button&gt;</div><div class="line">            &lt;button class=&quot;btn btn-white&quot;&gt;取消&lt;/button&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">&lt;/form&gt;</div><div class="line"></div><div class="line">&lt;script&gt;</div><div class="line">function submitAcc() &#123;</div><div class="line">        $.ajax(&#123;</div><div class="line">            type: &quot;POST&quot;,</div><div class="line">            url: &quot;/backend/account&quot;,</div><div class="line">            data: $(&apos;#accAdd&apos;).serialize(),</div><div class="line">            success: function (result) &#123;</div><div class="line">                if(result.success==true)&#123;</div><div class="line">                    swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;success&quot;&#125;, function()&#123;</div><div class="line">                        //跳转至列表界面</div><div class="line">                        location.href = &quot;/backend/account/list&quot;;</div><div class="line">                    &#125;);</div><div class="line">                &#125;else &#123;</div><div class="line">                    swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;error&quot;&#125;, function()&#123;</div><div class="line">                        //刷新</div><div class="line">                        location.reload();</div><div class="line">                    &#125;);</div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line">            error: function (result) &#123;</div><div class="line">                swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;error&quot;&#125;, function()&#123;</div><div class="line">                    //刷新</div><div class="line">                    location.reload();</div><div class="line">                &#125;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+<p>本来就是想一个添加数据的功能，每次点击提交后硬是给我刷新页面，搞的头晕脑胀。后来各种尝试，<br>发现form中存在button标签时，用ajax异步提交表单就会刷新。</p>
+<p>原因：button 存在时会再次提交一下表单，所以页面被刷新了。（之前认为button type=’submit’ 时）button才有提交表单的功能。</p>
+<p>解决：button标签换成a标签就可以了，或者不使用form。</p>
+<p>当时犯傻的地方   <a href="https://github.com/7le/shine/blob/1.0-dev/web/WEB-INF/views/backend/account/accountAdd.ftl" target="_blank" rel="external">已修正后的页面</a> ^.^</p>
+
       
     </div>
 
@@ -365,6 +374,12 @@
     </div>
 
     <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/前端/" rel="tag"># 前端</a>
+          
+        </div>
       
 
       
@@ -459,7 +474,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
