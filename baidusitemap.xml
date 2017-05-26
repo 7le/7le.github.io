@@ -4,8 +4,25 @@
 
     
   <url>
+    <loc>http://yoursite.com/2017/05/26/springboot%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%EF%BC%9A(%E4%B8%80)%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</loc>
+    <lastmod>2017-05-26T15:51:06.506Z</lastmod>
+    <data>
+        <display>
+        <title>springboot项目笔记：(一)搭建项目</title>
+        <pubTime>2017-05-25T16:13:08.000Z</pubTime>
+        
+        <tag>springboot</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2017/05/18/form%E8%A1%A8%E5%8D%95%E7%82%B9%E5%87%BBbutton%EF%BC%8Cajax%E6%8F%90%E4%BA%A4%E8%87%AA%E5%8A%A8%E5%88%B7%E6%96%B0/</loc>
-    <lastmod>2017-05-17T16:35:54.665Z</lastmod>
+    <lastmod>2017-05-17T16:38:04.698Z</lastmod>
     <data>
         <display>
         <title>form表单点击button，ajax提交自动刷新</title>

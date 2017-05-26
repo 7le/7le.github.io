@@ -1,0 +1,729 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="TOzgkVPl_tllvkMlt51RjNeTAmmf13oTLBbxTqhSO5E" />
+<meta name="baidu-site-verification" content="j9xl21v0cA" />
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="springboot," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="springboot的评价一直很高，那就用它来做一次完整的项目，现在就一点点记录下来，可以以后自己翻看，也可以帮助各位第一次使用springboot的小伙伴们">
+<meta name="keywords" content="springboot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springboot项目笔记：(一)搭建项目">
+<meta property="og:url" content="http://yoursite.com/2017/05/26/springboot项目笔记：(一)搭建项目/index.html">
+<meta property="og:site_name" content="Shine">
+<meta property="og:description" content="springboot的评价一直很高，那就用它来做一次完整的项目，现在就一点点记录下来，可以以后自己翻看，也可以帮助各位第一次使用springboot的小伙伴们">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-1.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-2.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-3.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-4.png">
+<meta property="og:updated_time" content="2017-05-26T15:51:06.506Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="springboot项目笔记：(一)搭建项目">
+<meta name="twitter:description" content="springboot的评价一直很高，那就用它来做一次完整的项目，现在就一点点记录下来，可以以后自己翻看，也可以帮助各位第一次使用springboot的小伙伴们">
+<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/26/springboot项目笔记：(一)搭建项目/"/>
+
+
+
+
+
+  <title> springboot项目笔记：(一)搭建项目 | Shine </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?467d29ed3a4fecd3a1dca094a8c5a369";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shine</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耶和华是我的牧者，我必不致缺乏。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/26/springboot项目笔记：(一)搭建项目/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="7le">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/ly.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shine">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                springboot项目笔记：(一)搭建项目
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-26T00:13:08+08:00">
+                2017-05-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>springboot的评价一直很高，那就用它来做一次完整的项目，现在就一点点记录下来，可以以后自己翻看，也可以帮助各位第一次使用springboot的小伙伴们</p>
+</blockquote>
+<a id="more"></a>
+<p>既然说要完整的一个项目，那肯定不是说笑的拉。准备做一个视频点播的项目，比较简单没有特别大的难度，感觉唯一的难度就是截视频的图和转码了把，那些到时候一点点记录下来。不废话了，现在开始第一步~</p>
+<h3 id="idea-创建项目"><a href="#idea-创建项目" class="headerlink" title="idea 创建项目"></a>idea 创建项目</h3><p><img src="http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-1.png" alt="idea-1"></p>
+<p>点击箭头的按钮，然后就是next。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-2.png" alt="idea-2"></p>
+<p>这里面可以自己选择下name，和一些配置。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-3.png" alt="idea-3"></p>
+<p>这个直接next，点点过去，后面可以自己配置的。next后有个选择路径自己选择下。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-4.png" alt="idea-4"></p>
+<p>最后就是等待之后的springboot项目拉~~~</p>
+<h3 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h3><p>然后就是在大家熟知的pom.xml里面进行添加依赖</p>
+<p>这是我的依赖，之后会用到的基本都在这里<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</div><div class="line">	xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;</div><div class="line">	&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;</div><div class="line"></div><div class="line">	&lt;groupId&gt;com.shine&lt;/groupId&gt;</div><div class="line">	&lt;artifactId&gt;video&lt;/artifactId&gt;</div><div class="line">	&lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;</div><div class="line">	&lt;packaging&gt;jar&lt;/packaging&gt;</div><div class="line"></div><div class="line">	&lt;name&gt;video&lt;/name&gt;</div><div class="line">	&lt;description&gt;shine-video&lt;/description&gt;</div><div class="line"></div><div class="line">	&lt;!--</div><div class="line">       spring boot 父节点依赖,</div><div class="line">       引入这个之后相关的引入就不需要添加version配置，</div><div class="line">       spring boot会自动选择最合适的版本进行添加。</div><div class="line">     --&gt;</div><div class="line">	&lt;parent&gt;</div><div class="line">		&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">		&lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;</div><div class="line">		&lt;version&gt;1.5.2.RELEASE&lt;/version&gt;</div><div class="line">		&lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;</div><div class="line">	&lt;/parent&gt;</div><div class="line"></div><div class="line">	&lt;properties&gt;</div><div class="line">		&lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;</div><div class="line">		&lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;</div><div class="line">		&lt;java.version&gt;1.8&lt;/java.version&gt;</div><div class="line">		&lt;springfox.version&gt;2.6.1&lt;/springfox.version&gt;</div><div class="line">		&lt;spring.redis&gt;1.3.2.RELEASE&lt;/spring.redis&gt;</div><div class="line">	&lt;/properties&gt;</div><div class="line"></div><div class="line">	&lt;dependencies&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;</div><div class="line">			&lt;scope&gt;test&lt;/scope&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-boot-starter-freemarker&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-boot-starter-jdbc&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-boot-starter-aop&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;mysql&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;jackson-core&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;com.fasterxml.jackson.datatype&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;jackson-datatype-joda&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;com.fasterxml.jackson.module&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;jackson-module-parameter-names&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;!--druid--&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;com.alibaba&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;druid&lt;/artifactId&gt;</div><div class="line">			&lt;version&gt;1.0.11&lt;/version&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;!--fastJson--&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;com.alibaba&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;fastjson&lt;/artifactId&gt;</div><div class="line">			&lt;version&gt;1.2.30&lt;/version&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;!--mybatis--&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</div><div class="line">			&lt;version&gt;1.2.0&lt;/version&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;!--redis--&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-boot-starter-redis&lt;/artifactId&gt;</div><div class="line">			&lt;version&gt;$&#123;spring.redis&#125;&lt;/version&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;!--pagehelper--&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;com.github.pagehelper&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;pagehelper-spring-boot-starter&lt;/artifactId&gt;</div><div class="line">			&lt;version&gt;1.1.0&lt;/version&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;!-- 热部署 --&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;springloaded&lt;/artifactId&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</div><div class="line">			&lt;optional&gt;true&lt;/optional&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;!--guava--&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;com.google.guava&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;guava&lt;/artifactId&gt;</div><div class="line">			&lt;version&gt;21.0&lt;/version&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;!--swagger--&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;io.springfox&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;springfox-swagger2&lt;/artifactId&gt;</div><div class="line">			&lt;version&gt;$&#123;springfox.version&#125;&lt;/version&gt;</div><div class="line">			&lt;exclusions&gt;</div><div class="line">				&lt;exclusion&gt;</div><div class="line">					&lt;groupId&gt;com.google.guava&lt;/groupId&gt;</div><div class="line">					&lt;artifactId&gt;guava&lt;/artifactId&gt;</div><div class="line">				&lt;/exclusion&gt;</div><div class="line">			&lt;/exclusions&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;io.springfox&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;springfox-swagger-ui&lt;/artifactId&gt;</div><div class="line">			&lt;version&gt;$&#123;springfox.version&#125;&lt;/version&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">		&lt;dependency&gt;</div><div class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">			&lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;</div><div class="line">			&lt;optional&gt;true&lt;/optional&gt;</div><div class="line">		&lt;/dependency&gt;</div><div class="line"></div><div class="line">	&lt;/dependencies&gt;</div><div class="line"></div><div class="line">	&lt;build&gt;</div><div class="line">		&lt;plugins&gt;</div><div class="line">			&lt;plugin&gt;</div><div class="line">				&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">				&lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</div><div class="line">			&lt;/plugin&gt;</div><div class="line">		&lt;/plugins&gt;</div><div class="line">	&lt;/build&gt;</div><div class="line"></div><div class="line"></div><div class="line">&lt;/project&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="热部署"><a href="#热部署" class="headerlink" title="热部署"></a>热部署</h3><p>上面的包，基本都加了注释了。很容易知晓哪个是对应什么，这里特别说下，关于springboot的热部署，</p>
+<p>上面的pom中 有两种springboot热部署的方式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">	&lt;artifactId&gt;spring-boot-devtools&lt;/artifactId&gt;</div><div class="line">	&lt;optional&gt;true&lt;/optional&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<p>这种方式的话，就需要修改代码后，ctrl+F9，这样就可以了。</p>
+<p>想必大家平时开发的时候，都用过一些热部署插件，比如JRebel，配合上idea的Update classes and resources，敲代码简直要起飞。所以很难忍受时不时ctrl+F9一下，而另外一种就是可以这样。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">	&lt;groupId&gt;org.springframework&lt;/groupId&gt;</div><div class="line">	&lt;artifactId&gt;springloaded&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure></p>
+<p>这种方式的话：<br>添加以后，通过mvn spring-boot:run启动就支持热部署了。<br>　注意：使用热部署的时候，需要IDE编译类后才能生效，可以打开自动编译功能，这样在保存修改的时候，类就自动重新加载了。通过在IDEA下面的终端中运行mvn spring-boot:run命令</p>
+<p>这样就可以搭建一个springboot的项目了。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/springboot/" rel="tag"># springboot</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/18/form表单点击button，ajax提交自动刷新/" rel="prev" title="form表单点击button，ajax提交自动刷新">
+                form表单点击button，ajax提交自动刷新 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/ly.jpg"
+               alt="7le" />
+          <p class="site-author-name" itemprop="name">7le</p>
+           
+              <p class="site-description motion-element" itemprop="description">我只有一件事，就是忘记背后，努力面前的</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/7le" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#idea-创建项目"><span class="nav-number">1.</span> <span class="nav-text">idea 创建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加依赖"><span class="nav-number">2.</span> <span class="nav-text">添加依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#热部署"><span class="nav-number">3.</span> <span class="nav-text">热部署</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">7le</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io" rel="external nofollow">Hexo</a>
+</div>
+
+<span id="busuanzi_container_site_pv">
+  PV <span id="busuanzi_value_site_pv"></span>
+</span>
+<span id="busuanzi_container_site_uv">
+  &nbsp&nbsp | &nbsp&nbsp UV <span id="busuanzi_value_site_uv"></span>
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
