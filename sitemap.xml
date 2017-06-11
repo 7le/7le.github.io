@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite.com/2017/06/04/springboot%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%EF%BC%9A(%E4%BA%8C)%E9%9B%86%E6%88%90redis%EF%BC%8Cmybatis%EF%BC%8Cswagger/</loc>
+    <loc>http://yoursite.com/2017/06/11/springboot%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%EF%BC%9A(%E4%B8%89)%20%E4%BA%8B%E5%8A%A1/</loc>
     
-    <lastmod>2017-06-04T15:59:40.839Z</lastmod>
+    <lastmod>2017-06-11T16:33:49.540Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://yoursite.com/2017/05/26/springboot%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%EF%BC%9A(%E4%B8%80)%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/</loc>
     
-    <lastmod>2017-05-26T15:51:06.506Z</lastmod>
+    <lastmod>2017-06-04T16:30:23.868Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2017/06/04/springboot%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%EF%BC%9A(%E4%BA%8C)%E9%9B%86%E6%88%90redis%EF%BC%8Cmybatis%EF%BC%8Cswagger/</loc>
+    
+    <lastmod>2017-06-04T16:30:23.133Z</lastmod>
     
   </url>
   
