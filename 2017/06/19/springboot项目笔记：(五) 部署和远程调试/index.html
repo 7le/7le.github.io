@@ -101,15 +101,15 @@
 <meta property="og:url" content="http://yoursite.com/2017/06/19/springboot项目笔记：(五) 部署和远程调试/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-idea-5-1.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-idea-5-2.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-idea-5-3.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-idea-5-4.png">
-<meta property="og:updated_time" content="2017-06-19T17:36:22.813Z">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-1.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-2.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-3.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-4.png">
+<meta property="og:updated_time" content="2017-06-19T17:54:59.828Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springboot项目笔记：(五) 部署和远程调试">
 <meta name="twitter:description" content="springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。">
-<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-idea-5-1.png">
+<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-1.png">
 
 
 
@@ -348,14 +348,14 @@
 <p>springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。</p>
 </blockquote>
 <a id="more"></a>
-<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>在idea中，在命令行中输入mvn package<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-idea-5-1.png" alt="打包"></p>
-<p>成功后会出现<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-idea-5-2.png" alt="成功"></p>
+<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>在idea中，在命令行中输入mvn package<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-1.png" alt="打包"></p>
+<p>成功后会出现<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-2.png" alt="成功"></p>
 <p>然后我们只需要把jar包放到linux中，然后cd到目录下输入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">java -jar xxx.jar &amp;</div></pre></td></tr></table></figure></p>
 <p>就大功告成拉~</p>
-<h3 id="远程调试"><a href="#远程调试" class="headerlink" title="远程调试"></a>远程调试</h3><p>远程调试可以帮我们检查一些在日志中判断不出来的bug，对于idea我们需要如图：<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-idea-5-3.png" alt="idea远程调试"></p>
+<h3 id="远程调试"><a href="#远程调试" class="headerlink" title="远程调试"></a>远程调试</h3><p>远程调试可以帮我们检查一些在日志中判断不出来的bug，对于idea我们需要如图：<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-3.png" alt="idea远程调试"></p>
 <p>需要输入服务器的地址，和你开启用来远程调试的端口号。这个端口号如何开启呢？对于springboot的项目来说</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// address 端口号可以自己设置 要跟remote中的port一样，还要注意不要跟linux已经使用的端口号冲突</div><div class="line">java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -jar XXX.jar &amp;</div></pre></td></tr></table></figure>
-<p>然后如图所示就是成功远程调试了<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-idea-5-4.png" alt="idea连接成功"></p>
+<p>然后如图所示就是成功远程调试了<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-4.png" alt="idea连接成功"></p>
 <p>补充一下，如果是用tomcat来部署的话，修改如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">// bin\startup.bat（.sh）文件，在里面添加</div><div class="line"> </div><div class="line">// windows</div><div class="line">set CATALINA_OPTS=&quot;-agentlib:jdwp=transport=dt_socket,address=8888（自定义调试端口）,server=y,suspend=n %CATALINA_OPTS%&quot;</div><div class="line"> </div><div class="line">// linux</div><div class="line">export CATALINA_OPTS=&quot;-agentlib:jdwp=transport=dt_socket,address=8888（自定义调试端口）,server=y,suspend=n $CATALINA_OPTS&quot;</div></pre></td></tr></table></figure></p>
 <p>这里还有个注意的点，就是别加在最末尾，嵌套在指令里面，不然会失效。</p>
 
