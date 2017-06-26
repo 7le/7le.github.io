@@ -98,11 +98,11 @@
 <meta name="keywords" content="REST">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RESTful架构">
-<meta property="og:url" content="http://yoursite.com/2017/06/25/REST架构见解/index.html">
+<meta property="og:url" content="http://yoursite.com/2017/06/25/RESTful架构/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/rest-1.png">
-<meta property="og:updated_time" content="2017-06-26T15:38:35.661Z">
+<meta property="og:updated_time" content="2017-06-26T16:26:51.597Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RESTful架构">
 <meta name="twitter:description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
@@ -134,7 +134,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/06/25/REST架构见解/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/06/25/RESTful架构/"/>
 
 
 
@@ -269,7 +269,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/25/REST架构见解/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/25/RESTful架构/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -349,7 +349,7 @@
 <p>不知道有多少人一开始跟我一样，REST和RESTful傻傻分不清楚，一开始先扫个盲。</p>
 </blockquote>
 <p>REST这个词，是Roy Thomas Fielding在他2000年的博士论文中提出的。Fielding非常有名的，想了解的话自行google一下。REST是Representational State Transfer的缩写。 阮一峰对这个词组的翻译是”表现层状态转化”。REST的名称”表现层状态转化”中，省略了主语。”表现层”其实指的是”资源”（Resources）的”表现层”。而资源通常对于我们来说可以是任何东西，而与之对应就是一个URI。</p>
-<p><strong>所以REST是一套原则，而符合REST原则的就是RESTful架构。</strong></p>
+<p><strong>所以REST是一套原则，而符合REST原则的就是符合RESTful架构。</strong></p>
 <h3 id="RESTful"><a href="#RESTful" class="headerlink" title="RESTful"></a>RESTful</h3><h4 id="HTTP动词"><a href="#HTTP动词" class="headerlink" title="HTTP动词"></a>HTTP动词</h4><blockquote>
 <p>RESTful将对HTTP的动词按着它们的语义来定义</p>
 </blockquote>
@@ -379,10 +379,18 @@
 <h3 id="设计思想"><a href="#设计思想" class="headerlink" title="设计思想"></a>设计思想</h3><p>RESTful和以前的接口设计思想有很大的不同，我们以前设计接口，往往核心在于操作的角度来设计。REST的核心在于资源，资源是第一位的考虑，首先从资源的角度进行系统的拆分、设计。</p>
 <p>我们沿用之前的demo，如果要修改一个用户的信息，那我们原先的设计思想将会是：</p>
 <ul>
-<li>1</li>
-<li>2</li>
-<li>3</li>
+<li>1 有修改用户信息功能</li>
+<li>2 修改用户信息需要一个URL</li>
+<li>3 定义好URL的参数</li>
+<li>4 开始coding</li>
 </ul>
+<p>这样我们能很快的把我们所要的接口写出来，我们是讲这个操作具体化出来，然后围绕这个操作进行设计，再将需要的东西补充进来。如果我们考虑的很充分，那肯定不会有什么问题，但是有时候考虑不周的时候，我们可能会遇到某个操作，需要再某个操作之后，就是操作有依赖，少的时候还好，但是操作多起来难免就增加了开发难度，以及接口命名难以统一。</p>
+<p>当我们用资源的角度来设计接口，上面我们介绍了http的动词，按着规范我们可以很简单的统一命名，其次资源之间可能有关联，但是可以简单的进行切割，避免杂乱的依赖关系。</p>
+<p>我们从http的动词可以看出，RESTful很容易对单一的资源进行设计。但是我们往往会有许多批量的操作，这就是一个设计的难点了。每个人都会有自己的设计方案，我们可以取长补短，学习一下别人的精华之处。下面举一些比较好的批量操作的设计例子，设计不需要太纠结于定义，毕竟是使用的工具，用的顺手才好。</p>
+<blockquote>
+<p>GET /ec2/instance/batch?id=aa,bb,cc：简约的设计<br>  GET /ec2/instance?batch={“ids”:[“aa”,”bb”,”cc”]}：健壮的设计<br>  GET /ec2/instance?batch=[{“method”:”DELETE”,”id”:”aa”},{“method”:”DELETE”,”id”:”bb”},{“method”:”DELETE”,”id”:”cc”}]：facebook 的设计（墙外）</p>
+</blockquote>
+<p>以上就是我的一点点学习的总结和见解，欢迎大家交流拍砖，共同学习~ ^.^</p>
 
       
     </div>
@@ -520,7 +528,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
