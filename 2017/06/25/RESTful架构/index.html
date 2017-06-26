@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/rest-1.png">
-<meta property="og:updated_time" content="2017-06-26T16:26:51.597Z">
+<meta property="og:updated_time" content="2017-06-26T16:39:44.848Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RESTful架构">
 <meta name="twitter:description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
@@ -388,7 +388,7 @@
 <p>当我们用资源的角度来设计接口，上面我们介绍了http的动词，按着规范我们可以很简单的统一命名，其次资源之间可能有关联，但是可以简单的进行切割，避免杂乱的依赖关系。</p>
 <p>我们从http的动词可以看出，RESTful很容易对单一的资源进行设计。但是我们往往会有许多批量的操作，这就是一个设计的难点了。每个人都会有自己的设计方案，我们可以取长补短，学习一下别人的精华之处。下面举一些比较好的批量操作的设计例子，设计不需要太纠结于定义，毕竟是使用的工具，用的顺手才好。</p>
 <blockquote>
-<p>GET /ec2/instance/batch?id=aa,bb,cc：简约的设计<br>  GET /ec2/instance?batch={“ids”:[“aa”,”bb”,”cc”]}：健壮的设计<br>  GET /ec2/instance?batch=[{“method”:”DELETE”,”id”:”aa”},{“method”:”DELETE”,”id”:”bb”},{“method”:”DELETE”,”id”:”cc”}]：facebook 的设计（墙外）</p>
+<p>GET /7le/instance/batch?id=aa,bb,cc：简约的设计<br>GET /7le/instance?batch={“ids”:[“aa”,”bb”,”cc”]}：健壮的设计<br>GET /7le/instance?batch=[{“method”:”DELETE”,”id”:”aa”},{“method”:”DELETE”,”id”:”bb”},<br>{“method”:”DELETE”,”id”:”cc”}]：facebook 的设计（墙外）</p>
 </blockquote>
 <p>以上就是我的一点点学习的总结和见解，欢迎大家交流拍砖，共同学习~ ^.^</p>
 
