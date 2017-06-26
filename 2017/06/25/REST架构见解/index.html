@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="前端," />
+  <meta name="keywords" content="REST," />
 
 
 
@@ -94,17 +94,19 @@
 
 
 
-<meta name="description" content="学习的道路就是不停的踩坑…">
-<meta name="keywords" content="前端">
+<meta name="description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
+<meta name="keywords" content="REST">
 <meta property="og:type" content="article">
-<meta property="og:title" content="form表单点击button，ajax提交自动刷新">
-<meta property="og:url" content="http://yoursite.com/2017/05/18/form表单点击button，ajax提交自动刷新/index.html">
+<meta property="og:title" content="RESTful架构">
+<meta property="og:url" content="http://yoursite.com/2017/06/25/REST架构见解/index.html">
 <meta property="og:site_name" content="Shine">
-<meta property="og:description" content="学习的道路就是不停的踩坑…">
-<meta property="og:updated_time" content="2017-05-17T16:38:04.698Z">
+<meta property="og:description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/rest-1.png">
+<meta property="og:updated_time" content="2017-06-26T15:38:35.661Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="form表单点击button，ajax提交自动刷新">
-<meta name="twitter:description" content="学习的道路就是不停的踩坑…">
+<meta name="twitter:title" content="RESTful架构">
+<meta name="twitter:description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
+<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/rest-1.png">
 
 
 
@@ -132,13 +134,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/05/18/form表单点击button，ajax提交自动刷新/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/06/25/REST架构见解/"/>
 
 
 
 
 
-  <title> form表单点击button，ajax提交自动刷新 | Shine </title>
+  <title> RESTful架构 | Shine </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -267,7 +269,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/18/form表单点击button，ajax提交自动刷新/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/25/REST架构见解/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -288,7 +290,7 @@
             
             
               
-                form表单点击button，ajax提交自动刷新
+                RESTful架构
               
             
           </h1>
@@ -303,8 +305,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-18T00:05:36+08:00">
-                2017-05-18
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-25T21:04:02+08:00">
+                2017-06-25
               </time>
             
 
@@ -340,14 +342,47 @@
 
       
         <blockquote>
-<p>学习的道路就是不停的踩坑…</p>
+<p>在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~</p>
 </blockquote>
 <a id="more"></a>
-<p>话不多说，直接上代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">    //省略一堆代码</div><div class="line">    &lt;div class=&quot;hr-line-dashed&quot;&gt;&lt;/div&gt;</div><div class="line">        &lt;div class=&quot;form-group&quot;&gt;</div><div class="line">            &lt;div class=&quot;col-sm-4 col-sm-offset-2&quot;&gt;</div><div class="line">            &lt;button class=&quot;btn btn-primary&quot;  onclick=&quot;submitAcc()&quot;&gt;保存内容&lt;/button&gt;</div><div class="line">            &lt;button class=&quot;btn btn-white&quot;&gt;取消&lt;/button&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">&lt;/form&gt;</div><div class="line"></div><div class="line">&lt;script&gt;</div><div class="line">function submitAcc() &#123;</div><div class="line">        $.ajax(&#123;</div><div class="line">            type: &quot;POST&quot;,</div><div class="line">            url: &quot;/backend/account&quot;,</div><div class="line">            data: $(&apos;#accAdd&apos;).serialize(),</div><div class="line">            success: function (result) &#123;</div><div class="line">                if(result.success==true)&#123;</div><div class="line">                    swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;success&quot;&#125;, function()&#123;</div><div class="line">                        //跳转至列表界面</div><div class="line">                        location.href = &quot;/backend/account/list&quot;;</div><div class="line">                    &#125;);</div><div class="line">                &#125;else &#123;</div><div class="line">                    swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;error&quot;&#125;, function()&#123;</div><div class="line">                        //刷新</div><div class="line">                        location.reload();</div><div class="line">                    &#125;);</div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line">            error: function (result) &#123;</div><div class="line">                swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;error&quot;&#125;, function()&#123;</div><div class="line">                    //刷新</div><div class="line">                    location.reload();</div><div class="line">                &#125;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
-<p>本来就是想一个添加数据的功能，每次点击提交后硬是给我刷新页面，搞的头晕脑胀。后来各种尝试，<br>发现form中存在button标签时，用ajax异步提交表单就会刷新。</p>
-<p>原因：button 存在时会再次提交一下表单，所以页面被刷新了。（之前认为button type=’submit’ 时）button才有提交表单的功能。</p>
-<p>解决：button标签换成a标签就可以了，或者不使用form。</p>
-<p>当时犯傻的地方   <a href="https://github.com/7le/shine/blob/1.0-dev/web/WEB-INF/views/backend/account/accountAdd.ftl" target="_blank" rel="external">已修正后的页面</a> ^.^</p>
+<h3 id="REST"><a href="#REST" class="headerlink" title="REST"></a>REST</h3><blockquote>
+<p>不知道有多少人一开始跟我一样，REST和RESTful傻傻分不清楚，一开始先扫个盲。</p>
+</blockquote>
+<p>REST这个词，是Roy Thomas Fielding在他2000年的博士论文中提出的。Fielding非常有名的，想了解的话自行google一下。REST是Representational State Transfer的缩写。 阮一峰对这个词组的翻译是”表现层状态转化”。REST的名称”表现层状态转化”中，省略了主语。”表现层”其实指的是”资源”（Resources）的”表现层”。而资源通常对于我们来说可以是任何东西，而与之对应就是一个URI。</p>
+<p><strong>所以REST是一套原则，而符合REST原则的就是RESTful架构。</strong></p>
+<h3 id="RESTful"><a href="#RESTful" class="headerlink" title="RESTful"></a>RESTful</h3><h4 id="HTTP动词"><a href="#HTTP动词" class="headerlink" title="HTTP动词"></a>HTTP动词</h4><blockquote>
+<p>RESTful将对HTTP的动词按着它们的语义来定义</p>
+</blockquote>
+<ul>
+<li>1 GET（SELECT）：从服务器取出资源（一项或多项）。</li>
+<li>2 POST（CREATE）：在服务器新建一个资源。</li>
+<li>3 PUT（UPDATE）：在服务器更新资源（客户端提供改变后的完整资源）。</li>
+<li>4 PATCH（UPDATE）：在服务器更新资源（客户端提供改变的属性）。</li>
+<li>5 DELETE（DELETE）：从服务器删除资源。</li>
+<li>6 HEAD：获取资源的元数据。（不常用）</li>
+<li>7 OPTIONS：获取信息，关于资源的哪些属性是客户端可以改变的。（跨域的时候会出现）</li>
+</ul>
+<p>这里大家一般都知道，也都按着这套原则去规范接口，但是RESTful不单单如此。</p>
+<h4 id="有状态与无状态"><a href="#有状态与无状态" class="headerlink" title="有状态与无状态"></a>有状态与无状态</h4><blockquote>
+<p>所谓无状态的，即所有的资源，都可以通过URI定位，而且这个定位与其他资源无关，也不会因为其他资源的变化而改变。</p>
+</blockquote>
+<p>绝大多数的时候，我们的系统都是有状态的，至少我遇到的大多数都是如此，我们虽然想用RESTful架构来设计，但是设计的确实貌合神离。那什么是有状态呢？</p>
+<p>举个例子让我们更好的理解，比如我们有一个用户管理系统来说，如果我们要修改一个用户的信息，那我们通常需要先登录，因为我们要判断这个操作者是否有这个权限能进行操作。则这种情况是<strong>有状态</strong>的，因为我们的每一步操作都依赖于前一步操作，只要前置操作不成功，后续操作就无法执行。如果我们通过一个特定URI可以直接对用户信息进行修改这就是<strong>无状态</strong>的。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/rest-1.png" alt="有状态与无状态"></p>
+<h4 id="认证机制"><a href="#认证机制" class="headerlink" title="认证机制"></a>认证机制</h4><p>从有状态变为无状态，我们将原先在服务端的状态抽离了出来，那我们的状态需要保存在哪，这就会变成一个问题。一般认证机制会有<strong>session auth(即通过用户名密码登录)，basic auth，token auth和OAuth</strong>，服务开发中常用的认证机制为后三者，我们着重记录一下token auth和OAuth，其他用的比较少（至少我没怎么见到），有兴趣的可以自行google。</p>
+<h5 id="token-auth"><a href="#token-auth" class="headerlink" title="token auth"></a>token auth</h5><p>token大家都不陌生，token auth是在服务器按照一些规则（自己设计）生成token，服务端可以通过缓存或者其他方式存下token，并设置其过期时间。然后客户端登录将得到这个token，客户端保存，每次进行访问的时候，在header中带上token，我们在服务端可以简单的拦截请求，通过如下接收</p>
+<blockquote>
+<p>String token =request.getHeader(“Authorization”);</p>
+</blockquote>
+<h5 id="OAuth2-0"><a href="#OAuth2-0" class="headerlink" title="OAuth2.0"></a>OAuth2.0</h5><p>OAuth（开放授权）是一个开放的授权标准，允许用户让第三方应用访问该用户在某一web服务上存储的私密的资源（如照片，视频，联系人列表），而无需将用户名和密码提供给第三方应用。</p>
+<p>具体内容我们可以看下这篇文章  <a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html" target="_blank" rel="external">理解OAuth 2.0</a></p>
+<h3 id="设计思想"><a href="#设计思想" class="headerlink" title="设计思想"></a>设计思想</h3><p>RESTful和以前的接口设计思想有很大的不同，我们以前设计接口，往往核心在于操作的角度来设计。REST的核心在于资源，资源是第一位的考虑，首先从资源的角度进行系统的拆分、设计。</p>
+<p>我们沿用之前的demo，如果要修改一个用户的信息，那我们原先的设计思想将会是：</p>
+<ul>
+<li>1</li>
+<li>2</li>
+<li>3</li>
+</ul>
 
       
     </div>
@@ -377,7 +412,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/前端/" rel="tag"># 前端</a>
+            <a href="/tags/REST/" rel="tag"># REST</a>
           
         </div>
       
@@ -390,18 +425,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/05/26/springboot项目笔记：(一)搭建项目/" rel="next" title="springboot项目笔记：(一)搭建项目">
-                <i class="fa fa-chevron-left"></i> springboot项目笔记：(一)搭建项目
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/05/14/设计模式-单例模式/" rel="prev" title="设计模式--单例模式">
-                设计模式--单例模式 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/06/21/springboot项目笔记：(六) 视频截图和转码/" rel="prev" title="springboot项目笔记：(六) 视频截图和转码">
+                springboot项目笔记：(六) 视频截图和转码 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -451,8 +482,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/image/ly.jpg"
@@ -516,6 +556,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#REST"><span class="nav-number">1.</span> <span class="nav-text">REST</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RESTful"><span class="nav-number">2.</span> <span class="nav-text">RESTful</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HTTP动词"><span class="nav-number">2.1.</span> <span class="nav-text">HTTP动词</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#有状态与无状态"><span class="nav-number">2.2.</span> <span class="nav-text">有状态与无状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#认证机制"><span class="nav-number">2.3.</span> <span class="nav-text">认证机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#token-auth"><span class="nav-number">2.3.1.</span> <span class="nav-text">token auth</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#OAuth2-0"><span class="nav-number">2.3.2.</span> <span class="nav-text">OAuth2.0</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设计思想"><span class="nav-number">3.</span> <span class="nav-text">设计思想</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
