@@ -4,6 +4,23 @@
 
     
   <url>
+    <loc>http://yoursite.com/2017/05/18/form%E8%A1%A8%E5%8D%95%E5%92%8Cajax%E7%9A%84%E9%82%A3%E4%BA%9B%E5%B0%8F%E4%BA%8B/</loc>
+    <lastmod>2017-06-28T16:57:05.839Z</lastmod>
+    <data>
+        <display>
+        <title>form表单和ajax的那些小事</title>
+        <pubTime>2017-05-17T16:05:36.000Z</pubTime>
+        
+        <tag>前端</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2017/06/27/%E8%87%B4%E6%95%AC%E8%92%99%E8%92%82-%E5%A8%81%E5%BB%89%E5%A7%86%E6%96%AF/</loc>
     <lastmod>2017-06-27T16:40:25.935Z</lastmod>
     <data>
@@ -131,23 +148,6 @@
         <pubTime>2017-06-04T14:42:55.000Z</pubTime>
         
         <tag>springboot</tag>
-         
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2017/05/18/form%E8%A1%A8%E5%8D%95%E7%82%B9%E5%87%BBbutton%EF%BC%8Cajax%E6%8F%90%E4%BA%A4%E8%87%AA%E5%8A%A8%E5%88%B7%E6%96%B0/</loc>
-    <lastmod>2017-05-17T16:38:04.698Z</lastmod>
-    <data>
-        <display>
-        <title>form表单点击button，ajax提交自动刷新</title>
-        <pubTime>2017-05-17T16:05:36.000Z</pubTime>
-        
-        <tag>前端</tag>
          
          
            

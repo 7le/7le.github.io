@@ -97,13 +97,13 @@
 <meta name="description" content="学习的道路就是不停的踩坑…">
 <meta name="keywords" content="前端">
 <meta property="og:type" content="article">
-<meta property="og:title" content="form表单点击button，ajax提交自动刷新">
-<meta property="og:url" content="http://yoursite.com/2017/05/18/form表单点击button，ajax提交自动刷新/index.html">
+<meta property="og:title" content="form表单和ajax的那些小事">
+<meta property="og:url" content="http://yoursite.com/2017/05/18/form表单和ajax的那些小事/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="学习的道路就是不停的踩坑…">
-<meta property="og:updated_time" content="2017-05-17T16:38:04.698Z">
+<meta property="og:updated_time" content="2017-06-28T16:57:05.839Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="form表单点击button，ajax提交自动刷新">
+<meta name="twitter:title" content="form表单和ajax的那些小事">
 <meta name="twitter:description" content="学习的道路就是不停的踩坑…">
 
 
@@ -132,13 +132,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/05/18/form表单点击button，ajax提交自动刷新/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/05/18/form表单和ajax的那些小事/"/>
 
 
 
 
 
-  <title> form表单点击button，ajax提交自动刷新 | Shine </title>
+  <title> form表单和ajax的那些小事 | Shine </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -267,7 +267,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/18/form表单点击button，ajax提交自动刷新/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/18/form表单和ajax的那些小事/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -288,7 +288,7 @@
             
             
               
-                form表单点击button，ajax提交自动刷新
+                form表单和ajax的那些小事
               
             
           </h1>
@@ -343,11 +343,22 @@
 <p>学习的道路就是不停的踩坑…</p>
 </blockquote>
 <a id="more"></a>
-<p>话不多说，直接上代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">    //省略一堆代码</div><div class="line">    &lt;div class=&quot;hr-line-dashed&quot;&gt;&lt;/div&gt;</div><div class="line">        &lt;div class=&quot;form-group&quot;&gt;</div><div class="line">            &lt;div class=&quot;col-sm-4 col-sm-offset-2&quot;&gt;</div><div class="line">            &lt;button class=&quot;btn btn-primary&quot;  onclick=&quot;submitAcc()&quot;&gt;保存内容&lt;/button&gt;</div><div class="line">            &lt;button class=&quot;btn btn-white&quot;&gt;取消&lt;/button&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">&lt;/form&gt;</div><div class="line"></div><div class="line">&lt;script&gt;</div><div class="line">function submitAcc() &#123;</div><div class="line">        $.ajax(&#123;</div><div class="line">            type: &quot;POST&quot;,</div><div class="line">            url: &quot;/backend/account&quot;,</div><div class="line">            data: $(&apos;#accAdd&apos;).serialize(),</div><div class="line">            success: function (result) &#123;</div><div class="line">                if(result.success==true)&#123;</div><div class="line">                    swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;success&quot;&#125;, function()&#123;</div><div class="line">                        //跳转至列表界面</div><div class="line">                        location.href = &quot;/backend/account/list&quot;;</div><div class="line">                    &#125;);</div><div class="line">                &#125;else &#123;</div><div class="line">                    swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;error&quot;&#125;, function()&#123;</div><div class="line">                        //刷新</div><div class="line">                        location.reload();</div><div class="line">                    &#125;);</div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line">            error: function (result) &#123;</div><div class="line">                swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;error&quot;&#125;, function()&#123;</div><div class="line">                    //刷新</div><div class="line">                    location.reload();</div><div class="line">                &#125;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="form表单点击button，ajax提交自动刷新"><a href="#form表单点击button，ajax提交自动刷新" class="headerlink" title="form表单点击button，ajax提交自动刷新"></a>form表单点击button，ajax提交自动刷新</h4><p>话不多说，直接上代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line">&lt;form&gt;</div><div class="line">    //省略一堆代码</div><div class="line">    &lt;div class=&quot;hr-line-dashed&quot;&gt;&lt;/div&gt;</div><div class="line">        &lt;div class=&quot;form-group&quot;&gt;</div><div class="line">            &lt;div class=&quot;col-sm-4 col-sm-offset-2&quot;&gt;</div><div class="line">            &lt;button class=&quot;btn btn-primary&quot;  onclick=&quot;submitAcc()&quot;&gt;保存内容&lt;/button&gt;</div><div class="line">            &lt;button class=&quot;btn btn-white&quot;&gt;取消&lt;/button&gt;</div><div class="line">        &lt;/div&gt;</div><div class="line">    &lt;/div&gt;</div><div class="line">&lt;/form&gt;</div><div class="line"></div><div class="line">&lt;script&gt;</div><div class="line">function submitAcc() &#123;</div><div class="line">        $.ajax(&#123;</div><div class="line">            type: &quot;POST&quot;,</div><div class="line">            url: &quot;/backend/account&quot;,</div><div class="line">            data: $(&apos;#accAdd&apos;).serialize(),</div><div class="line">            success: function (result) &#123;</div><div class="line">                if(result.success==true)&#123;</div><div class="line">                    swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;success&quot;&#125;, function()&#123;</div><div class="line">                        //跳转至列表界面</div><div class="line">                        location.href = &quot;/backend/account/list&quot;;</div><div class="line">                    &#125;);</div><div class="line">                &#125;else &#123;</div><div class="line">                    swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;error&quot;&#125;, function()&#123;</div><div class="line">                        //刷新</div><div class="line">                        location.reload();</div><div class="line">                    &#125;);</div><div class="line">                &#125;</div><div class="line">            &#125;,</div><div class="line">            error: function (result) &#123;</div><div class="line">                swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;error&quot;&#125;, function()&#123;</div><div class="line">                    //刷新</div><div class="line">                    location.reload();</div><div class="line">                &#125;);</div><div class="line">            &#125;</div><div class="line">        &#125;);</div><div class="line">    &#125;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure></p>
 <p>本来就是想一个添加数据的功能，每次点击提交后硬是给我刷新页面，搞的头晕脑胀。后来各种尝试，<br>发现form中存在button标签时，用ajax异步提交表单就会刷新。</p>
 <p>原因：button 存在时会再次提交一下表单，所以页面被刷新了。（之前认为button type=’submit’ 时）button才有提交表单的功能。</p>
 <p>解决：button标签换成a标签就可以了，或者不使用form。</p>
 <p>当时犯傻的地方   <a href="https://github.com/7le/shine/blob/1.0-dev/web/WEB-INF/views/backend/account/accountAdd.ftl" target="_blank" rel="external">已修正后的页面</a> ^.^</p>
+<h4 id="ajax使用FormData对象上传文件"><a href="#ajax使用FormData对象上传文件" class="headerlink" title="ajax使用FormData对象上传文件"></a>ajax使用FormData对象上传文件</h4><p>首先给大家推荐一个<a href="https://sm.ms/" target="_blank" rel="external">图床</a>。</p>
+<p>在对接接口的时候，需要使用FormData上传，于是就想办法解决了下。</p>
+<p>下面是关键的代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;form id=&quot;uploadForm&quot; enctype=&quot;multiple/form-data&quot; &gt;</div><div class="line">    &lt;input id=&quot;smfile&quot; name=&quot;smfile&quot; type=&quot;file&quot; multiple &gt;</div><div class="line">    &lt;input type=&quot;button&quot; onclick=&quot;send()&quot; value=&quot;send&quot;&gt;</div><div class="line">&lt;/form&gt;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">&lt;script type=&quot;text/javascript&quot;&gt;</div><div class="line">function send() &#123;</div><div class="line"> </div><div class="line"> var formData = new FormData($(&apos;#uploadForm&apos;)[0]);</div><div class="line"></div><div class="line"> //console.log($(&apos;#uploadForm&apos;)[0]);</div><div class="line"> </div><div class="line"> formData.append(&apos;format&apos;,&apos;json&apos;);</div><div class="line"></div><div class="line"> $.ajax(&#123;</div><div class="line">        type:&apos;post&apos;,</div><div class="line">        url: &quot;https://sm.ms/api/upload&quot;,</div><div class="line">        data: formData,</div><div class="line">        processData: false,</div><div class="line">        contentType: false,</div><div class="line">        success: function (data) &#123;</div><div class="line">            console.log(data);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div><div class="line">&lt;/script&gt;</div></pre></td></tr></table></figure>
+<p>最后补充几点</p>
+<ul>
+<li>1、input中声明的是什么，接收的时候就用什么。例如上面的就是smfile</li>
+<li>2、processData设置为false。因为data值是FormData对象，不需要对数据做处理。</li>
+<li>3、form标签添加enctype=”multipart/form-data”属性。</li>
+<li>4、cache设置为false，上传文件不需要缓存。contentType设置为false。因为是由form表单构造的FormData对象，且已经声明了属性enctype=”multipart/form-data”，所以这里设置为false。</li>
+</ul>
 
       
     </div>
@@ -451,8 +462,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/image/ly.jpg"
@@ -516,6 +536,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#form表单点击button，ajax提交自动刷新"><span class="nav-number">1.</span> <span class="nav-text">form表单点击button，ajax提交自动刷新</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ajax使用FormData对象上传文件"><span class="nav-number">2.</span> <span class="nav-text">ajax使用FormData对象上传文件</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
