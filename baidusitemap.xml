@@ -4,6 +4,23 @@
 
     
   <url>
+    <loc>http://yoursite.com/2017/06/25/RESTful%E6%9E%B6%E6%9E%84/</loc>
+    <lastmod>2017-07-02T13:35:34.280Z</lastmod>
+    <data>
+        <display>
+        <title>RESTful架构</title>
+        <pubTime>2017-06-25T13:04:02.000Z</pubTime>
+        
+        <tag>REST</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2017/05/18/form%E8%A1%A8%E5%8D%95%E5%92%8Cajax%E7%9A%84%E9%82%A3%E4%BA%9B%E5%B0%8F%E4%BA%8B/</loc>
     <lastmod>2017-06-28T16:57:05.839Z</lastmod>
     <data>
@@ -29,23 +46,6 @@
         <pubTime>2017-06-27T14:33:38.000Z</pubTime>
         
         <tag>man</tag>
-         
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2017/06/25/RESTful%E6%9E%B6%E6%9E%84/</loc>
-    <lastmod>2017-06-26T16:39:44.848Z</lastmod>
-    <data>
-        <display>
-        <title>RESTful架构</title>
-        <pubTime>2017-06-25T13:04:02.000Z</pubTime>
-        
-        <tag>REST</tag>
          
          
            
