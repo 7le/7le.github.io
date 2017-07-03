@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/rest-1.png">
-<meta property="og:updated_time" content="2017-07-02T13:35:34.280Z">
+<meta property="og:updated_time" content="2017-07-03T15:53:25.103Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RESTful架构">
 <meta name="twitter:description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
@@ -367,7 +367,8 @@
 <p>所谓无状态的，即所有的资源，都可以通过URI定位，而且这个定位与其他资源无关，也不会因为其他资源的变化而改变。</p>
 </blockquote>
 <p>绝大多数的时候，我们的系统都是有状态的，至少我遇到的大多数都是如此，我们虽然想用RESTful架构来设计，但是设计的确实貌合神离。那什么是有状态呢？</p>
-<p>举个例子让我们更好的理解，比如我们有一个用户管理系统来说，如果我们要修改一个用户的信息，那我们通常需要先登录，因为我们要判断这个操作者是否有这个权限能进行操作。则这种情况是<strong>有状态</strong>的，因为我们的每一步操作都依赖于前一步操作，只要前置操作不成功，后续操作就无法执行。如果我们通过一个特定URI可以直接对用户信息进行修改这就是<strong>无状态</strong>的。因为我们每次的请求都带上了完整的信息，且与完全与其他请求隔离。这样的设计非常贴合分布式系统。当一个服务器宕机，对于无状态是毫无影响的，但是对于有状态，那么该用户最近的所有交互操作将无法被透明地移送至备用服务器上，除非该服务器时刻与主服务器同步全部用户的状态信息，这样的代价是很昂贵的。</p>
+<p>举个例子让我们更好的理解，比如我们有一个用户管理系统来说，如果我们要修改一个用户的信息，那我们通常需要先登录，因为我们要判断这个操作者是否有这个权限能进行操作。则这种情况是<strong>有状态</strong>的，因为我们的每一步操作都依赖于前一步操作，只要前置操作不成功，后续操作就无法执行。</p>
+<p>如果我们通过一个特定URI可以直接对用户信息进行修改，这样的方式就是<strong>无状态</strong>的。<strong>无状态</strong>指的是任意一个web请求完全与其他请求隔离，当请求发出时，请求本身带上了这一请求所需的全部信息。这样的设计非常贴合分布式系统。当一个服务器宕机，对于无状态是毫无影响的，但是对于有状态，那么该用户最近的所有交互操作将无法被透明地移送至备用服务器上，除非该服务器时刻与主服务器同步全部用户的状态信息，这样的代价是很昂贵的。</p>
 <p><strong>有状态和无状态与请求本身没有多大关联，重要的是状态信息是由请求方还是响应方负责保存。</strong></p>
 <p><img src="http://oqipguzbl.bkt.clouddn.com/rest-1.png" alt="有状态与无状态"></p>
 <h4 id="认证机制"><a href="#认证机制" class="headerlink" title="认证机制"></a>认证机制</h4><p>从有状态变为无状态，我们将原先在服务端的状态抽离了出来，那我们的状态需要保存在哪，这就会变成一个问题。一般认证机制会有<strong>session auth(即通过用户名密码登录)，basic auth，token auth和OAuth</strong>，服务开发中常用的认证机制为后三者，我们着重记录一下token auth和OAuth，其他用的比较少（至少我没怎么见到），有兴趣的可以自行google。</p>
