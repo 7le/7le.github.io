@@ -102,9 +102,10 @@
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="整理一下近段时间学习的数据库知识点~">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/db1.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/db2.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/db3.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/db4.png">
-<meta property="og:updated_time" content="2017-08-24T16:29:08.648Z">
+<meta property="og:updated_time" content="2017-08-25T16:19:52.008Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库索引整理">
 <meta name="twitter:description" content="整理一下近段时间学习的数据库知识点~">
@@ -385,7 +386,7 @@
 </ul>
 <h3 id="非聚集索引"><a href="#非聚集索引" class="headerlink" title="非聚集索引"></a>非聚集索引</h3><p>拉回正题，讲完聚集索引，接下来就是非聚集索引，也就是我们平时使用的常规索引。</p>
 <p>非聚集索引和聚集索引一样，同样是采用btree作为索引的数据结构。索引树结构中各节点的值来自于表中的索引字段，假如给user表的name字段加上索引，那么索引就是由name字段中的值构成，如果给表中多个字段加上索引，那么就会出现多个独立的索引结构，每个索引互相之间不存在关联。 如下图：</p>
-<p><img src="" alt="非聚集索引"></p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/db2.png" alt="非聚集索引"></p>
 <p>这里先给大家安利一波chrome的插件Gliffy Diagrams，绘图相当好用，主要格调不错。^.^</p>
 <p>看图，可以发现每次给字段建一个新索引，字段中的数据就会被复制一份出来，用于生成索引。因此，给表添加索引的同时会增加表的体积，占用磁盘存储空间。非聚集索引和聚集索引的区别在于，通过聚集索引可以查到需要查找的数据，而通过非聚集索引可以查到记录对应的主键值，再使用主键的值通过聚集索引查找到需要的数据。所以当我们能利用聚焦索引的时候，就尽量使用聚焦索引。因为查询表的操作最终都会利用主键通过聚集索引来定位到数据，聚集索引中的数据指针是通往数据的<em>唯一</em>路径。</p>
 <p>一般用了唯一的时候一定要注意，因为一不小心就会啪啪啪的打脸。虽然正常的逻辑下，我们的查询拿到数据最终是要通过聚焦索引。但是也是有特例的，被称为覆盖索引，也就是平时所说的联合索引或复合索引。当我们为字段建立索引以后，字段中的内容会被同步到索引之中，那我们指定两个字段，这个两个字段的内容都会被同步到索引。</p>
