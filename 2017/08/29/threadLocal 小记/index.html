@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="REST," />
+  <meta name="keywords" content="java," />
 
 
 
@@ -94,19 +94,22 @@
 
 
 
-<meta name="description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
-<meta name="keywords" content="REST">
+<meta name="description" content="最近在工作的时候遇到一个诡异的情况，花了点时间仔细考究了下，特此记录下~">
+<meta name="keywords" content="java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="RESTful架构">
-<meta property="og:url" content="http://yoursite.com/2017/06/25/RESTful架构/index.html">
+<meta property="og:title" content="threadLocal 小记">
+<meta property="og:url" content="http://yoursite.com/2017/08/29/threadLocal 小记/index.html">
 <meta property="og:site_name" content="Shine">
-<meta property="og:description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/rest-1.png">
-<meta property="og:updated_time" content="2017-07-03T15:53:25.103Z">
+<meta property="og:description" content="最近在工作的时候遇到一个诡异的情况，花了点时间仔细考究了下，特此记录下~">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/threadLocal-1.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/threadLocal-2.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/threadLocal-3.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/threadLocal-4.png">
+<meta property="og:updated_time" content="2017-08-30T13:26:16.674Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="RESTful架构">
-<meta name="twitter:description" content="在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~">
-<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/rest-1.png">
+<meta name="twitter:title" content="threadLocal 小记">
+<meta name="twitter:description" content="最近在工作的时候遇到一个诡异的情况，花了点时间仔细考究了下，特此记录下~">
+<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/threadLocal-1.png">
 
 
 
@@ -134,13 +137,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/06/25/RESTful架构/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/08/29/threadLocal 小记/"/>
 
 
 
 
 
-  <title> RESTful架构 | Shine </title>
+  <title> threadLocal 小记 | Shine </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -269,7 +272,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/25/RESTful架构/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/29/threadLocal 小记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -290,7 +293,7 @@
             
             
               
-                RESTful架构
+                threadLocal 小记
               
             
           </h1>
@@ -305,8 +308,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-25T21:04:02+08:00">
-                2017-06-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-29T22:16:42+08:00">
+                2017-08-29
               </time>
             
 
@@ -342,57 +345,32 @@
 
       
         <blockquote>
-<p>在互联网的爆炸的时代下，”微服务”的概念也越来越被大家接受并应用于实践，日益增多的web service使RESTful越来越热。本文就整理一下我对RESTful 架构风格的一些理解，供大家参考拍砖~</p>
+<p>最近在工作的时候遇到一个诡异的情况，花了点时间仔细考究了下，特此记录下~</p>
 </blockquote>
 <a id="more"></a>
-<h3 id="REST"><a href="#REST" class="headerlink" title="REST"></a>REST</h3><blockquote>
-<p>不知道有多少人一开始跟我一样，REST和RESTful傻傻分不清楚，一开始先扫个盲。</p>
-</blockquote>
-<p>REST这个词，是Roy Thomas Fielding在他2000年的博士论文中提出的。Fielding非常有名的，想了解的话自行google一下。REST是Representational State Transfer的缩写。 阮一峰对这个词组的翻译是”表现层状态转化”。REST的名称”表现层状态转化”中，省略了主语。”表现层”其实指的是”资源”（Resources）的”表现层”。而资源通常对于我们来说可以是任何东西，而与之对应就是一个URI。</p>
-<p><strong>所以REST是一套原则，而符合REST原则的就是符合RESTful架构。</strong></p>
-<h3 id="RESTful"><a href="#RESTful" class="headerlink" title="RESTful"></a>RESTful</h3><h4 id="HTTP动词"><a href="#HTTP动词" class="headerlink" title="HTTP动词"></a>HTTP动词</h4><blockquote>
-<p>RESTful将对HTTP的动词按着它们的语义来定义</p>
-</blockquote>
-<ul>
-<li>1 GET（SELECT）：从服务器取出资源（一项或多项）。</li>
-<li>2 POST（CREATE）：在服务器新建一个资源。</li>
-<li>3 PUT（UPDATE）：在服务器更新资源（客户端提供改变后的完整资源）。</li>
-<li>4 PATCH（UPDATE）：在服务器更新资源（客户端提供改变的属性）。</li>
-<li>5 DELETE（DELETE）：从服务器删除资源。</li>
-<li>6 HEAD：获取资源的元数据。（不常用）</li>
-<li>7 OPTIONS：获取信息，关于资源的哪些属性是客户端可以改变的。（跨域的时候会出现）</li>
-</ul>
-<p>这里大家一般都知道，也都按着这套原则去规范接口，但是RESTful不单单如此。</p>
-<h4 id="有状态与无状态"><a href="#有状态与无状态" class="headerlink" title="有状态与无状态"></a>有状态与无状态</h4><blockquote>
-<p>所谓无状态的，即所有的资源，都可以通过URI定位，而且这个定位与其他资源无关，也不会因为其他资源的变化而改变。</p>
-</blockquote>
-<p>绝大多数的时候，我们的系统都是有状态的，至少我遇到的大多数都是如此，我们虽然想用RESTful架构来设计，但是设计的确实貌合神离。那什么是有状态呢？</p>
-<p>举个例子让我们更好的理解，比如我们有一个用户管理系统来说，如果我们要修改一个用户的信息，那我们通常需要先登录，因为我们要判断这个操作者是否有这个权限能进行操作。则这种情况是<strong>有状态</strong>的，因为我们的每一步操作都依赖于前一步操作，只要前置操作不成功，后续操作就无法执行。</p>
-<p>如果我们通过一个特定URI可以直接对用户信息进行修改，这样的方式就是<strong>无状态</strong>的。<strong>无状态</strong>指的是任意一个web请求完全与其他请求隔离，当请求发出时，请求本身带上了这一请求所需的全部信息。这样的设计非常贴合分布式系统。当一个服务器宕机，对于无状态是毫无影响的，但是对于有状态，那么该用户最近的所有交互操作将无法被透明地移送至备用服务器上，除非该服务器时刻与主服务器同步全部用户的状态信息，这样的代价是很昂贵的。</p>
-<p><strong>有状态和无状态与请求本身没有多大关联，重要的是状态信息是由请求方还是响应方负责保存。</strong></p>
-<p><img src="http://oqipguzbl.bkt.clouddn.com/rest-1.png" alt="有状态与无状态"></p>
-<h4 id="认证机制"><a href="#认证机制" class="headerlink" title="认证机制"></a>认证机制</h4><p>从有状态变为无状态，我们将原先在服务端的状态抽离了出来，那我们的状态需要保存在哪，这就会变成一个问题。一般认证机制会有<strong>session auth(即通过用户名密码登录)，basic auth，token auth和OAuth</strong>，服务开发中常用的认证机制为后三者，我们着重记录一下token auth和OAuth，其他用的比较少（至少我没怎么见到），有兴趣的可以自行google。</p>
-<h5 id="token-auth"><a href="#token-auth" class="headerlink" title="token auth"></a>token auth</h5><p>token大家都不陌生，token auth是在服务器按照一些规则（自己设计）生成token，服务端可以通过缓存或者其他方式存下token，并设置其过期时间。然后客户端登录将得到这个token，客户端保存，每次进行访问的时候，在header中带上token，我们在服务端可以简单的拦截请求，通过如下接收</p>
+<p>事情是这样滴，因为最近维护的一个的项目比较有”年代感”，里面的东西也比较庞杂，原先是使用struts的，后来我另外实现了一套springmvc，两者是共存的。（有点奇葩，因为以前struts的内容太多，全部改掉成本太大，也就这样一直放着）</p>
+<h3 id="时隐时现的bug"><a href="#时隐时现的bug" class="headerlink" title="时隐时现的bug"></a>时隐时现的bug</h3><p>俗话说前人栽树，后人乘凉。原先代码里有这样一段代码：</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/threadLocal-1.png" alt="mybatis拦截器"></p>
+<p>显而易见，这是实现了Mybatis的接口，然后拦截它的update方法（其实也就是SqlSession的新增，删除，修改操作）。对于更新操作的时候，只要实体类继承了NulEntity，就会更新的时候自动加上更新时间和更新人，这样就不需要自己再另外操作了，确实挺方便的。但是问题来了，在做更新操作的时候，更新人偶尔会诡异的变成不是当前用户的名字。因为是新做的springmvc这一套，当时就干脆直接去掉了实体类的继承关系，问题就没了，也就没有在意。最近同事又遇到了这样的问题，来问我。于是乎，就花了点时间深究了下~</p>
+<h3 id="真相大白"><a href="#真相大白" class="headerlink" title="真相大白"></a>真相大白</h3><p>其实更新人是从ThreadLocalHolder中拿的，看代码：</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/threadLocal-2.png" alt="ThreadLocalHolder"></p>
+<p>可以发现是利用ThreadLocal来实现，了解ThreadLocal的都知道，它是为每一个线程维护变量的副本，实现的思路就是在ThreadLocal类中有维护一个Map，用于存储每一个线程的变量副本，Map中元素的键为线程对象，而值对应线程的变量副本。所以会在每次请求的时候进行拦截，给ThreadLocal赋上登陆人的信息（这是struts的登录拦截，因为springmvc也存在，就利用session共享了登录信息）。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/threadLocal-3.png" alt="struts拦截器"></p>
+<p>其实扒到这里，八成也能定位出问题了。前面提到过ThreadLocal是用线程为键，那当线程被复用的时候，就会有问题。现在一般使用的web容器，大多都是使用线程池的。我使用的是Tomcat，当一个请求进入时，比如A登录使用了thread-1，struts拦截器为ThreadLocal添加了thread-1了变量为A。这时候B登录了使用了thread-2，同样ThreadLocal添加了thread-2了变量为B。因为线程池复用线程，当B去修改springmvc的接口，线程池为B的请求分配了thread-1来处理，那就出现了之前诡异的现象。所以需要另外在springmvc的拦截器中为ThreadLocal重新赋值。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/threadLocal-4.png" alt="springmvc拦截器"></p>
+<p>在Web容器环境中使用ThreadLocal和本地环境中的ThreadLocal还是有很多差异的，使用起来要特别小心！既然使用ThreadLocal会有风险，那这里使用它的意义是为何。我个人的看法是为了松耦合，当然我们也可以引用redis之类来处理，也是不错的方案。</p>
+<h3 id="Tomcat线程池配置"><a href="#Tomcat线程池配置" class="headerlink" title="Tomcat线程池配置"></a>Tomcat线程池配置</h3><p>既然上面也提到了tomcant的线程池，那再写一些关于tomcant线程池的配置。<br>首先打开/conf/server.xml文件,然后配置参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;Executor name=&quot;tomcatThreadPool&quot;   </div><div class="line">        namePrefix=&quot;tomcatThreadPool-&quot;   </div><div class="line">        maxThreads=&quot;500&quot;    </div><div class="line">        minSpareThreads=&quot;400&quot;/&gt;</div></pre></td></tr></table></figure>
 <blockquote>
-<p>String token =request.getHeader(“Authorization”);</p>
+<p>name：共享线程池的名字。这是Connector为了共享线程池要引用的名字，该名字必须唯一。默认值：None；<br>namePrefix:在JVM上，每个运行线程都可以有一个name 字符串。这一属性为线程池中每个线程的name字符串设置了一个前缀，Tomcat将把线程号追加到这一前缀的后面。默认值：tomcat-exec-；<br>maxThreads：该线程池可以容纳的最大线程数。默认值：200；<br>maxIdleTime：在Tomcat关闭一个空闲线程之前，允许空闲线程持续的时间(以毫秒为单位)。只有当前活跃的线程数大于minSpareThread的值，才会关闭空闲线程。默认值：60000(一分钟)。<br>minSpareThreads：Tomcat应该始终打开的最小不活跃线程数。默认值：25。</p>
 </blockquote>
-<h5 id="OAuth2-0"><a href="#OAuth2-0" class="headerlink" title="OAuth2.0"></a>OAuth2.0</h5><p>OAuth（开放授权）是一个开放的授权标准，允许用户让第三方应用访问该用户在某一web服务上存储的私密的资源（如照片，视频，联系人列表），而无需将用户名和密码提供给第三方应用。</p>
-<p>具体内容我们可以看下这篇文章  <a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html" target="_blank" rel="external">理解OAuth 2.0</a></p>
-<h3 id="设计思想"><a href="#设计思想" class="headerlink" title="设计思想"></a>设计思想</h3><p>RESTful和以前的接口设计思想有很大的不同，我们以前设计接口，往往核心在于操作的角度来设计。REST的核心在于资源，资源是第一位的考虑，首先从资源的角度进行系统的拆分、设计。</p>
-<p>我们沿用之前的demo，如果要修改一个用户的信息，那我们原先的设计思想将会是：</p>
-<ul>
-<li>1 有修改用户信息功能</li>
-<li>2 修改用户信息需要一个URL</li>
-<li>3 定义好URL的参数</li>
-<li>4 开始coding</li>
-</ul>
-<p>这样我们能很快的把我们所要的接口写出来，我们是讲这个操作具体化出来，然后围绕这个操作进行设计，再将需要的东西补充进来。如果我们考虑的很充分，那肯定不会有什么问题，但是有时候考虑不周的时候，我们可能会遇到某个操作，需要再某个操作之后，就是操作有依赖，少的时候还好，但是操作多起来难免就增加了开发难度，以及接口命名难以统一。</p>
-<p>当我们用资源的角度来设计接口，上面我们介绍了http的动词，按着规范我们可以很简单的统一命名，其次资源之间可能有关联，但是可以简单的进行切割，避免杂乱的依赖关系。</p>
-<p>我们从http的动词可以看出，RESTful很容易对单一的资源进行设计。但是我们往往会有许多批量的操作，这就是一个设计的难点了。每个人都会有自己的设计方案，我们可以取长补短，学习一下别人的精华之处。下面举一些比较好的批量操作的设计例子，设计不需要太纠结于定义，毕竟是使用的工具，用的顺手才好。</p>
+<p>然后配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&lt;Connector executor=&quot;tomcatThreadPool&quot;  </div><div class="line">           port=&quot;8080&quot; protocol=&quot;HTTP/1.1&quot;  </div><div class="line">               connectionTimeout=&quot;20000&quot;</div><div class="line">               enableLookups=&quot;false&quot;  </div><div class="line">               redirectPort=&quot;8443&quot;   </div><div class="line">           minProcessors=&quot;5&quot;  </div><div class="line">           maxProcessors=&quot;75&quot;  </div><div class="line">           acceptCount=&quot;1000&quot;/&gt;</div></pre></td></tr></table></figure>
 <blockquote>
-<p>GET /7le/instance/batch?id=aa,bb,cc：简约的设计<br>GET /7le/instance?batch={“ids”:[“aa”,”bb”,”cc”]}：健壮的设计<br>GET /7le/instance?batch=[{“method”:”DELETE”,”id”:”aa”},{“method”:”DELETE”,”id”:”bb”},<br>{“method”:”DELETE”,”id”:”cc”}]：facebook 的设计（墙外）</p>
+<p>executor：表示使用该参数值对应的线程池；<br>minProcessors：服务器启动时创建的处理请求的线程数；<br>maxProcessors：最大可以创建的处理请求的线程数；<br>acceptCount：指定当所有可以使用的处理请求的线程数都被使用时，可以放到处理队列中的请求数，超过这个数的请求将不予处理。</p>
 </blockquote>
-<p>以上就是我的一点点学习的总结和见解，欢迎大家交流拍砖，共同学习~ ^.^</p>
+<p>再贴个jvm配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">set JAVA_OPTS=-Xms1024m -Xmx1024m -XX:PermSize=128M -XX:MaxPermSize=256m</div></pre></td></tr></table></figure></p>
+<p>完。^.^</p>
 
       
     </div>
@@ -422,7 +400,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/REST/" rel="tag"># REST</a>
+            <a href="/tags/java/" rel="tag"># java</a>
           
         </div>
       
@@ -435,18 +413,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/06/27/致敬蒙蒂-威廉姆斯/" rel="next" title="致敬蒙蒂-威廉姆斯">
-                <i class="fa fa-chevron-left"></i> 致敬蒙蒂-威廉姆斯
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/06/21/springboot项目笔记：(六) 视频截图和转码/" rel="prev" title="springboot项目笔记：(六) 视频截图和转码">
-                springboot项目笔记：(六) 视频截图和转码 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/08/21/数据库索引/" rel="prev" title="数据库索引整理">
+                数据库索引整理 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -580,7 +554,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#REST"><span class="nav-number">1.</span> <span class="nav-text">REST</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RESTful"><span class="nav-number">2.</span> <span class="nav-text">RESTful</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#HTTP动词"><span class="nav-number">2.1.</span> <span class="nav-text">HTTP动词</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#有状态与无状态"><span class="nav-number">2.2.</span> <span class="nav-text">有状态与无状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#认证机制"><span class="nav-number">2.3.</span> <span class="nav-text">认证机制</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#token-auth"><span class="nav-number">2.3.1.</span> <span class="nav-text">token auth</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#OAuth2-0"><span class="nav-number">2.3.2.</span> <span class="nav-text">OAuth2.0</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设计思想"><span class="nav-number">3.</span> <span class="nav-text">设计思想</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#时隐时现的bug"><span class="nav-number">1.</span> <span class="nav-text">时隐时现的bug</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#真相大白"><span class="nav-number">2.</span> <span class="nav-text">真相大白</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tomcat线程池配置"><span class="nav-number">3.</span> <span class="nav-text">Tomcat线程池配置</span></a></li></ol></div>
             
 
           </div>
