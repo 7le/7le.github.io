@@ -101,7 +101,7 @@
 <meta property="og:url" content="http://yoursite.com/2017/05/14/设计模式-单例模式/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="本以为单例模式就是简单的模式，非常清晰明了，今天跟老袁一聊天，让我更多的了解了它的精妙之处，以及要写出精妙的单例模式也是很有讲究。">
-<meta property="og:updated_time" content="2017-07-11T16:16:49.765Z">
+<meta property="og:updated_time" content="2017-10-11T13:45:50.877Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式--单例模式">
 <meta name="twitter:description" content="本以为单例模式就是简单的模式，非常清晰明了，今天跟老袁一聊天，让我更多的了解了它的精妙之处，以及要写出精妙的单例模式也是很有讲究。">
@@ -387,7 +387,8 @@
 <h3 id="静态内部类-懒汉模式"><a href="#静态内部类-懒汉模式" class="headerlink" title="静态内部类 懒汉模式"></a>静态内部类 懒汉模式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">public class Singleton5 &#123;</div><div class="line"></div><div class="line">    private static class LazyHolder &#123;</div><div class="line">        private static final Singleton5 INSTANCE = new Singleton5();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    private Singleton5 ()&#123;&#125;</div><div class="line"></div><div class="line">    public static final Singleton5 getInstance() &#123;</div><div class="line">        return LazyHolder.INSTANCE;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>之前的那么多方法，都是为了能保证一个线程，去得到这个示例。我们换个方式利用了classloader的机制来保证初始化instance时只有一个线程，所以也是线程安全的，同时没有性能损耗.<br>写了这么多，也把单例模式真正的整理了七七八八，果然程序员还是需要多交流，多思考~还是很希望有许多老java，来指导指导我们这些刚刚步入java大门的菜鸟们~</p>
 <h3 id="登记式单例-查找资料的时候看到的，也一起分享了，可忽略"><a href="#登记式单例-查找资料的时候看到的，也一起分享了，可忽略" class="headerlink" title="登记式单例(查找资料的时候看到的，也一起分享了，可忽略)"></a>登记式单例(查找资料的时候看到的，也一起分享了，可忽略)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line">//类似Spring里面的方法，将类名注册，下次从里面直接获取。</div><div class="line">public class Singleton6 &#123;</div><div class="line">    private static Map&lt;String,Singleton6&gt; map = new HashMap&lt;String,Singleton6&gt;();</div><div class="line">    static&#123;</div><div class="line">        Singleton6 singleton6 = new Singleton6();</div><div class="line">        map.put(singleton6.getClass().getName(), singleton6);</div><div class="line">    &#125;</div><div class="line">    //保护的默认构造子</div><div class="line">    protected Singleton6()&#123;&#125;</div><div class="line">    //静态工厂方法,返还此类惟一的实例</div><div class="line">    public static Singleton6 getInstance(String name) &#123;</div><div class="line">        if(name == null) &#123;</div><div class="line">            name = Singleton6.class.getName();</div><div class="line">            System.out.println(&quot;name == null&quot;+&quot;---&gt;name=&quot;+name);</div><div class="line">        &#125;</div><div class="line">        if(map.get(name) == null) &#123;</div><div class="line">            try &#123;</div><div class="line">                map.put(name, (Singleton6) Class.forName(name).newInstance());</div><div class="line">            &#125; catch (InstantiationException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125; catch (IllegalAccessException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125; catch (ClassNotFoundException e) &#123;</div><div class="line">                e.printStackTrace();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        return map.get(name);</div><div class="line">    &#125;</div><div class="line">    //一个示意性的商业方法</div><div class="line">    public String about() &#123;</div><div class="line">        return &quot;Hello, I am RegSingleton.&quot;;</div><div class="line">    &#125;</div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        Singleton6 singleton6 = Singleton6.getInstance(null);</div><div class="line">        System.out.println(singleton6.about());</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>最后的最后，如果大家也是懒汉，对应的demo可以直接直接点<a href="https://github.com/7le/shine-learning/tree/master/design-patterns/src/main/java/com/design/patterns/singleton" target="_blank" rel="external">单例模式</a> ^.^</p>
+<p>最后的最后，如果大家也是懒汉，对应的demo可以直接直接点<a href="https://github.com/7le/shine-learning/tree/master/design-patterns/src/main/java/com/design/patterns/singleton" target="_blank" rel="external">单例模式</a><br>完。^.^</p>
+<p><a href="http://7le.top" target="_blank" rel="external">更多精彩 戳我</a></p>
 
       
     </div>
@@ -512,7 +513,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-count">14</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -525,7 +526,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
