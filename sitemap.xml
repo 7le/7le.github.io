@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2017/10/09/%E7%8E%A9%E8%80%8DDevops%20Git+Gogs+Jenkins+Docker/</loc>
+    
+    <lastmod>2017-10-14T16:01:01.027Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2017/08/29/threadLocal%20%E5%B0%8F%E8%AE%B0/</loc>
     
     <lastmod>2017-10-11T13:46:34.014Z</lastmod>
@@ -89,13 +96,6 @@
     <loc>http://yoursite.com/2017/08/21/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B4%A2%E5%BC%95/</loc>
     
     <lastmod>2017-10-11T13:45:42.191Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2017/10/09/%E7%8E%A9%E8%80%8DDevops%20Git+Gogs+Jenkins+Docker/</loc>
-    
-    <lastmod>2017-10-11T13:45:37.364Z</lastmod>
     
   </url>
   
