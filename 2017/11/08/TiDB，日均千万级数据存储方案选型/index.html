@@ -1,0 +1,818 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="TOzgkVPl_tllvkMlt51RjNeTAmmf13oTLBbxTqhSO5E" />
+<meta name="baidu-site-verification" content="j9xl21v0cA" />
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="tidb," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="SQL -&amp;gt; NoSQL -&amp;gt; NewSql">
+<meta name="keywords" content="tidb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TiDB，日均千万级数据存储方案选型">
+<meta property="og:url" content="http://yoursite.com/2017/11/08/TiDB，日均千万级数据存储方案选型/index.html">
+<meta property="og:site_name" content="Shine">
+<meta property="og:description" content="SQL -&amp;gt; NoSQL -&amp;gt; NewSql">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/maxcompute.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/%E5%B7%A5%E5%8D%95.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidbads.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/tidb%E6%9E%B6%E6%9E%84.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/tidb%E6%9E%B6%E6%9E%84.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/inventory.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/data.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/%E4%BA%BF%E7%BA%A7%E5%88%AB%E6%B5%8B%E8%AF%95.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/%E6%B7%BB%E5%8A%A0%E5%AD%97%E6%AE%B5.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/%E5%88%A0%E9%99%A4%E5%AD%97%E6%AE%B5.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/storage.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/cpu.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/disk.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/prepare.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%95%B0%E6%8D%AE.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/select.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/insert.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/insert.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/%E6%B7%B7%E5%90%88%E8%AF%BB%E5%86%99.png">
+<meta property="og:updated_time" content="2017-11-11T14:38:11.629Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="TiDB，日均千万级数据存储方案选型">
+<meta name="twitter:description" content="SQL -&amp;gt; NoSQL -&amp;gt; NewSql">
+<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/maxcompute.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/08/TiDB，日均千万级数据存储方案选型/"/>
+
+
+
+
+
+  <title> TiDB，日均千万级数据存储方案选型 | Shine </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?467d29ed3a4fecd3a1dca094a8c5a369";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shine</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耶和华是我的牧者，我必不致缺乏。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/08/TiDB，日均千万级数据存储方案选型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="7le">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/ly.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shine">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                TiDB，日均千万级数据存储方案选型
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-08T23:05:50+08:00">
+                2017-11-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>SQL -&gt; NoSQL -&gt; NewSql</p>
+</blockquote>
+<a id="more"></a>
+<p>原先的统计系统是基于mongodb存储和计算的，在考虑到之后接入新的广告系统，数据量预估会达到日均千万级别，以及更多纬度的统计和分析，和后续更多系统的接入，而且最好需要兼顾OLAP+OLTP，故此调整储存方案已经势在必行。</p>
+<h3 id="方案对比"><a href="#方案对比" class="headerlink" title="方案对比"></a>方案对比</h3><h4 id="MaxCompute（原opds）"><a href="#MaxCompute（原opds）" class="headerlink" title="MaxCompute（原opds）"></a>MaxCompute（原opds）</h4><p>一开始是想要依托阿里的服务，这样可以减少大量的运维成本，阿里云上对此的描述为：大数据计算服务(MaxCompute,原名ODPS)是一种快速、完全托管的TB/PB级数据仓库解决方案。<br>经过测试发现，此产品适用于离线分析，对于做实时的操作速度是不能接受的。操作100W的数据，做简单的聚合操作，需要30S。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb/maxcompute.png" alt="maxcompute"></p>
+<p>且对于用户来说没有索引的概念，用户不能自己选择创建索引，都由阿里云自己实现。提工单的时候回馈，可以得到对此产品的定位。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb/%E5%B7%A5%E5%8D%95.png" alt="工单"></p>
+<p>很明显MaxCompute 能实现OLAP的需求，但是确不能满足OLTP的需求。</p>
+<h4 id="ADS-（分析型数据库）"><a href="#ADS-（分析型数据库）" class="headerlink" title="ADS  （分析型数据库）"></a>ADS  （分析型数据库）</h4><p><img src="http://oqipguzbl.bkt.clouddn.com/tidbads.png" alt="ADS"></p>
+<p>同样属于阿里云的服务，官方自己的评价，毫秒级别的查询速度，具体没有测试，因为考虑到成本过高，就放弃了。</p>
+<h4 id="TIDB-（NewSql-分布式数据库）："><a href="#TIDB-（NewSql-分布式数据库）：" class="headerlink" title="TIDB （NewSql 分布式数据库）："></a>TIDB （NewSql 分布式数据库）：</h4><blockquote>
+<p>主要优势:  </p>
+</blockquote>
+<ul>
+<li>1  支持OLAP + OLTP 满足统计系统的大方向要求，可以实现联机事务处理和联机分析处理。</li>
+<li>2  高可用:<br><img src="http://oqipguzbl.bkt.clouddn.com/tidb/tidb%E6%9E%B6%E6%9E%84.png" alt="TiDB架构"><br>tidb的分布式的架构，且根据PD 之间的调度和tikv之间raft算法，实现容灾。<br>具体文章：<a href="https://pingcap.com/tidb/blog-tidb-internal-3-zh" target="_blank" rel="external">技术内幕 - 谈调度</a>  <a href="https://pingcap.com/tikv/blog-tidb-internal-1-zh" target="_blank" rel="external">技术内幕 - 说存储</a>    </li>
+<li>3  对Mysql的兼容：基本语法跟mysql无差别，几乎无缝衔接，学习成本可以大大减少。</li>
+<li>4  支持水平扩容缩容：tidb支持自动扩容缩容，这个自动到底有多重要，用过mycat的就知道了。业务层不需要再去关心数据库的容量，不用去考虑分库分表，，扩容只需简单加机器就好，存储节点故障对业务透明，而且数据库本身具有自我修复的能力，保证数据不会丢失。</li>
+<li>5  TIDB完美兼容mysql的binlog</li>
+<li>6  目前已经可以集成spark，做复杂分析计算，后续还可以与Kubernetes整合，云服务也是大势的趋向。</li>
+</ul>
+<blockquote>
+<p>一些不足：</p>
+</blockquote>
+<ul>
+<li>1 目前刚刚GA，文档除了官方的之外毕竟匮乏，容易踩坑，不过github社区活跃，可以去提issues。</li>
+<li>2 对于服务器要求相对较高，磁盘需要SSD才能保证性能的卓越。</li>
+</ul>
+<p>官网文档中mysql 和 tidb 的对比图。<br><img src="http://oqipguzbl.bkt.clouddn.com/tidb/tidb%E6%9E%B6%E6%9E%84.png" alt="TiDB架构"></p>
+<h3 id="集群部署-—-ansible方式部署"><a href="#集群部署-—-ansible方式部署" class="headerlink" title="集群部署 — ansible方式部署"></a>集群部署 — ansible方式部署</h3><p>具体可以看<a href="https://pingcap.com/doc-ansible-deployment-zh" target="_blank" rel="external">官方部署文档</a><br>按照流程便可以完成, 文档中有服务器要求， 需要注意的是 保证机器<code>entos7.3</code>以上， 且<code>文件系统推荐 ext4</code>，且服务器之间要配置<code>ssh免密登录</code>。当前是部署的最新版本是ga版本的1.0.1，ansile支持滚动升级，详见官方文档。</p>
+<p>如果在执行 <code>ansible-playbook bootstrap.yml</code> 命令的时候出现校准机器配置之类的error，<br>例如磁盘告警 <code>dd: the write speed of tikv deploy_dir disk is too slow: MB/s &lt; 15 MB/s</code><br>可以修改 <code>inventory.ini</code> 中的参数为<code>false</code>。<br><img src="http://oqipguzbl.bkt.clouddn.com/tidb/inventory.png" alt="inventory.ini"></p>
+<p>如果需要配置数据data目录，可以在如下文件中配置<br><img src="http://oqipguzbl.bkt.clouddn.com/tidb/data.png" alt="data目录"></p>
+<h3 id="TiDB-测评"><a href="#TiDB-测评" class="headerlink" title="TiDB 测评"></a>TiDB 测评</h3><blockquote>
+<p>TIDB 集群情况：<br>TIDB+PD    同一台服务器  4核16G  disk:SSD<br>TIKV*3     3台           4核16G  disk:SSD </p>
+</blockquote>
+<p>在亿级别数据量的单表（100多G）下一些简单测评：<br>group by + 简单聚合查询：<br>          <img src="http://oqipguzbl.bkt.clouddn.com/tidb/%E4%BA%BF%E7%BA%A7%E5%88%AB%E6%B5%8B%E8%AF%95.png" alt="简单聚合查询"><br>添加字段：<br>          <img src="http://oqipguzbl.bkt.clouddn.com/tidb/%E6%B7%BB%E5%8A%A0%E5%AD%97%E6%AE%B5.png" alt="添加字段"><br>删除字段：<br>          <img src="http://oqipguzbl.bkt.clouddn.com/tidb/%E5%88%A0%E9%99%A4%E5%AD%97%E6%AE%B5.png" alt="删除字段"><br>删除索引：<br>          <img src="http://oqipguzbl.bkt.clouddn.com/tidb/%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95.png" alt="删除索引"></p>
+<p>添加索引: 比较慢，亿级别单边需要大概1.5小时左右。</p>
+<p>注意：TiDB 为了保证DDL能实现Online<br>DDL（在执行的时候不会锁表，仍能执行DML），DDL的任务为串行，当时遇到的一个问题:<a href="https://github.com/pingcap/tidb/issues/4986" target="_blank" rel="external">github-issues</a> 一些问题可以直接去提issues。</p>
+<p>性能监控tidb提供了garafan， 路径为Your_IP:3000   帐号 admin  密码 admin。<br>         <img src="http://oqipguzbl.bkt.clouddn.com/tidb/storage.png" alt="storage"><br>CPU的监控：<br>         <img src="http://oqipguzbl.bkt.clouddn.com/tidb/cpu.png" alt="CPU"><br>磁盘的一些参数：经测试tidb性能跟磁盘读写能力关系很大，一开始比较差的服务器中，磁盘IO成为主要瓶颈。<br>         <img src="http://oqipguzbl.bkt.clouddn.com/tidb/disk.png" alt="disk"></p>
+<p>使用sysbeanch压测的结果:  prepare 1000W的数据量进行测试。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">time sysbench oltp.lua --db-driver=mysql --oltp-table-size=10000000 --mysql-host=127.0.0.1 --mysql-port=4000 --mysql-user=root --mysql-password=58945894 --mysql-db=test prepare</div></pre></td></tr></table></figure></p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb/prepare.png" alt="prepare"></p>
+<p>查看数据库<br><img src="http://oqipguzbl.bkt.clouddn.com/tidb/%E6%95%B0%E6%8D%AE%E5%BA%93%E6%95%B0%E6%8D%AE.png" alt="查看数据库"></p>
+<p>测试select性能：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">time sysbench select.lua --db-driver=mysql --oltp-table-size=10000000 --mysql-host=127.0.0.1 --mysql-port=4000 --mysql-user=root --mysql-password=58945894 --mysql-db=test --events=10000000 --report-interval=5 --threads=16 --time=60 run</div></pre></td></tr></table></figure></p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb/select.png" alt="select"></p>
+<blockquote>
+<p>16线程，select QPS 1.7万  </p>
+</blockquote>
+<p>测试insert性能：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">time sysbench insert.lua --db-driver=mysql --oltp-table-size=10000000 --mysql-host=127.0.0.1 --mysql-port=4000 --mysql-user=root --mysql-password=58945894 --mysql-db=test --events=10000000 --report-interval=5 --threads=16 --time=60 run</div></pre></td></tr></table></figure></p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb/insert.png" alt="insert"></p>
+<blockquote>
+<p>16线程，insert QPS 0.5万    </p>
+</blockquote>
+<p>测试update性能:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">time sysbench  update_index.lua --db-driver=mysql --oltp-table-size=10000000 --mysql-host=127.0.0.1 --mysql-port=4000 --mysql-user=root --mysql-password=58945894 --mysql-db=test--events=10000000 --report-interval=5 --threads=16 --time=60 run</div></pre></td></tr></table></figure></p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb/insert.png" alt="update"></p>
+<blockquote>
+<p>16线程，update QPS 0.4万   </p>
+</blockquote>
+<p>测试混合性能:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">time sysbench oltp.lua --db-driver=mysql --oltp-table-size=10000000  --mysql-host=127.0.0.1 --mysql-port=4000 --mysql-user=root --mysql-password=58945894  --mysql-db=test --events=10000000 --report-interval=5 --threads=16 --time=60 run</div></pre></td></tr></table></figure></p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb/%E6%B7%B7%E5%90%88%E8%AF%BB%E5%86%99.png" alt="update"></p>
+<blockquote>
+<p>16线程，混合读写 QPS 0.8万</p>
+</blockquote>
+<p>其他人不同的配置下的<a href="https://zhuanlan.zhihu.com/p/30572262" target="_blank" rel="external">测评</a></p>
+<p>最后选择的方案是TiDB，关于TiDB后续还有什么值得分享还会继续更新。本人才疏学浅，希望大家可以多多指教~</p>
+<p>完。^.^</p>
+<p><a href="http://7le.top" target="_blank" rel="external">更多精彩 戳我</a>          </p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/tidb/" rel="tag"># tidb</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/09/玩耍Devops Git+Gogs+Jenkins+Docker/" rel="prev" title="玩耍Devops Git+Gogs+Jenkins+Docker">
+                玩耍Devops Git+Gogs+Jenkins+Docker <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/ly.jpg"
+               alt="7le" />
+          <p class="site-author-name" itemprop="name">7le</p>
+           
+              <p class="site-description motion-element" itemprop="description">我只有一件事，就是忘记背后，努力面前的</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/7le" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://palmerye.online" title="palmerye" target="_blank">palmerye</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案对比"><span class="nav-number">1.</span> <span class="nav-text">方案对比</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MaxCompute（原opds）"><span class="nav-number">1.1.</span> <span class="nav-text">MaxCompute（原opds）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ADS-（分析型数据库）"><span class="nav-number">1.2.</span> <span class="nav-text">ADS  （分析型数据库）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TIDB-（NewSql-分布式数据库）："><span class="nav-number">1.3.</span> <span class="nav-text">TIDB （NewSql 分布式数据库）：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集群部署-—-ansible方式部署"><span class="nav-number">2.</span> <span class="nav-text">集群部署 — ansible方式部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TiDB-测评"><span class="nav-number">3.</span> <span class="nav-text">TiDB 测评</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+<div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">7le</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io" rel="external nofollow">Hexo</a>
+</div>
+
+<span id="busuanzi_container_site_pv">
+  PV <span id="busuanzi_value_site_pv"></span>
+</span>
+<span id="busuanzi_container_site_uv">
+  &nbsp&nbsp | &nbsp&nbsp UV <span id="busuanzi_value_site_uv"></span>
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

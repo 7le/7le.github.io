@@ -4,8 +4,25 @@
 
     
   <url>
+    <loc>http://yoursite.com/2017/11/08/TiDB%EF%BC%8C%E6%97%A5%E5%9D%87%E5%8D%83%E4%B8%87%E7%BA%A7%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E9%80%89%E5%9E%8B/</loc>
+    <lastmod>2017-11-11T14:38:11.629Z</lastmod>
+    <data>
+        <display>
+        <title>TiDB，日均千万级数据存储方案选型</title>
+        <pubTime>2017-11-08T15:05:50.000Z</pubTime>
+        
+        <tag>tidb</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2017/10/09/%E7%8E%A9%E8%80%8DDevops%20Git+Gogs+Jenkins+Docker/</loc>
-    <lastmod>2017-10-14T16:01:01.027Z</lastmod>
+    <lastmod>2017-10-14T16:41:11.948Z</lastmod>
     <data>
         <display>
         <title>玩耍Devops Git+Gogs+Jenkins+Docker</title>
