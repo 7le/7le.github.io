@@ -4,6 +4,23 @@
 
     
   <url>
+    <loc>http://yoursite.com/2017/06/19/springboot%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%EF%BC%9A(%E4%BA%94)%20%E9%83%A8%E7%BD%B2%E5%92%8C%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95/</loc>
+    <lastmod>2017-12-04T11:41:31.915Z</lastmod>
+    <data>
+        <display>
+        <title>springboot项目笔记：(五) 部署和远程调试</title>
+        <pubTime>2017-06-19T15:12:35.000Z</pubTime>
+        
+        <tag>springboot</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://yoursite.com/2017/11/08/TiDB%EF%BC%8C%E6%97%A5%E5%9D%87%E5%8D%83%E4%B8%87%E7%BA%A7%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E6%96%B9%E6%A1%88%E9%80%89%E5%9E%8B/</loc>
     <lastmod>2017-11-11T14:38:11.629Z</lastmod>
     <data>
@@ -78,23 +95,6 @@
         <display>
         <title>springboot项目笔记：(六) 视频截图和转码</title>
         <pubTime>2017-06-21T15:50:08.000Z</pubTime>
-        
-        <tag>springboot</tag>
-         
-         
-           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://yoursite.com/2017/06/19/springboot%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B0%EF%BC%9A(%E4%BA%94)%20%E9%83%A8%E7%BD%B2%E5%92%8C%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95/</loc>
-    <lastmod>2017-10-11T13:46:22.256Z</lastmod>
-    <data>
-        <display>
-        <title>springboot项目笔记：(五) 部署和远程调试</title>
-        <pubTime>2017-06-19T15:12:35.000Z</pubTime>
         
         <tag>springboot</tag>
          
