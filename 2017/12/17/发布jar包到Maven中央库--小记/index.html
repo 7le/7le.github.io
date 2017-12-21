@@ -108,7 +108,7 @@
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/maven-manager2.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/maven-gpg-addKey.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/maven-search.png">
-<meta property="og:updated_time" content="2017-12-17T16:14:57.416Z">
+<meta property="og:updated_time" content="2017-12-21T14:37:13.776Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="发布jar包到Maven中央库--小记">
 <meta name="twitter:description" content="最近项目选用了vert.x，故此简单的封装了一下，好达到从spring体系到vert.x平滑过度，减少其他人的学习成本，而后发布到Maven中央库，记录一下~">
@@ -365,7 +365,7 @@
 <p>按着步骤，先close 再release。<img src="http://oqipguzbl.bkt.clouddn.com/maven-manager2.png" alt="manager2"></p>
 <p>这里在close的会报一个错误，错误如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">typeId	signature-staging</div><div class="line">failureMessage	No public key: Key with id: (your_id) was not able to be located on http://pgp.mit.edu:11371/. Upload your public key and try the operation again.</div><div class="line">failureMessage	No public key: Key with id: (your_id) was not able to be located on http://keyserver.ubuntu.com:11371/. Upload your public key and try the operation again.</div><div class="line">failureMessage	No public key: Key with id: (your_id) was not able to be located on http://pool.sks-keyservers.net:11371/. Upload your public key and try the operation again.</div><div class="line">failureMessage	No public key: Key with id: (your_id) was not able to be located on http://pgp.mit.edu:11371/. Upload your public key and try the operation again.</div><div class="line">.....</div></pre></td></tr></table></figure></p>
 <p>这里将your_id，上传到第三方的key验证库，如下<br><img src="http://oqipguzbl.bkt.clouddn.com/maven-gpg-addKey.png" alt="gpg-addKey"></p>
-<p>然后再等一段时间，就可以在<a href="http://search.maven.org" target="_blank" rel="external">Maven中央仓库</a>搜到了。正式版本和SHAPSHOT大家可以自己选择~</p>
+<p>然后再等一段时间，就可以在<a href="http://search.maven.org" target="_blank" rel="external">Maven中央仓库</a>搜到了。正式版本和SNAPSHOT大家可以自己选择~</p>
 <p><img src="http://oqipguzbl.bkt.clouddn.com/maven-search.png" alt="search"></p>
 <p>如果你也需要，可以戳<a href="https://github.com/7le/vertx-shine" target="_blank" rel="external">vertx-shine-web</a><br>完。^.^</p>
 <p><a href="http://7le.top" target="_blank" rel="external">更多精彩 戳我</a></p>
