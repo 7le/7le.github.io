@@ -121,10 +121,7 @@
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/insert.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/insert.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/%E6%B7%B7%E5%90%88%E8%AF%BB%E5%86%99.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-1.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-2.jpg">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-3.png">
-<meta property="og:updated_time" content="2018-01-03T16:02:39.432Z">
+<meta property="og:updated_time" content="2018-01-04T15:48:17.832Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TiDB，日均千万级数据存储方案选型">
 <meta name="twitter:description" content="SQL -&amp;gt; NoSQL -&amp;gt; NewSql">
@@ -428,19 +425,7 @@
 <p>16线程，混合读写 QPS 0.8万</p>
 </blockquote>
 <p>其他人不同的配置下的<a href="https://zhuanlan.zhihu.com/p/30572262" target="_blank" rel="external">测评</a></p>
-<p>最后选择的方案是TiDB，关于TiDB后续还有什么值得分享还会继续更新。本人才疏学浅，希望大家可以多多指教~</p>
-<h3 id="TiDB-的日常"><a href="#TiDB-的日常" class="headerlink" title="TiDB 的日常"></a>TiDB 的日常</h3><blockquote>
-<p>TiDB也使用了一段时间，记录一些日常，防止大家也踩到同样的坑~</p>
-</blockquote>
-<h4 id="raft-log"><a href="#raft-log" class="headerlink" title="raft-log"></a>raft-log</h4><p>目前Tidb分别部署在生产环境和测试环境，生产环境的是在阿里云，而测试环境是在公司的机房。周末的时候，机房不知道为啥断过电，什么都不知道的我，周一来到公司发现测试环境的Tidb挂了（这是肯定的，因为停过电嘛~），然后就是怎么都启动不了。一查日志发现：</p>
-<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-1.png" alt="tidb-daily-1-1"></p>
-<p>经过分析，得出原因应该是raft在做副本的时候出了问题。测试环境是3个kv示例，那每条数据将会有2个node去持有。node1已经在raft-log写入磁盘，而node2在写入时，发生了断电，node1，node2同时挂掉导致raft日志出错。</p>
-<p>避免这样的问题，可以设置参数，不过这样就将原来的异步变为了同步，会降低性能。</p>
-<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-2.jpg" alt="tidb-daily-1-2"></p>
-<p>联系了Tidb的开发人员，处理该情况的工具还没有完善（该问题已有issues，后续就会处理），没办法删掉出错的数据，因为测试环境的数据量比较大，迁移出来太费时，还好数据不是很重要，清理了数据就可以启动了。当时Tidb的版本如下：</p>
-<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-3.png" alt="tidb-daily-1-3"></p>
-<p>所以部署在测试环境的小伙伴们可以考虑将参数改为true，不然遇到这问题就头痛喽~</p>
-<p>完。^.^</p>
+<p>最后选择的方案是TiDB，关于TiDB后续还有什么值得分享还会继续更新。本人才疏学浅，希望大家可以多多指教~<br>完。^.^</p>
 <p><a href="http://7le.top" target="_blank" rel="external">更多精彩 戳我</a>          </p>
 
       
@@ -570,7 +555,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -643,7 +628,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案对比"><span class="nav-number">1.</span> <span class="nav-text">方案对比</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MaxCompute（原opds）"><span class="nav-number">1.1.</span> <span class="nav-text">MaxCompute（原opds）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ADS-（分析型数据库）"><span class="nav-number">1.2.</span> <span class="nav-text">ADS  （分析型数据库）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TIDB-（NewSql-分布式数据库）："><span class="nav-number">1.3.</span> <span class="nav-text">TIDB （NewSql 分布式数据库）：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集群部署-—-ansible方式部署"><span class="nav-number">2.</span> <span class="nav-text">集群部署 — ansible方式部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TiDB-测评"><span class="nav-number">3.</span> <span class="nav-text">TiDB 测评</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TiDB-的日常"><span class="nav-number">4.</span> <span class="nav-text">TiDB 的日常</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#raft-log"><span class="nav-number">4.1.</span> <span class="nav-text">raft-log</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案对比"><span class="nav-number">1.</span> <span class="nav-text">方案对比</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MaxCompute（原opds）"><span class="nav-number">1.1.</span> <span class="nav-text">MaxCompute（原opds）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ADS-（分析型数据库）"><span class="nav-number">1.2.</span> <span class="nav-text">ADS  （分析型数据库）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TIDB-（NewSql-分布式数据库）："><span class="nav-number">1.3.</span> <span class="nav-text">TIDB （NewSql 分布式数据库）：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集群部署-—-ansible方式部署"><span class="nav-number">2.</span> <span class="nav-text">集群部署 — ansible方式部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TiDB-测评"><span class="nav-number">3.</span> <span class="nav-text">TiDB 测评</span></a></li></ol></div>
             
 
           </div>
