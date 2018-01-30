@@ -1,0 +1,764 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="TOzgkVPl_tllvkMlt51RjNeTAmmf13oTLBbxTqhSO5E" />
+<meta name="baidu-site-verification" content="j9xl21v0cA" />
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="maven," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近项目选用了vert.x，故此简单的封装了一下，好达到从spring体系到vert.x平滑过度，减少其他人的学习成本，而后发布到Maven中央库，记录一下~">
+<meta name="keywords" content="maven">
+<meta property="og:type" content="article">
+<meta property="og:title" content="发布jar包到Maven中央库--小记">
+<meta property="og:url" content="http://yoursite.com/2017/12/17/发布jar包到Maven中央库--小记/index.html">
+<meta property="og:site_name" content="Shine">
+<meta property="og:description" content="最近项目选用了vert.x，故此简单的封装了一下，好达到从spring体系到vert.x平滑过度，减少其他人的学习成本，而后发布到Maven中央库，记录一下~">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/maven-issus.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/maven-gpg-version.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/maven-operation.jpg">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/maven-manager.jpg">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/maven-manager2.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/maven-gpg-addKey.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/maven-search.png">
+<meta property="og:updated_time" content="2018-01-30T16:03:22.963Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="发布jar包到Maven中央库--小记">
+<meta name="twitter:description" content="最近项目选用了vert.x，故此简单的封装了一下，好达到从spring体系到vert.x平滑过度，减少其他人的学习成本，而后发布到Maven中央库，记录一下~">
+<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/maven-issus.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/17/发布jar包到Maven中央库--小记/"/>
+
+
+
+
+
+  <title> 发布jar包到Maven中央库--小记 | Shine </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?467d29ed3a4fecd3a1dca094a8c5a369";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shine</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耶和华是我的牧者，我必不致缺乏。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/17/发布jar包到Maven中央库--小记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="7le">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/ly.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shine">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                发布jar包到Maven中央库--小记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-17T21:29:18+08:00">
+                2017-12-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>最近项目选用了vert.x，故此简单的封装了一下，好达到从spring体系到vert.x平滑过度，减少其他人的学习成本，而后发布到Maven中央库，记录一下~</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="create-issues"><a href="#create-issues" class="headerlink" title="create issues"></a>create issues</h3><p>首先需要在<a href="https://issues.sonatype.org/secure/Dashboard.jspa" target="_blank" rel="noopener">sonatype</a>中创建issues，没有帐号的需要注册一下（帐号密码后续会有用到）。</p>
+<p>类似如图：<img src="http://oqipguzbl.bkt.clouddn.com/maven-issus.png" alt="issues"></p>
+<p>这里有个注意的点，这个group Id需要自己有个域名或者使用github的，类似io.github.7le or com.github.7le。这里我自己买了个域名，价格动人。当issue的Status变为RESOLVED，就代表已经通过了，如果有什么问题，会有留言告诉你如何修改。</p>
+<h3 id="gpg-amp-maven"><a href="#gpg-amp-maven" class="headerlink" title="gpg &amp; maven"></a>gpg &amp; maven</h3><p>Windows的话可以到<a href="https://www.gpg4win.org/download.html" target="_blank" rel="noopener">gpg</a>下载gpg4win。Linux可以通过yum install gpg命令安装gpg。</p>
+<p>我们可以通过<code>gpg --version</code>,来查看安装的gpg<br><img src="http://oqipguzbl.bkt.clouddn.com/maven-gpg-version.png" alt="gpg-version"></p>
+<p>执行<code>gpg --gen-key</code> 按照如下的命令设置好你的名字，邮箱。不过输入Passphrase的值需要记住，这个相当于密钥的密码</p>
+<p>然后设置maven的配置，在<code>setting.xml</code><br>需要设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;servers&gt;</span><br><span class="line">  &lt;server&gt;</span><br><span class="line">    &lt;id&gt;sonatype-nexus-snapshots&lt;/id&gt;</span><br><span class="line">    &lt;username&gt;Sonatype网站的账号&lt;/username&gt;</span><br><span class="line">    &lt;password&gt;Sonatype网站的密码&lt;/password&gt;</span><br><span class="line">  &lt;/server&gt;</span><br><span class="line">  &lt;server&gt;</span><br><span class="line">    &lt;id&gt;sonatype-nexus-staging&lt;/id&gt;</span><br><span class="line">    &lt;username&gt;Sonatype网站的账号&lt;/username&gt;</span><br><span class="line">    &lt;password&gt;Sonatype网站的密码&lt;/password&gt;</span><br><span class="line">  &lt;/server&gt;</span><br><span class="line">&lt;/servers&gt;</span><br></pre></td></tr></table></figure></p>
+<p>以及<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;profile&gt;</span><br><span class="line">	&lt;id&gt;shine&lt;/id&gt;</span><br><span class="line">	&lt;distributionManagement&gt;</span><br><span class="line">        &lt;snapshotRepository&gt;</span><br><span class="line">            &lt;id&gt;oss&lt;/id&gt;</span><br><span class="line">            &lt;url&gt;https://oss.sonatype.org/content/repositories/snapshots/&lt;/url&gt;</span><br><span class="line">        &lt;/snapshotRepository&gt;</span><br><span class="line">        &lt;repository&gt;</span><br><span class="line">            &lt;id&gt;oss&lt;/id&gt;</span><br><span class="line">            &lt;url&gt;https://oss.sonatype.org/service/local/staging/deploy/maven2/&lt;/url&gt;</span><br><span class="line">        &lt;/repository&gt;</span><br><span class="line">    &lt;/distributionManagement&gt;</span><br><span class="line">&lt;/profile&gt;</span><br></pre></td></tr></table></figure></p>
+<p>在自己的<code>pom.xml</code>中添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">&lt;parent&gt;</span><br><span class="line">    &lt;groupId&gt;org.sonatype.oss&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;oss-parent&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;7&lt;/version&gt;</span><br><span class="line">&lt;/parent&gt;</span><br><span class="line"></span><br><span class="line">....</span><br><span class="line"></span><br><span class="line">&lt;licenses&gt;</span><br><span class="line">    &lt;license&gt;</span><br><span class="line">        &lt;name&gt;The Apache Software License, Version 2.0&lt;/name&gt;</span><br><span class="line">        &lt;url&gt;http://www.apache.org/licenses/LICENSE-2.0.txt&lt;/url&gt;</span><br><span class="line">        &lt;distribution&gt;repo&lt;/distribution&gt;</span><br><span class="line">    &lt;/license&gt;</span><br><span class="line">&lt;/licenses&gt;</span><br><span class="line">&lt;scm&gt;</span><br><span class="line">    &lt;tag&gt;master&lt;/tag&gt;</span><br><span class="line">    &lt;url&gt;https://github.com/7le/vertx-shine&lt;/url&gt;</span><br><span class="line">    &lt;connection&gt;scm:git:https://github.com/7le/vertx-shine.git&lt;/connection&gt;</span><br><span class="line">    &lt;developerConnection&gt;scm:git:https://github.com/7le/vertx-shine.git&lt;/developerConnection&gt;</span><br><span class="line">&lt;/scm&gt;</span><br><span class="line">&lt;developers&gt;</span><br><span class="line">    &lt;developer&gt;</span><br><span class="line">        &lt;name&gt;7le&lt;/name&gt;</span><br><span class="line">        &lt;email&gt;silk.heqian@gmail.com&lt;/email&gt;</span><br><span class="line">        &lt;organization&gt;ArkStack&lt;/organization&gt;</span><br><span class="line">        &lt;organizationUrl&gt;7le.top&lt;/organizationUrl&gt;</span><br><span class="line">    &lt;/developer&gt;</span><br><span class="line">&lt;/developers&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="deploy-amp-release"><a href="#deploy-amp-release" class="headerlink" title="deploy &amp; release"></a>deploy &amp; release</h3><p>一切就绪后，在命令行输入<br><code>mvn clean deploy -P sonatype-oss-release -Darguments=&quot;gpg.passphrase=设置的Passphrase&quot;</code><br><img src="http://oqipguzbl.bkt.clouddn.com/maven-operation.jpg" alt="operation"></p>
+<p>成功之后可以到<a href="https://oss.sonatype.org/index.html#stagingRepositories" target="_blank" rel="noopener">Neuxs</a>查看发布好的jar包：<br><img src="http://oqipguzbl.bkt.clouddn.com/maven-manager.jpg" alt="manager"></p>
+<p>按着步骤，先close 再release。<img src="http://oqipguzbl.bkt.clouddn.com/maven-manager2.png" alt="manager2"></p>
+<p>这里在close的会报一个错误，错误如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typeId	signature-staging</span><br><span class="line">failureMessage	No public key: Key with id: (your_id) was not able to be located on http://pgp.mit.edu:11371/. Upload your public key and try the operation again.</span><br><span class="line">failureMessage	No public key: Key with id: (your_id) was not able to be located on http://keyserver.ubuntu.com:11371/. Upload your public key and try the operation again.</span><br><span class="line">failureMessage	No public key: Key with id: (your_id) was not able to be located on http://pool.sks-keyservers.net:11371/. Upload your public key and try the operation again.</span><br><span class="line">failureMessage	No public key: Key with id: (your_id) was not able to be located on http://pgp.mit.edu:11371/. Upload your public key and try the operation again.</span><br><span class="line">.....</span><br></pre></td></tr></table></figure></p>
+<p>这里将your_id，上传到第三方的key验证库，如下<br><img src="http://oqipguzbl.bkt.clouddn.com/maven-gpg-addKey.png" alt="gpg-addKey"></p>
+<p>然后再等一段时间，就可以在<a href="http://search.maven.org" target="_blank" rel="noopener">Maven中央仓库</a>搜到了。正式版本和SNAPSHOT大家可以自己选择~</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/maven-search.png" alt="search"></p>
+<p>如果你也需要，可以戳<a href="https://github.com/7le/vertx-shine" target="_blank" rel="noopener">vertx-shine-web</a><br>完。^.^</p>
+<p><a href="http://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/maven/" rel="tag"># maven</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/08/TiDB，日均千万级数据存储方案选型/" rel="next" title="TiDB，日均千万级数据存储方案选型">
+                <i class="fa fa-chevron-left"></i> TiDB，日均千万级数据存储方案选型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/04/Tidb的日常/" rel="prev" title="Tidb的日常">
+                Tidb的日常 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/ly.jpg"
+               alt="7le" />
+          <p class="site-author-name" itemprop="name">7le</p>
+           
+              <p class="site-description motion-element" itemprop="description">我只有一件事，就是忘记背后，努力面前的</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/7le" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://palmer.arkstack.cn" title="palmerye" target="_blank">palmerye</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#create-issues"><span class="nav-number">1.</span> <span class="nav-text">create issues</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gpg-amp-maven"><span class="nav-number">2.</span> <span class="nav-text">gpg &amp; maven</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#deploy-amp-release"><span class="nav-number">3.</span> <span class="nav-text">deploy &amp; release</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+<div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">7le</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io" rel="external nofollow">Hexo</a>
+</div>
+
+<span id="busuanzi_container_site_pv">
+  PV <span id="busuanzi_value_site_pv"></span>
+</span>
+<span id="busuanzi_container_site_uv">
+  &nbsp&nbsp | &nbsp&nbsp UV <span id="busuanzi_value_site_uv"></span>
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

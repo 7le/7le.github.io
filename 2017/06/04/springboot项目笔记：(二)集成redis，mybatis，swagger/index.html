@@ -1,0 +1,764 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="TOzgkVPl_tllvkMlt51RjNeTAmmf13oTLBbxTqhSO5E" />
+<meta name="baidu-site-verification" content="j9xl21v0cA" />
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="springboot," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在搭建完springboot项目后，接下来就是要集成一些好东西。接下来本文中会集成redis，mybatis，swagger，pagehelper。">
+<meta name="keywords" content="springboot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springboot项目笔记：(二)集成redis，mybatis，swagger">
+<meta property="og:url" content="http://yoursite.com/2017/06/04/springboot项目笔记：(二)集成redis，mybatis，swagger/index.html">
+<meta property="og:site_name" content="Shine">
+<meta property="og:description" content="在搭建完springboot项目后，接下来就是要集成一些好东西。接下来本文中会集成redis，mybatis，swagger，pagehelper。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-2-1.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-2-2.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-2-3.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-2-4.png">
+<meta property="og:updated_time" content="2018-01-30T16:03:22.963Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="springboot项目笔记：(二)集成redis，mybatis，swagger">
+<meta name="twitter:description" content="在搭建完springboot项目后，接下来就是要集成一些好东西。接下来本文中会集成redis，mybatis，swagger，pagehelper。">
+<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-2-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/06/04/springboot项目笔记：(二)集成redis，mybatis，swagger/"/>
+
+
+
+
+
+  <title> springboot项目笔记：(二)集成redis，mybatis，swagger | Shine </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?467d29ed3a4fecd3a1dca094a8c5a369";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shine</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耶和华是我的牧者，我必不致缺乏。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/04/springboot项目笔记：(二)集成redis，mybatis，swagger/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="7le">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/ly.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shine">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                springboot项目笔记：(二)集成redis，mybatis，swagger
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-04T22:42:55+08:00">
+                2017-06-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>在搭建完springboot项目后，接下来就是要集成一些好东西。接下来本文中会集成redis，mybatis，swagger，pagehelper。</p>
+</blockquote>
+<a id="more"></a>
+<p>先看下项目结构<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-2-1.png" alt="path"></p>
+<h3 id="集成redis"><a href="#集成redis" class="headerlink" title="集成redis"></a>集成redis</h3><p>Redis作为一个高性能的key-value数据库，相较Memcache有了更加丰富的数据类型，更加迷人的就是redis的持久化，一般有RDB和AOF两种。RDB是记录一段时间内的操作，而AOF可以实现每次操作都持久化。这里就不详细介绍redis，直奔正题。 </p>
+<h4 id="引入依赖"><a href="#引入依赖" class="headerlink" title="引入依赖"></a>引入依赖</h4><p>在pom.xml引入redis相应的依赖，（不清楚的可以看上一篇文章的pom.xml）</p>
+<h4 id="添加Redis相关配置"><a href="#添加Redis相关配置" class="headerlink" title="添加Redis相关配置"></a>添加Redis相关配置</h4><p>在application.properties中添加：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#redis</span><br><span class="line">spring.redis.host=XXX.XXX.XXX.XXX</span><br><span class="line">spring.redis.password=XXXXXXXX</span><br><span class="line">spring.redis.port=XXX</span><br><span class="line">spring.redis.pool.max-idle=100</span><br><span class="line">spring.redis.pool.min-idle=1</span><br><span class="line">spring.redis.pool.max-active=1000</span><br><span class="line">spring.redis.pool.max-wait=-1</span><br></pre></td></tr></table></figure></p>
+<h4 id="Redis配置类"><a href="#Redis配置类" class="headerlink" title="Redis配置类"></a>Redis配置类</h4><p>创建RedisConfig，相应的代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Redis配置类</span><br><span class="line"> * Created by 7le on 2017/5/20 0020.</span><br><span class="line"> */</span><br><span class="line">@Configuration</span><br><span class="line">@EnableCaching</span><br><span class="line">public class RedisConfig extends CachingConfigurationSelector&#123;</span><br><span class="line">    /**</span><br><span class="line">     * 生成key的策略</span><br><span class="line">     *</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    @Bean</span><br><span class="line">    public KeyGenerator keyGenerator() &#123;</span><br><span class="line">        return new KeyGenerator() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public Object generate(Object target, Method method, Object... params) &#123;</span><br><span class="line">                StringBuilder sb = new StringBuilder();</span><br><span class="line">                sb.append(target.getClass().getName());</span><br><span class="line">                sb.append(method.getName());</span><br><span class="line">                for (Object obj : params) &#123;</span><br><span class="line">                    sb.append(obj.toString());</span><br><span class="line">                &#125;</span><br><span class="line">                return sb.toString();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 管理缓存</span><br><span class="line">     *</span><br><span class="line">     * @param redisTemplate</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    @SuppressWarnings(&quot;rawtypes&quot;)</span><br><span class="line">    @Bean</span><br><span class="line">    public CacheManager cacheManager(RedisTemplate redisTemplate) &#123;</span><br><span class="line">        RedisCacheManager rcm = new RedisCacheManager(redisTemplate);</span><br><span class="line">        //设置缓存过期时间</span><br><span class="line">        rcm.setDefaultExpiration(60*24);//秒</span><br><span class="line">        //设置value的过期时间</span><br><span class="line">        //Map&lt;String,Long&gt; map=new HashMap();</span><br><span class="line">        //map.put(&quot;test&quot;,60L);</span><br><span class="line">        //rcm.setExpires(map);</span><br><span class="line">        return rcm;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * RedisTemplate配置</span><br><span class="line">     * @param factory</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    @Bean</span><br><span class="line">    public RedisTemplate&lt;String, String&gt; redisTemplate(RedisConnectionFactory factory) &#123;</span><br><span class="line">        StringRedisTemplate template = new StringRedisTemplate(factory);</span><br><span class="line">        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);</span><br><span class="line">        ObjectMapper om = new ObjectMapper();</span><br><span class="line">        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);</span><br><span class="line">        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);</span><br><span class="line">        jackson2JsonRedisSerializer.setObjectMapper(om);</span><br><span class="line">        template.setValueSerializer(jackson2JsonRedisSerializer);</span><br><span class="line">        template.afterPropertiesSet();</span><br><span class="line">        return template;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="简单的RedisUtil"><a href="#简单的RedisUtil" class="headerlink" title="简单的RedisUtil"></a>简单的RedisUtil</h4><p>配置完后为了方便使用，抽象出一些简单的公用方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * redis cache 工具类</span><br><span class="line"> * Created by 7le on 2017/5/20 0020.</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">@Component</span><br><span class="line">public class RedisUtil &#123;</span><br><span class="line">    @SuppressWarnings(&quot;rawtypes&quot;)</span><br><span class="line">    @Autowired</span><br><span class="line">    private RedisTemplate redisTemplate;</span><br><span class="line">    /**</span><br><span class="line">     * 批量删除对应的value</span><br><span class="line">     *</span><br><span class="line">     * @param keys</span><br><span class="line">     */</span><br><span class="line">    public void remove(final String... keys) &#123;</span><br><span class="line">        for (String key : keys) &#123;</span><br><span class="line">            remove(key);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 批量删除key</span><br><span class="line">     *</span><br><span class="line">     * @param pattern</span><br><span class="line">     */</span><br><span class="line">    public void removePattern(final String pattern) &#123;</span><br><span class="line">        Set&lt;Serializable&gt; keys = redisTemplate.keys(pattern);</span><br><span class="line">        if (keys.size() &gt; 0)</span><br><span class="line">            redisTemplate.delete(keys);</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 删除对应的value</span><br><span class="line">     *</span><br><span class="line">     * @param key</span><br><span class="line">     */</span><br><span class="line">    public void remove(final String key) &#123;</span><br><span class="line">        if (exists(key)) &#123;</span><br><span class="line">            redisTemplate.delete(key);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 判断缓存中是否有对应的value</span><br><span class="line">     *</span><br><span class="line">     * @param key</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public boolean exists(final String key) &#123;</span><br><span class="line">        return redisTemplate.hasKey(key);</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 读取缓存</span><br><span class="line">     *</span><br><span class="line">     * @param key</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public Object get(final String key) &#123;</span><br><span class="line">        Object result = null;</span><br><span class="line">        ValueOperations&lt;Serializable, Object&gt; operations = redisTemplate.opsForValue();</span><br><span class="line">        result = operations.get(key);</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 写入缓存</span><br><span class="line">     *</span><br><span class="line">     * @param key</span><br><span class="line">     * @param value</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public boolean set(final String key, Object value) &#123;</span><br><span class="line">        boolean result = false;</span><br><span class="line">        try &#123;</span><br><span class="line">            ValueOperations&lt;Serializable, Object&gt; operations = redisTemplate.opsForValue();</span><br><span class="line">            operations.set(key, value);</span><br><span class="line">            result = true;</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 写入缓存</span><br><span class="line">     *</span><br><span class="line">     * @param key</span><br><span class="line">     * @param value</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public boolean set(final String key, Object value, Long expireTime) &#123;</span><br><span class="line">        boolean result = false;</span><br><span class="line">        try &#123;</span><br><span class="line">            ValueOperations&lt;Serializable, Object&gt; operations = redisTemplate.opsForValue();</span><br><span class="line">            operations.set(key, value);</span><br><span class="line">            redisTemplate.expire(key, expireTime, TimeUnit.MILLISECONDS);</span><br><span class="line">            result = true;</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line"></span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>到这一步就大功告成了，大家就可以使用redis了，测试类这里就不写了，大家需要的话，可以直接去download代码<br><a href="https://github.com/7le/video" target="_blank" rel="noopener">springboot</a> ^.^</p>
+<h3 id="集成mybatis"><a href="#集成mybatis" class="headerlink" title="集成mybatis"></a>集成mybatis</h3><h4 id="引入依赖-1"><a href="#引入依赖-1" class="headerlink" title="引入依赖"></a>引入依赖</h4><p>同样的引入依赖，详见上一篇文章</p>
+<h4 id="添加mybatis相关配置"><a href="#添加mybatis相关配置" class="headerlink" title="添加mybatis相关配置"></a>添加mybatis相关配置</h4><p>根据项目路径配置：<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-2-2.png" alt="path"><br>在application.properties中添加：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#mybatis</span><br><span class="line">mybatis.type-aliases-package=com.shine.video.dao</span><br><span class="line">mybatis.mapper-locations=classpath:mapping/*.xml</span><br></pre></td></tr></table></figure></p>
+<h4 id="添加MybatisConf类"><a href="#添加MybatisConf类" class="headerlink" title="添加MybatisConf类"></a>添加MybatisConf类</h4><p>有了以上的配置，其实就可以使用mybatis了（要注意的是需要在接口加上@Mapper注释），这里一并将PageHelper集成了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">/*</span><br><span class="line"> * 注册MyBatis分页插件PageHelper</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">@Configuration</span><br><span class="line">public class MybatisConf &#123;</span><br><span class="line">    @Bean</span><br><span class="line">    public PageHelper pageHelper() &#123;</span><br><span class="line">        PageHelper pageHelper = new PageHelper();</span><br><span class="line">        Properties p = new Properties();</span><br><span class="line">        p.setProperty(&quot;offsetAsPageNum&quot;, &quot;true&quot;);</span><br><span class="line">        p.setProperty(&quot;rowBoundsWithCount&quot;, &quot;true&quot;);</span><br><span class="line">        p.setProperty(&quot;reasonable&quot;, &quot;true&quot;);</span><br><span class="line">        pageHelper.setProperties(p);</span><br><span class="line">        return pageHelper;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置完之后，只要如下使用就可以了。相当简单粗暴，爱不释手。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">    * 收藏列表展示接口</span><br><span class="line">    * @return</span><br><span class="line">    */</span><br><span class="line">   @RequestMapping(value = &quot;/collect&quot;,method = RequestMethod.GET)</span><br><span class="line">   @ApiOperation(value=&quot;收藏列表&quot;, httpMethod = &quot;GET&quot; , notes=&quot;收藏列表&quot;)</span><br><span class="line">   public ResultBean list(HttpServletRequest request,</span><br><span class="line">                          @ApiParam(required = true, name = &quot;pageNo&quot;, value = &quot;第几页&quot;)</span><br><span class="line">                          @RequestParam(defaultValue = &quot;1&quot;, value = &quot;pageNo&quot;) Integer pageNo,</span><br><span class="line">                          @ApiParam(required = true, name = &quot;pageSize&quot;, value = &quot;每页显示条数&quot;)</span><br><span class="line">                          @RequestParam(defaultValue = &quot;10&quot;, value = &quot;pageSize&quot;) Integer pageSize) throws Exception &#123;</span><br><span class="line"></span><br><span class="line">       if(Constant.USER_TYPE_SPECIAL!=(int)request.getAttribute(&quot;type&quot;)&amp;&amp;</span><br><span class="line">               Constant.USER_TYPE_ORDINARY!=(int)request.getAttribute(&quot;type&quot;))&#123;</span><br><span class="line">           throw new HttpMessageNotReadableException(&quot;该用户没有查看收藏列表权限&quot;);</span><br><span class="line">       &#125;</span><br><span class="line">       /*</span><br><span class="line">        * 第一个参数是第几页；第二个参数是每页显示条数。</span><br><span class="line">        */</span><br><span class="line">       PageHelper.startPage(pageNo,pageSize);</span><br><span class="line">       return ResultBean.success(collectService.page((Integer) request.getAttribute(&quot;userId&quot;)));</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="集成swagger"><a href="#集成swagger" class="headerlink" title="集成swagger"></a>集成swagger</h3><p>看到上面的接口，大家可能会奇怪一些注释，比如@ApiOperation，@ApiParam，是不是好像不是属于spring家族的呀。这些就是swagger的注释。虽然这样的写法对代码有一定的侵入性，但是想想大家可以摆脱写接口文档了，这对于后台人员来说简直就是Gospel呀~ 另外在项目跟前端调式完后，我们也可以把所谓侵入的代码删除呀，总之就是不想写接口文档。哈哈哈</p>
+<p>swagger的接口文档是restful的，大家要注意接口设计。以后有机会要补一篇restful的文章，总结下小弟自己的理解。</p>
+<h4 id="引入依赖-2"><a href="#引入依赖-2" class="headerlink" title="引入依赖"></a>引入依赖</h4><p>老规矩，还是需要引入依赖，详见上篇文章。</p>
+<h4 id="添加SwaggerConfig类"><a href="#添加SwaggerConfig类" class="headerlink" title="添加SwaggerConfig类"></a>添加SwaggerConfig类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @author 7le</span><br><span class="line"> * @since 2017-05-17</span><br><span class="line"> */</span><br><span class="line">@Configuration</span><br><span class="line">@EnableSwagger2</span><br><span class="line">public class SwaggerConfig &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public Docket createRestApi() &#123;</span><br><span class="line">        Predicate&lt;RequestHandler&gt; predicate = new Predicate&lt;RequestHandler&gt;() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public boolean apply(RequestHandler input) &#123;</span><br><span class="line">                Class&lt;?&gt; declaringClass = input.declaringClass();</span><br><span class="line">                if (declaringClass == BasicErrorController.class)// 排除</span><br><span class="line">                    return false;</span><br><span class="line">                if(declaringClass.isAnnotationPresent(RestController.class)) // 被注解的类</span><br><span class="line">                    return true;</span><br><span class="line">                if(input.isAnnotatedWith(ResponseBody.class)) // 被注解的方法</span><br><span class="line">                    return true;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        return new Docket(DocumentationType.SWAGGER_2)</span><br><span class="line">                .apiInfo(apiInfo())</span><br><span class="line">                .useDefaultResponseMessages(false)</span><br><span class="line">                .select()</span><br><span class="line">                .apis(predicate)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private ApiInfo apiInfo() &#123;</span><br><span class="line">        return new ApiInfoBuilder()</span><br><span class="line">                .title(&quot;Shine-video&quot;)//大标题</span><br><span class="line">                .contact(new Contact(&quot;7le&quot;, &quot;https://github.com/7le&quot;, &quot;silk.heqian@gmail.com&quot;))//作者</span><br><span class="line">                .version(&quot;1.0&quot;)//版本</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * SpringBoot默认已经将classpath:/META-INF/resources/和classpath:/META-INF/resources/webjars/映射</span><br><span class="line">     * 所以该方法不需要重写，如果在SpringMVC中，可能需要重写定义（我没有尝试）</span><br><span class="line">     * 重写该方法需要 extends WebMvcConfigurerAdapter</span><br><span class="line">     *</span><br><span class="line">     */</span><br><span class="line">//    @Override</span><br><span class="line">//    public void addResourceHandlers(ResourceHandlerRegistry registry) &#123;</span><br><span class="line">//        registry.addResourceHandler(&quot;swagger-ui.html&quot;)</span><br><span class="line">//                .addResourceLocations(&quot;classpath:/META-INF/resources/&quot;);</span><br><span class="line">//</span><br><span class="line">//        registry.addResourceHandler(&quot;/webjars/**&quot;)</span><br><span class="line">//                .addResourceLocations(&quot;classpath:/META-INF/resources/webjars/&quot;);</span><br><span class="line">//    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 可以定义多个组，比如本类中定义把test和demo区分开了</span><br><span class="line">     * （访问页面就可以看到效果了）</span><br><span class="line">     *</span><br><span class="line">     */</span><br><span class="line">    @Bean</span><br><span class="line">    public Docket testApi() &#123;</span><br><span class="line">        return new Docket(DocumentationType.SWAGGER_2)</span><br><span class="line">                .groupName(&quot;test&quot;)</span><br><span class="line">                .genericModelSubstitutes(DeferredResult.class)</span><br><span class="line">//                .genericModelSubstitutes(ResponseEntity.class)</span><br><span class="line">                .useDefaultResponseMessages(false)</span><br><span class="line">                .forCodeGeneration(true)</span><br><span class="line">                .pathMapping(&quot;/&quot;)// base，最终调用接口后会和paths拼接在一起</span><br><span class="line">                .select()</span><br><span class="line">                .paths(or(regex(&quot;/api/.*&quot;)))//过滤的接口</span><br><span class="line">                .build()</span><br><span class="line">                .apiInfo(testApiInfo());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    public Docket demoApi() &#123;</span><br><span class="line">        return new Docket(DocumentationType.SWAGGER_2)</span><br><span class="line">                .groupName(&quot;demo&quot;)</span><br><span class="line">                .genericModelSubstitutes(DeferredResult.class)</span><br><span class="line">//              .genericModelSubstitutes(ResponseEntity.class)</span><br><span class="line">                .useDefaultResponseMessages(false)</span><br><span class="line">                .forCodeGeneration(false)</span><br><span class="line">                .pathMapping(&quot;/&quot;)</span><br><span class="line">                .select()</span><br><span class="line">                .paths(or(regex(&quot;/demo/.*&quot;)))//过滤的接口</span><br><span class="line">                .build()</span><br><span class="line">                .apiInfo(demoApiInfo());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private ApiInfo testApiInfo() &#123;</span><br><span class="line">        return new ApiInfoBuilder()</span><br><span class="line">                .title(&quot;Electronic Health Record(EHR) Platform API&quot;)//大标题</span><br><span class="line">                .description(&quot;EHR Platform&apos;s REST API, all the applications could access the Object model data via JSON.&quot;)//详细描述</span><br><span class="line">                .version(&quot;1.0&quot;)//版本</span><br><span class="line">                .termsOfServiceUrl(&quot;NO terms of service&quot;)</span><br><span class="line">                .contact(new Contact(&quot;7le&quot;, &quot;https://github.com/7le&quot;, &quot;silk.heqian@gmail.com&quot;))//作者</span><br><span class="line">                .license(&quot;The Apache License, Version 2.0&quot;)</span><br><span class="line">                .licenseUrl(&quot;http://www.apache.org/licenses/LICENSE-2.0.html&quot;)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private ApiInfo demoApiInfo() &#123;</span><br><span class="line">        return new ApiInfoBuilder()</span><br><span class="line">                .title(&quot;Electronic Health Record(EHR) Platform API&quot;)//大标题</span><br><span class="line">                .description(&quot;EHR Platform&apos;s REST API, all the applications could access the Object model data via JSON.&quot;)//详细描述</span><br><span class="line">                .version(&quot;1.0&quot;)//版本</span><br><span class="line">                .termsOfServiceUrl(&quot;NO terms of service&quot;)</span><br><span class="line">                .contact(new Contact(&quot;silk&quot;, &quot;https://github.com/7le&quot;, &quot;silk.heqian@gmail.com&quot;))//作者</span><br><span class="line">                .license(&quot;The Apache License, Version 2.0&quot;)</span><br><span class="line">                .licenseUrl(&quot;http://www.apache.org/licenses/LICENSE-2.0.html&quot;)</span><br><span class="line">                .build();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>配置后，然后像收藏列表展示接口,那样加上注释就行了，重复的代码就不写了。<br>最后呈现的效果不要太美~！</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/springboot-2-3.png" alt="swagger1"><br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-2-4.png" alt="swagger2"></p>
+<p>最后在加上代码的地址，大家可以互相交流学习<a href="https://github.com/7le/video" target="_blank" rel="noopener">springboot</a><br>完。^.^</p>
+<p><a href="http://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/springboot/" rel="tag"># springboot</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/26/springboot项目笔记：(一)搭建项目/" rel="next" title="springboot项目笔记：(一)搭建项目">
+                <i class="fa fa-chevron-left"></i> springboot项目笔记：(一)搭建项目
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/11/springboot项目笔记：(三) 事务/" rel="prev" title="springboot项目笔记：(三) 事务">
+                springboot项目笔记：(三) 事务 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/ly.jpg"
+               alt="7le" />
+          <p class="site-author-name" itemprop="name">7le</p>
+           
+              <p class="site-description motion-element" itemprop="description">我只有一件事，就是忘记背后，努力面前的</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/7le" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://palmer.arkstack.cn" title="palmerye" target="_blank">palmerye</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#集成redis"><span class="nav-number">1.</span> <span class="nav-text">集成redis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#引入依赖"><span class="nav-number">1.1.</span> <span class="nav-text">引入依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加Redis相关配置"><span class="nav-number">1.2.</span> <span class="nav-text">添加Redis相关配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Redis配置类"><span class="nav-number">1.3.</span> <span class="nav-text">Redis配置类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#简单的RedisUtil"><span class="nav-number">1.4.</span> <span class="nav-text">简单的RedisUtil</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集成mybatis"><span class="nav-number">2.</span> <span class="nav-text">集成mybatis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#引入依赖-1"><span class="nav-number">2.1.</span> <span class="nav-text">引入依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加mybatis相关配置"><span class="nav-number">2.2.</span> <span class="nav-text">添加mybatis相关配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加MybatisConf类"><span class="nav-number">2.3.</span> <span class="nav-text">添加MybatisConf类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集成swagger"><span class="nav-number">3.</span> <span class="nav-text">集成swagger</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#引入依赖-2"><span class="nav-number">3.1.</span> <span class="nav-text">引入依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#添加SwaggerConfig类"><span class="nav-number">3.2.</span> <span class="nav-text">添加SwaggerConfig类</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+<div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">7le</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io" rel="external nofollow">Hexo</a>
+</div>
+
+<span id="busuanzi_container_site_pv">
+  PV <span id="busuanzi_value_site_pv"></span>
+</span>
+<span id="busuanzi_container_site_uv">
+  &nbsp&nbsp | &nbsp&nbsp UV <span id="busuanzi_value_site_uv"></span>
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

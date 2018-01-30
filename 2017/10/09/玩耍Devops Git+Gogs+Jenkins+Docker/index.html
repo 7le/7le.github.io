@@ -1,0 +1,864 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="TOzgkVPl_tllvkMlt51RjNeTAmmf13oTLBbxTqhSO5E" />
+<meta name="baidu-site-verification" content="j9xl21v0cA" />
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Devops," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近受人熏陶，准备尝试一下自己搭建一套自己的Devops，故此记录一番。">
+<meta name="keywords" content="Devops">
+<meta property="og:type" content="article">
+<meta property="og:title" content="玩耍Devops Git+Gogs+Jenkins+Docker">
+<meta property="og:url" content="http://yoursite.com/2017/10/09/玩耍Devops Git+Gogs+Jenkins+Docker/index.html">
+<meta property="og:site_name" content="Shine">
+<meta property="og:description" content="最近受人熏陶，准备尝试一下自己搭建一套自己的Devops，故此记录一番。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-1.jpg">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-2.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-3.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-4.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-5.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-6.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-7.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-8.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-9.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-10.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-11.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-12.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-13.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-14.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-15.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-16.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-17.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-18.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-19.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-20.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-21.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-22.png">
+<meta property="og:updated_time" content="2018-01-30T16:03:22.963Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="玩耍Devops Git+Gogs+Jenkins+Docker">
+<meta name="twitter:description" content="最近受人熏陶，准备尝试一下自己搭建一套自己的Devops，故此记录一番。">
+<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/09/玩耍Devops Git+Gogs+Jenkins+Docker/"/>
+
+
+
+
+
+  <title> 玩耍Devops Git+Gogs+Jenkins+Docker | Shine </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?467d29ed3a4fecd3a1dca094a8c5a369";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shine</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耶和华是我的牧者，我必不致缺乏。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/09/玩耍Devops Git+Gogs+Jenkins+Docker/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="7le">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/ly.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shine">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                玩耍Devops Git+Gogs+Jenkins+Docker
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-09T22:37:30+08:00">
+                2017-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>最近受人熏陶，准备尝试一下自己搭建一套自己的Devops，故此记录一番。</p>
+</blockquote>
+<a id="more"></a>
+<p>首先，我们要了解Devops（Development和Operations），可以理解为是一个完整的面向IT运维的工作流，以 IT 自动化以及CI,CD为基础，来优化程式开发、测试、系统运维等所有环节。其中持续集成（Continuous integration，简称CI），指的是频繁地（一天多次）将代码集成到主干。而CD，这个概念就容易引起混淆了，因为CD这个缩写代表了两个短语，一个是Continuous Delivery，一个是Continuous Deployment，两者的区别就是，部署到生产环境这一步骤，是手工的，还是自动的。</p>
+<p>详细的可以看<a href="http://www.ruanyifeng.com/blog/2015/09/continuous-integration.html" target="_blank" rel="noopener">持续集成是什么？</a>。</p>
+<p>当我们大概了解Devops之后，会发现互联网软件的开发和发布是一套相对繁琐的流程，而我们可以通过诸多工具，来进行简化，方便操作，达到让产品可以快速迭代，同时还能保持高质量。</p>
+<p>PS：文章有点长，记录了整个环境的搭建的细节，以及踩的坑，用的服务器是Centos6.5，如果有什么问题，欢迎拍砖讨论。</p>
+<h3 id="Git-Gogs"><a href="#Git-Gogs" class="headerlink" title="Git+Gogs"></a>Git+Gogs</h3><blockquote>
+<p>git 大家早已耳熟能详，而gogs是基于Go语言的自助Git服务,图形化界面跟github非常相似。</p>
+</blockquote>
+<p>一般要搭建自己的git仓库，现在的选择大多都是Gitlab或者Gogs。两者分别有各自的优势，考虑自己可怜的服务器配置，毫无疑问我的选择会是更加轻量的Gogs。</p>
+<h4 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h4><p>Git一般大家的服务器都会已经安装，可以通过 <code>git --version</code> 查看。如果版本过低，最好升级下，我原先是1.7.*的版本的，后来出现了点问题。</p>
+<h5 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h5><p><code>cd</code>到自己服务器存放包的路径下，执行以下命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://github.com/git/git/archive/v2.3.0.zip</span><br></pre></td></tr></table></figure>
+<h5 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h5><p>因为下载的是个zip包，<code>unzip v2.3.0 -d git</code> 进行解压</p>
+<h5 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h5><p>进入git目录，将其安装在“/usr/local/git”目录下,命令如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">make prefix=/usr/local/git all</span><br><span class="line">sudo make prefix=/usr/local/git install</span><br></pre></td></tr></table></figure></p>
+<p>之后编辑<code>/etc/profile</code>此文件,在最下边添加git的路径：<code>export PATH=/usr/local/git/bin:$PATH</code></p>
+<p>运行<code>source /etc/profile</code></p>
+<p>最后检验<code>git --version</code></p>
+<h4 id="Gogs"><a href="#Gogs" class="headerlink" title="Gogs"></a>Gogs</h4><h5 id="下载-1"><a href="#下载-1" class="headerlink" title="下载"></a>下载</h5><p>Gogs 在Github是开源的，可以在<a href="https://github.com/gogits/gogs/releases" target="_blank" rel="noopener">Gogs版本下载地址</a> 下载自己需要的版本。我下载的是最新版本v0.11.29的linux_amd64.tar.gz。</p>
+<h5 id="解压-1"><a href="#解压-1" class="headerlink" title="解压"></a>解压</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ tar -xzvf linux_amd64.tar.gz</span><br></pre></td></tr></table></figure>
+<h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><p>进入到刚刚解压后的目录执行命令<code>./gogs web</code><br>然后在浏览器输入<code>http://ip:3000</code><br>会出现如下图片：<img src="http://oqipguzbl.bkt.clouddn.com/Devops-1.jpg" alt="Gogs配置图片"><br>根据实际情况配置即可。配置后就可以使用了，可以注册自己的帐号，操作跟Github如出一辙。</p>
+<p>经过一番折腾后，<img src="http://oqipguzbl.bkt.clouddn.com/Devops-2.png" alt="silk&#39;s Gogs"></p>
+<p>这样就完成了第一步，搭建Git+Gogs。<br>PS：后台运行命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup ./gogs web &gt; nohup.out 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure></p>
+<p>以及官方文档的<a href="https://gogs.io/docs/upgrade/upgrade_from_binary" target="_blank" rel="noopener">版本升级</a></p>
+<h3 id="Jenkins"><a href="#Jenkins" class="headerlink" title="Jenkins"></a>Jenkins</h3><h4 id="安装Jenkins"><a href="#安装Jenkins" class="headerlink" title="安装Jenkins"></a>安装Jenkins</h4><p>安装完Git和Gogs之后,接下来就是我们的主角jenkins了。jenkins安装比较简单，<br>执行命令方可完成。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install jenkins</span><br></pre></td></tr></table></figure></p>
+<p>安装之后启动：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service jenkins start</span><br></pre></td></tr></table></figure></p>
+<p>如果需要修改端口，路径在<code>/etc/sysconfig/jenkins</code>，修改<code>JENKINS_PORT=&quot;your_port&quot;</code>。重启jenkins服务。</p>
+<p>进入的界面如下，表示启动成功</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-3.png" alt="jenkis成功登录"></p>
+<p>PS:首次登录，是没有右边的任务，那是我已经添加了的。</p>
+<h4 id="Jenkins-插件"><a href="#Jenkins-插件" class="headerlink" title="Jenkins 插件"></a>Jenkins 插件</h4><p>登录都OK之后，就需要为jenkins下载插件了。</p>
+<p>因为我们是通过git去拉取代码，需要安装，一般是自带了，如果没有就安装一下，非常简便。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-4.png" alt="jenkis插件"></p>
+<p>其中<code>Gogs plugin</code>也需要安装，后续的hook会用到。还要安装<code>Pipeline</code>，这个是持续交付的重头戏，以及<code>Publish Over SSH</code> 这个是用来远程部署的。</p>
+<h4 id="Jenkins-配置"><a href="#Jenkins-配置" class="headerlink" title="Jenkins 配置"></a>Jenkins 配置</h4><p>配置只需要按照自己的服务器的实际情况填写，配置的地方为<code>系统管理</code>-&gt;<code>Global Tool Configuration</code></p>
+<h5 id="Jdk"><a href="#Jdk" class="headerlink" title="Jdk"></a>Jdk</h5><p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-5.png" alt="jdk"></p>
+<h5 id="Git-1"><a href="#Git-1" class="headerlink" title="Git"></a>Git</h5><p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-6.png" alt="git"></p>
+<h5 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h5><p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-7.png" alt="maven"></p>
+<p>如果还没安装maven，就下载放到服务器。我用的是<code>apache-maven-3.3.9-bin.tar.gz</code></p>
+<p>解压后 在<code>/etc/profile</code>中添加<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export M2_HOME=/software/apache-maven-3.3.9</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin:$M2_HOME/bin</span><br></pre></td></tr></table></figure></p>
+<p>基本配置就差不多了，建议注册帐号，提高安全性也方便后续操作。</p>
+<p>我的Configure Global Security是这样配置的，这个按照自己的需要，如果像我这样配置，就需要登录帐号。<br><img src="http://oqipguzbl.bkt.clouddn.com/Devops-8.png" alt="Configure Global Security"></p>
+<h4 id="创建Job"><a href="#创建Job" class="headerlink" title="创建Job"></a>创建Job</h4><p>前面的操作都完成之后，点击<code>My views</code> –&gt; <code>新建</code></p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-9.png" alt="新建job"></p>
+<h5 id="Maven-project"><a href="#Maven-project" class="headerlink" title="Maven project"></a>Maven project</h5><p>先记录使用maven实现，输入项目名称，选择maven项目按钮。</p>
+<p>源码管理选择git，填写自己gogs的URL。例如我的video项目。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-10.png" alt="gogs-video"></p>
+<p>对应填写相关参数：<br><img src="http://oqipguzbl.bkt.clouddn.com/Devops-11.png" alt="maven-project1"></p>
+<p>构建触发器，就是什么时候执行jenkins的自动化部署，选择第一个，其他的基本是定时执行什么的，有兴趣都可以去尝试一下</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-12.png" alt="maven-project2"></p>
+<p>Build和Post Steps设置:</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-13.png" alt="maven-project3"></p>
+<p>Execute shell 脚本(带了注解，放入配置的时候可以把注释去掉)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">export JAVA_HOME=/usr/local/jdk1.8.0_73</span><br><span class="line">#export BUILD_ID=dontKillMe这一句很重要，因为该job启动完后执行下一job,jenkins直接把tomcat进程杀了</span><br><span class="line">export BUILD_ID=dontKillMe</span><br><span class="line"></span><br><span class="line">project=video-0.0.1.jar</span><br><span class="line">#jenkins的路径</span><br><span class="line">file_path=/var/lib/jenkins/workspace/video/target</span><br><span class="line"></span><br><span class="line">sleep 3s </span><br><span class="line"># 查看服务是否已经启动，启动了就先kill</span><br><span class="line">pid=$(lsof -i:9000 |awk &apos;&#123;print $2&#125;&apos; | tail -n 1)</span><br><span class="line"></span><br><span class="line">if [ &quot;$pid&quot; != &quot;&quot; ] </span><br><span class="line">echo &quot;close old video&quot;</span><br><span class="line">then</span><br><span class="line">echo $pid</span><br><span class="line">kill -9 $pid</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">echo &quot;begin new video&quot;</span><br><span class="line"></span><br><span class="line">cd $file_path</span><br><span class="line"># springboot 后台部署方式</span><br><span class="line">java -jar $&#123;project&#125; &amp;</span><br></pre></td></tr></table></figure></p>
+<p>邮件设置：</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-14.png" alt="maven-project4"></p>
+<p>设置完成后，点击保存。跳转到新的页面，点击页面上的<code>立即构造</code>就会开始运行了。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-15.png" alt="maven-project5"></p>
+<p>运行的时候可以点击<code>console Output</code>查看日志。</p>
+<p>等到小太阳出现，查看下自己的项目，已经启动了，那就大功搞成拉~ 如果很悲剧的出现问题了，那可以看看下面的踩坑记录中的东西能不能帮到你了~</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-16.png" alt="maven-project6"></p>
+<h5 id="pipeline"><a href="#pipeline" class="headerlink" title="pipeline"></a>pipeline</h5><p>pipeline是jenkins2.0的一大亮点，在新建任务的时候选择Pipeline。</p>
+<p>pipeline设置：<br><img src="http://oqipguzbl.bkt.clouddn.com/Devops-17.png" alt="pipeline"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">node &#123;  </span><br><span class="line"></span><br><span class="line">    stage(&apos;checkout&apos;)&#123;</span><br><span class="line">        echo &apos;checkout from git&apos;</span><br><span class="line">        git url: &apos;http://114.215.122.158:3000/silk_gogs/video.git&apos;, branch: &apos;master&apos;</span><br><span class="line">    &#125;</span><br><span class="line">    stage(&apos;Test&apos;) &#123;            </span><br><span class="line">        echo &quot;Test start...&quot;</span><br><span class="line">        sh &apos;mvn clean &apos;</span><br><span class="line">    &#125;        </span><br><span class="line">    stage(&apos;Build&apos;) &#123;            </span><br><span class="line">        echo &quot;Deploy start...&quot;</span><br><span class="line">        sh &apos; mvn package -Dmaven.test.skip=true&apos;</span><br><span class="line">        sh &apos; sh /root/video-pipeline.sh&apos;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>pipeline 采用的是Groovy语法，</p>
+<ol>
+<li>Stage：表示当前进行的阶段，名字可以随意去，如：git、build、test、build等</li>
+<li>Node:后面接一个小括号和一个大括号，小括号指定节点的名字或标签（缺省时随机选择节点），大括号表示在该节点运行的内容</li>
+<li>Step:像git、echo、sh、archiveArtifacts等这些指令，一个指令就是一个step</li>
+</ol>
+<p>Groovy脚本中调用的shell脚本,跟maven项目的差不多。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">export JAVA_HOME=/usr/local/jdk1.8.0_73</span><br><span class="line">export BUILD_ID=dontKillMe</span><br><span class="line"></span><br><span class="line">project=video-0.0.1.jar</span><br><span class="line">file_path=/var/lib/jenkins/workspace/video-pipeline/target</span><br><span class="line"></span><br><span class="line">sleep 3s </span><br><span class="line"></span><br><span class="line">pid=$(lsof -i:9000 |awk &apos;&#123;print $2&#125;&apos; | tail -n 1)</span><br><span class="line"></span><br><span class="line">if [ &quot;$pid&quot; != &quot;&quot; ] </span><br><span class="line">then</span><br><span class="line">echo &quot;close old video&quot;</span><br><span class="line">echo $pid</span><br><span class="line">kill -9 $pid</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">echo &quot;begin new video:$file_path/$&#123;project&#125;&quot;</span><br><span class="line"></span><br><span class="line">nohup java -jar $file_path/$&#123;project&#125; &gt; nohup.out  2&gt;&amp;1 &amp;</span><br><span class="line"></span><br><span class="line">echo &quot;end ^.^&quot;</span><br></pre></td></tr></table></figure></p>
+<p>点击<code>立即构造</code>：<br><img src="http://oqipguzbl.bkt.clouddn.com/Devops-18.png" alt="pipeline"></p>
+<p>跟maven project不同的是多了许多的Stage块，非常直观，而且支持复杂的CD(Continuous Delivery)需求,还有许多有趣的点等有时间再去玩耍。</p>
+<h4 id="Gogs-plugin"><a href="#Gogs-plugin" class="headerlink" title="Gogs plugin"></a>Gogs plugin</h4><p>之前在安装插件的时候，特意安装了Gogs plugin，这个插件是干嘛的呢？我们之前的操作都是通过手动触发的，这个插件可以帮我们实现代码的push操作触发（还有其他的hook事件），点击这个插件进去可以看到</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-19.png" alt="Gogs plugin"></p>
+<p>很明显的告诉我们，只需要在gogs的项目中配置webhook</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/Devops-20.png" alt="Gogs hook"></p>
+<p>这样就可以实现代码<code>push</code>就触发整个流程了。</p>
+<h3 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h3><blockquote>
+<p>待整理出来补充~</p>
+</blockquote>
+<h3 id="踩坑记录"><a href="#踩坑记录" class="headerlink" title="踩坑记录"></a>踩坑记录</h3><h4 id="Maven-JVM-terminated-unexpectedly-with-exit-code-137"><a href="#Maven-JVM-terminated-unexpectedly-with-exit-code-137" class="headerlink" title="Maven JVM terminated unexpectedly with exit code 137"></a>Maven JVM terminated unexpectedly with exit code 137</h4><p>遇到这个问题，原因是我的服务器配置比较差，jenkins还是吃配置的。选择一个比较好的服务器，就可以省去这个问题，如果跟我一样，服务器不太好的话。</p>
+<p>解决的方法:</p>
+<ol>
+<li><p>在<code>/etc/profile</code> 中添加<code>export _JAVA_OPTIONS=&quot;-Xmx500m&quot;</code> -Xmx是jvm的最大堆大小，默认值为物理内存的1/4,这边可以根据情况手动调大。</p>
+</li>
+<li><p>执行Linux释放内存命令 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sync   #把内存数据同步到硬盘（有需要可以执行）</span><br><span class="line">echo 3 &gt; /proc/sys/vm/drop_caches  #删除内存缓存。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>分出swap。 在linux中输入命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">swapon -s #確認目前的swap大小</span><br><span class="line">dd if=/dev/zero of=/swapfile bs=1024 count=1048576 #增加1G的空间</span><br><span class="line">mkswap /swapfile  #格式化swapfile</span><br><span class="line">swapon /swapfile  #启动swapfile</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>最后输入<code>free -m</code>，查看内存及swap情况<br><img src="http://oqipguzbl.bkt.clouddn.com/Devops-21.png" alt="free -m"></p>
+<p>这样一顿操作，八九不离十就能解决137的问题了，因为也很难找到比我服务器更差的机器了…</p>
+<h4 id="权限问题"><a href="#权限问题" class="headerlink" title="权限问题"></a>权限问题</h4><p>日志中出现 XXXXX permission denied。</p>
+<p>如果是运行调用到其他文件，权限不够，可以<code>chown -R jenkins /xxx/xxx</code>,最好的是设置用户组，这样的话比较简单粗暴。</p>
+<p>但是我是maven install出来的jar包 没有权限运行，这不是坑我么。本来想在sh脚本中切到root用户的，尝试了几种方法都未果，于是就用了粗暴的方式…</p>
+<p>直接修改<code>/etc/sysconfig/jenkins</code> 中的<code>JENKINS_USER=&quot;root&quot;</code> ，再修改下权限<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">chown -R root:root /var/lib/jenkins</span><br><span class="line">chown -R root:root /var/cache/jenkins</span><br><span class="line">chown -R root:root /var/log/jenkins</span><br></pre></td></tr></table></figure></p>
+<p>最后记得修改后重启下jenkins</p>
+<h4 id="command-not-found"><a href="#command-not-found" class="headerlink" title="command not found"></a>command not found</h4><p>我们在项目中的日志报错，出现XXX command not found，但是服务器中明明已经是有相应的软件。这时候我们需要，在服务器中输入<code>echo $PATH</code></p>
+<p>将一长段环境变量复制到配置中，就OK了<br><img src="http://oqipguzbl.bkt.clouddn.com/Devops-22.png" alt="环境变量配置"></p>
+<h4 id="项目无法后台运行"><a href="#项目无法后台运行" class="headerlink" title="项目无法后台运行"></a>项目无法后台运行</h4><p>出现这个问题的时候，jenkins 的job显示是success的，但是查看自己的服务器，对应的项目死活起不来。经过一番google，在jenkins的官网中找到了答案。<br><a href="https://wiki.jenkins.io/display/JENKINS/ProcessTreeKiller" target="_blank" rel="noopener">jenkins-ProcessTreeKiller</a>,大概的意思就是说jenkins的特性会杀掉在任务中运行的生成的进程。<code>To reliably kill processes spawned by a job during a build</code> 就是这句话。</p>
+<p>那我们只需要关掉这个特性就可以了，同样修改<code>/etc/sysconfig/jenkins</code> 中的<code>JENKINS_JAVA_OPTIONS=&quot;-Djava.awt.headless=true -Dhudson.util.ProcessTree.disable=true&quot;</code> 记得修改后重启下jenkins</p>
+<p>罗里吧嗦了一堆，希望大家也都能顺利搭建起来~<br>完。^.^</p>
+<p><a href="http://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Devops/" rel="tag"># Devops</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/29/threadLocal 小记/" rel="next" title="threadLocal 小记">
+                <i class="fa fa-chevron-left"></i> threadLocal 小记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/08/TiDB，日均千万级数据存储方案选型/" rel="prev" title="TiDB，日均千万级数据存储方案选型">
+                TiDB，日均千万级数据存储方案选型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/ly.jpg"
+               alt="7le" />
+          <p class="site-author-name" itemprop="name">7le</p>
+           
+              <p class="site-description motion-element" itemprop="description">我只有一件事，就是忘记背后，努力面前的</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/7le" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://palmer.arkstack.cn" title="palmerye" target="_blank">palmerye</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Git-Gogs"><span class="nav-number">1.</span> <span class="nav-text">Git+Gogs</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Git"><span class="nav-number">1.1.</span> <span class="nav-text">Git</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#下载"><span class="nav-number">1.1.1.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解压"><span class="nav-number">1.1.2.</span> <span class="nav-text">解压</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#编译安装"><span class="nav-number">1.1.3.</span> <span class="nav-text">编译安装</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Gogs"><span class="nav-number">1.2.</span> <span class="nav-text">Gogs</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#下载-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解压-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">解压</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装"><span class="nav-number">1.2.3.</span> <span class="nav-text">安装</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Jenkins"><span class="nav-number">2.</span> <span class="nav-text">Jenkins</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装Jenkins"><span class="nav-number">2.1.</span> <span class="nav-text">安装Jenkins</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Jenkins-插件"><span class="nav-number">2.2.</span> <span class="nav-text">Jenkins 插件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Jenkins-配置"><span class="nav-number">2.3.</span> <span class="nav-text">Jenkins 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Jdk"><span class="nav-number">2.3.1.</span> <span class="nav-text">Jdk</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Git-1"><span class="nav-number">2.3.2.</span> <span class="nav-text">Git</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Maven"><span class="nav-number">2.3.3.</span> <span class="nav-text">Maven</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建Job"><span class="nav-number">2.4.</span> <span class="nav-text">创建Job</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Maven-project"><span class="nav-number">2.4.1.</span> <span class="nav-text">Maven project</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#pipeline"><span class="nav-number">2.4.2.</span> <span class="nav-text">pipeline</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Gogs-plugin"><span class="nav-number">2.5.</span> <span class="nav-text">Gogs plugin</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker"><span class="nav-number">3.</span> <span class="nav-text">Docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#踩坑记录"><span class="nav-number">4.</span> <span class="nav-text">踩坑记录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Maven-JVM-terminated-unexpectedly-with-exit-code-137"><span class="nav-number">4.1.</span> <span class="nav-text">Maven JVM terminated unexpectedly with exit code 137</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#权限问题"><span class="nav-number">4.2.</span> <span class="nav-text">权限问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#command-not-found"><span class="nav-number">4.3.</span> <span class="nav-text">command not found</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#项目无法后台运行"><span class="nav-number">4.4.</span> <span class="nav-text">项目无法后台运行</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+<div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">7le</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io" rel="external nofollow">Hexo</a>
+</div>
+
+<span id="busuanzi_container_site_pv">
+  PV <span id="busuanzi_value_site_pv"></span>
+</span>
+<span id="busuanzi_container_site_uv">
+  &nbsp&nbsp | &nbsp&nbsp UV <span id="busuanzi_value_site_uv"></span>
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

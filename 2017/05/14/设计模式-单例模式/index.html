@@ -1,0 +1,780 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="TOzgkVPl_tllvkMlt51RjNeTAmmf13oTLBbxTqhSO5E" />
+<meta name="baidu-site-verification" content="j9xl21v0cA" />
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="设计模式," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="本以为单例模式就是简单的模式，非常清晰明了，今天跟老袁一聊天，让我更多的了解了它的精妙之处，以及要写出精妙的单例模式也是很有讲究。">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式--单例模式">
+<meta property="og:url" content="http://yoursite.com/2017/05/14/设计模式-单例模式/index.html">
+<meta property="og:site_name" content="Shine">
+<meta property="og:description" content="本以为单例模式就是简单的模式，非常清晰明了，今天跟老袁一聊天，让我更多的了解了它的精妙之处，以及要写出精妙的单例模式也是很有讲究。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-30T16:03:22.963Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式--单例模式">
+<meta name="twitter:description" content="本以为单例模式就是简单的模式，非常清晰明了，今天跟老袁一聊天，让我更多的了解了它的精妙之处，以及要写出精妙的单例模式也是很有讲究。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/14/设计模式-单例模式/"/>
+
+
+
+
+
+  <title> 设计模式--单例模式 | Shine </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?467d29ed3a4fecd3a1dca094a8c5a369";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shine</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耶和华是我的牧者，我必不致缺乏。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/14/设计模式-单例模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="7le">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/ly.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shine">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                设计模式--单例模式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-14T20:18:45+08:00">
+                2017-05-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>本以为单例模式就是简单的模式，非常清晰明了，今天跟老袁一聊天，让我更多的了解了它的精妙之处，以及要写出精妙的单例模式也是很有讲究。</p>
+</blockquote>
+<a id="more"></a>
+<p>想必大家都知道，单例模式为什么称之为单例模式。因为这个类只有一个实例，会自行实例化，并提供该实例。总结一下就是单例模式将会有以下特点：</p>
+<ul>
+<li>1、单例类只能有一个实例。</li>
+<li>2、单例类必须自己创建自己的唯一实例。</li>
+<li>3、单例类必须给所有其他对象提供这一实例。</li>
+</ul>
+<h3 id="饿汉式单例"><a href="#饿汉式单例" class="headerlink" title="饿汉式单例"></a>饿汉式单例</h3><blockquote>
+<p>单例模式必提的，饿汉懒汉，两大壮汉~</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//饿汉式单例类.在类初始化时，已经自行实例化   </span><br><span class="line">public class Singleton &#123;  </span><br><span class="line">    private Singleton() &#123;&#125;  </span><br><span class="line">    private static final Singleton single = new Singleton();  </span><br><span class="line">    //静态工厂方法   </span><br><span class="line">    public static Singleton getInstance() &#123;  </span><br><span class="line">       return single;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个类,一开始就生成了一个静态的对象供系统使用，就像一个饿的不行的壮汉冲进饭馆（系统加载）就迫不及待的开吃了（实例化对象），这个类以后也不会改变，是天生线程安全的。</p>
+<h3 id="懒汉式单例"><a href="#懒汉式单例" class="headerlink" title="懒汉式单例"></a>懒汉式单例</h3><blockquote>
+<p>第二个壮汉来了，不过他是个懒汉，懒洋洋的~</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton1 &#123;</span><br><span class="line"></span><br><span class="line">    private Singleton1()&#123;&#125;</span><br><span class="line">    //这里就不再定义final</span><br><span class="line">    private static Singleton1 single1 =null;</span><br><span class="line"></span><br><span class="line">    public static Singleton1 getInstance()&#123;</span><br><span class="line">        if(single1==null)&#123;</span><br><span class="line">            single1 = new Singleton1();</span><br><span class="line">        &#125;</span><br><span class="line">        return single1;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个壮汉比较懒，他慢腾腾的在饭馆坐下了，等着朋友来喊他一起吃（在第一次调用的时候实例化自己）。<br>到这里我们一般都觉得把单例模式看的七七八八了，或许有厉害的兄弟觉得还缺点什么，是的。饿汉不比懒汉，他是不安全的。以前我也是只知道个不安全，知道要加个同步锁。今天经过老袁的一讲解，豁然开朗。</p>
+<h3 id="加上同步锁的-懒汉模式"><a href="#加上同步锁的-懒汉模式" class="headerlink" title="加上同步锁的 懒汉模式"></a>加上同步锁的 懒汉模式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton2 &#123;</span><br><span class="line"></span><br><span class="line">    private Singleton2()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    private static Singleton2 single2 =null;</span><br><span class="line"></span><br><span class="line">    public synchronized static Singleton2 getInstance()&#123;</span><br><span class="line">        if(single2==null)&#123;</span><br><span class="line">            single2 = new Singleton2();</span><br><span class="line">        &#125;</span><br><span class="line">        return single2;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>加上synchronized，我们确保了同步。但是要同步，就牺牲了性能，更何况我们在绝大部分情况下都是不需要同步的。于是乎，我们有了以下的方案。</p>
+<h3 id="双重检查锁定的-懒汉模式"><a href="#双重检查锁定的-懒汉模式" class="headerlink" title="双重检查锁定的 懒汉模式"></a>双重检查锁定的 懒汉模式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton3 &#123;</span><br><span class="line"></span><br><span class="line">    private Singleton3()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    private static Singleton3 single3 =null;</span><br><span class="line">    </span><br><span class="line">    public static Singleton3 getInstance()&#123;</span><br><span class="line">        if(single3==null)&#123;                       </span><br><span class="line">            synchronized (Singleton3.class)&#123;     //1</span><br><span class="line">                if (single3 == null)&#123;            //2</span><br><span class="line">                    single3 = new Singleton3();  //3</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return single3;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>双重检查锁定，在 //2 处的第二次检查，创建两个不同的 Singleton 对象成为不可能。<br>假设有下列事件序列：</p>
+<ol>
+<li>线程 1 进入 getInstance() 方法。</li>
+<li>由于 instance 为 null ，线程 1 在 //1 处进入 synchronized 块。</li>
+<li>线程 1 被线程 2 预占。</li>
+<li>线程 2 进入 getInstance() 方法。</li>
+<li>由于 instance 仍旧为 null ，线程 2 试图获取 //1 处的锁。然而，由于线程 1 持有该锁，线程 2 在 //1 处阻塞。</li>
+<li>线程 2 被线程 1 预占。</li>
+<li>线程 1 执行，由于在 //2 处实例仍旧为 null ，线程 1 还创建一个 Singleton 对象并将其引用赋值给 instance </li>
+<li>线程 1 退出 synchronized 块并从 getInstance() 方法返回实例。</li>
+<li>线程 1 被线程 2 预占。</li>
+<li>线程 2 获取 //1 处的锁并检查 instance 是否为 null。</li>
+<li>由于instance是非null的，并没有创建第二个Singleton对象，由线程1创建的对象被返回。</li>
+</ol>
+<p>双重检查锁定背后的理论是完美的。不幸地是，现实完全不同。双重检查锁定的问题是：并不能保证它会在单处理器或多处理器计算机上顺利运行。因为Java平台内存模型，内存模型允许所谓的“无序写入”，这也是这些习语失败的一个主要原因。</p>
+<p>当线程2进入getInstance() 方法，可能会直接得到一个尚未执行构造函数的对象。所以我们需要引入volatile，来保证顺序。所以最后的代码应该是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton4 &#123;</span><br><span class="line"></span><br><span class="line">    private Singleton4()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    private static volatile Singleton4 single4 =null;</span><br><span class="line"></span><br><span class="line">    public static Singleton4 getInstance()&#123;</span><br><span class="line">        if(single4==null)&#123;</span><br><span class="line">            synchronized (Singleton4.class)&#123;</span><br><span class="line">                if (single4 == null)&#123;</span><br><span class="line">                    single4 = new Singleton4();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return single4;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但是我们可以知道，之前双重检查锁的原因是，我们看以下的伪代码</p>
+<ol>
+<li>memory=allocate(); //1:分配对象的内存空间</li>
+<li>ctorInstance(memory); //2:初始化对象</li>
+<li>instance=memory; //3:设置instance指向刚分配的内存地址<br>上面3行代码中的2和3之间，可能会被重排序导致先3后2, 而volatile是要保证可见性，即instance实例化后马上对其他线程可见，并没有能解决掉这个双重锁的问题。<br>那我们要怎么办呢？</li>
+</ol>
+<h3 id="静态内部类-懒汉模式"><a href="#静态内部类-懒汉模式" class="headerlink" title="静态内部类 懒汉模式"></a>静态内部类 懒汉模式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class Singleton5 &#123;</span><br><span class="line"></span><br><span class="line">    private static class LazyHolder &#123;</span><br><span class="line">        private static final Singleton5 INSTANCE = new Singleton5();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Singleton5 ()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    public static final Singleton5 getInstance() &#123;</span><br><span class="line">        return LazyHolder.INSTANCE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之前的那么多方法，都是为了能保证一个线程，去得到这个示例。我们换个方式利用了classloader的机制来保证初始化instance时只有一个线程，所以也是线程安全的，同时没有性能损耗.<br>写了这么多，也把单例模式真正的整理了七七八八，果然程序员还是需要多交流，多思考~还是很希望有许多老java，来指导指导我们这些刚刚步入java大门的菜鸟们~</p>
+<h3 id="登记式单例-查找资料的时候看到的，也一起分享了，可忽略"><a href="#登记式单例-查找资料的时候看到的，也一起分享了，可忽略" class="headerlink" title="登记式单例(查找资料的时候看到的，也一起分享了，可忽略)"></a>登记式单例(查找资料的时候看到的，也一起分享了，可忽略)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">//类似Spring里面的方法，将类名注册，下次从里面直接获取。</span><br><span class="line">public class Singleton6 &#123;</span><br><span class="line">    private static Map&lt;String,Singleton6&gt; map = new HashMap&lt;String,Singleton6&gt;();</span><br><span class="line">    static&#123;</span><br><span class="line">        Singleton6 singleton6 = new Singleton6();</span><br><span class="line">        map.put(singleton6.getClass().getName(), singleton6);</span><br><span class="line">    &#125;</span><br><span class="line">    //保护的默认构造子</span><br><span class="line">    protected Singleton6()&#123;&#125;</span><br><span class="line">    //静态工厂方法,返还此类惟一的实例</span><br><span class="line">    public static Singleton6 getInstance(String name) &#123;</span><br><span class="line">        if(name == null) &#123;</span><br><span class="line">            name = Singleton6.class.getName();</span><br><span class="line">            System.out.println(&quot;name == null&quot;+&quot;---&gt;name=&quot;+name);</span><br><span class="line">        &#125;</span><br><span class="line">        if(map.get(name) == null) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                map.put(name, (Singleton6) Class.forName(name).newInstance());</span><br><span class="line">            &#125; catch (InstantiationException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125; catch (IllegalAccessException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125; catch (ClassNotFoundException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return map.get(name);</span><br><span class="line">    &#125;</span><br><span class="line">    //一个示意性的商业方法</span><br><span class="line">    public String about() &#123;</span><br><span class="line">        return &quot;Hello, I am RegSingleton.&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Singleton6 singleton6 = Singleton6.getInstance(null);</span><br><span class="line">        System.out.println(singleton6.about());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后的最后，如果大家也是懒汉，对应的demo可以直接直接点<a href="https://github.com/7le/shine-learning/tree/master/design-patterns/src/main/java/com/design/patterns/singleton" target="_blank" rel="noopener">单例模式</a><br>完。^.^</p>
+<p><a href="http://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/18/form表单和ajax的那些小事/" rel="prev" title="form表单和ajax的那些小事">
+                form表单和ajax的那些小事 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/ly.jpg"
+               alt="7le" />
+          <p class="site-author-name" itemprop="name">7le</p>
+           
+              <p class="site-description motion-element" itemprop="description">我只有一件事，就是忘记背后，努力面前的</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/7le" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://palmer.arkstack.cn" title="palmerye" target="_blank">palmerye</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#饿汉式单例"><span class="nav-number">1.</span> <span class="nav-text">饿汉式单例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#懒汉式单例"><span class="nav-number">2.</span> <span class="nav-text">懒汉式单例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#加上同步锁的-懒汉模式"><span class="nav-number">3.</span> <span class="nav-text">加上同步锁的 懒汉模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#双重检查锁定的-懒汉模式"><span class="nav-number">4.</span> <span class="nav-text">双重检查锁定的 懒汉模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#静态内部类-懒汉模式"><span class="nav-number">5.</span> <span class="nav-text">静态内部类 懒汉模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#登记式单例-查找资料的时候看到的，也一起分享了，可忽略"><span class="nav-number">6.</span> <span class="nav-text">登记式单例(查找资料的时候看到的，也一起分享了，可忽略)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+<div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">7le</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io" rel="external nofollow">Hexo</a>
+</div>
+
+<span id="busuanzi_container_site_pv">
+  PV <span id="busuanzi_value_site_pv"></span>
+</span>
+<span id="busuanzi_container_site_uv">
+  &nbsp&nbsp | &nbsp&nbsp UV <span id="busuanzi_value_site_uv"></span>
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
