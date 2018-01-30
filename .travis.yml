@@ -1,0 +1,37 @@
+language: node_js   #设置语言
+
+node_js: stable     #设置相应的版本
+
+cache:
+    directories:
+        - node_modules    #据说可以减少travis构建时间
+
+before_install:
+  - export TZ='Asia/Shanghai' # 更改时区
+  - npm install hexo-cli -g
+
+install:
+  - npm install
+
+script:
+  - hexo clean && hexo g
+
+after_script:
+  - git clone https://${GH_REF} .deploy_git
+  - cd .deploy_git
+  - git checkout master
+  - cd ../
+  - mv .deploy_git/.git/ ./public/
+  - cd ./public
+  - git config user.name "7le"
+  - git config user.email "silk.heqian@gmail.com"
+  - git add .
+  - git commit -m "Update by Travis-CI ⚽"
+  - git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" master:master
+
+branches:
+  only:
+  - blog  #只监测这个分支，一有动静就开始构建
+env:
+    global:
+        - GH_REF: github.com/7le/7le.github.io.git
