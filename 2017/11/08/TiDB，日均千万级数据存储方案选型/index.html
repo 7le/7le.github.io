@@ -122,7 +122,7 @@
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/insert.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/insert.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb/%E6%B7%B7%E5%90%88%E8%AF%BB%E5%86%99.png">
-<meta property="og:updated_time" content="2018-02-01T03:36:13.679Z">
+<meta property="og:updated_time" content="2018-02-02T16:19:37.838Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TiDB，日均千万级数据存储方案选型">
 <meta name="twitter:description" content="SQL -&amp;gt; NoSQL -&amp;gt; NewSql">
@@ -392,7 +392,7 @@
 <li>2 对于服务器要求相对较高，磁盘需要SSD才能保证性能的卓越。</li>
 </ul>
 <p>官网文档中mysql 和 tidb 的对比图。<br><img src="http://oqipguzbl.bkt.clouddn.com/tidb/tidb%E6%9E%B6%E6%9E%84.png" alt="TiDB架构"></p>
-<h3 id="集群部署-—-ansible方式部署"><a href="#集群部署-—-ansible方式部署" class="headerlink" title="集群部署 — ansible方式部署"></a>集群部署 — ansible方式部署</h3><p>具体可以看<a href="https://pingcap.com/doc-ansible-deployment-zh" target="_blank" rel="noopener">官方部署文档</a><br>按照流程便可以完成, 文档中有服务器要求， 需要注意的是 保证机器<code>entos7.3</code>以上， 且<code>文件系统推荐 ext4</code>，且服务器之间要配置<code>ssh免密登录</code>。当前是部署的最新版本是ga版本的1.0.1，ansile支持滚动升级，详见官方文档。</p>
+<h3 id="集群部署-—-ansible方式部署"><a href="#集群部署-—-ansible方式部署" class="headerlink" title="集群部署 — ansible方式部署"></a>集群部署 — ansible方式部署</h3><p>具体可以看<a href="https://pingcap.com/docs-cn/op-guide/ansible-deployment/" target="_blank" rel="noopener">官方部署文档</a><br>按照流程便可以完成, 文档中有服务器要求， 需要注意的是 保证机器<code>entos7.3</code>以上， 且<code>文件系统推荐 ext4</code>，且服务器之间要配置<code>ssh免密登录</code>。当前是部署的最新版本是ga版本的1.0.1，ansile支持滚动升级，详见官方文档。</p>
 <p>如果在执行 <code>ansible-playbook bootstrap.yml</code> 命令的时候出现校准机器配置之类的error，<br>例如磁盘告警 <code>dd: the write speed of tikv deploy_dir disk is too slow: MB/s &lt; 15 MB/s</code><br>可以修改 <code>inventory.ini</code> 中的参数为<code>false</code>。<br><img src="http://oqipguzbl.bkt.clouddn.com/tidb/inventory.png" alt="inventory.ini"></p>
 <p>如果需要配置数据data目录，可以在如下文件中配置<br><img src="http://oqipguzbl.bkt.clouddn.com/tidb/data.png" alt="data目录"></p>
 <h3 id="TiDB-测评"><a href="#TiDB-测评" class="headerlink" title="TiDB 测评"></a>TiDB 测评</h3><blockquote>
@@ -556,7 +556,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -569,7 +569,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -106,7 +106,7 @@
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-4.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-2.jpg">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-3.png">
-<meta property="og:updated_time" content="2018-02-01T03:36:13.679Z">
+<meta property="og:updated_time" content="2018-02-02T16:19:37.838Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tidb的日常">
 <meta name="twitter:description" content="TiDB也使用了一段时间，持续记录一些日常，防止大家也踩到同样的坑~">
@@ -359,6 +359,16 @@
 <p>联系了Tidb的开发人员，处理该情况的工具还没有完善（该问题已有<a href="https://github.com/pingcap/tidb/issues/4731" target="_blank" rel="noopener">issues</a>），没办法删掉出错的数据，因为测试环境的数据量比较大，迁移出来太费时，还好数据不是很重要，清理了数据就可以启动了。当时Tidb的版本如下：</p>
 <p><img src="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-3.png" alt="tidb-daily-1-3"></p>
 <p>所以小伙伴们在部署Tidb的时候要考量是否可能出现同时挂掉的可能（虽然概率不大），尤其是对于一些关键的业务，需要更多的考虑，比如更多的副本，或者异地机房，毕竟将<code>sync-log</code>设为true会带来相当大的性能损耗。</p>
+<h3 id="惊魂三小时"><a href="#惊魂三小时" class="headerlink" title="惊魂三小时"></a>惊魂三小时</h3><p>本来今天是要升级下Tikv的配置，后来得知还需要升级下版本，然后运维喊上了我，一起弄下。</p>
+<p>然后，就犯了几个重大的错误。记录一下，以此谨记。</p>
+<h4 id="ansible"><a href="#ansible" class="headerlink" title="ansible"></a>ansible</h4><p>使用ansible部署，一定要按着官方文档来，不然真的很僵硬。在生产环境，需要下载 GA 版本部署 TiDB。一开始部署现网用的是master版本，就出现了很多错误。</p>
+<blockquote>
+<p>切记需要使用GA版本</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /home/tidb</span><br><span class="line">git clone -b release-1.0 https://github.com/pingcap/tidb-ansible.git</span><br></pre></td></tr></table></figure>
+<p>这个版本的binlog是基于kafak的，如果要local的话，有个<code>release-1.0-binlog-local</code>版本</p>
+<h4 id="阿里云ECS设置自动挂载磁盘"><a href="#阿里云ECS设置自动挂载磁盘" class="headerlink" title="阿里云ECS设置自动挂载磁盘"></a>阿里云ECS设置自动挂载磁盘</h4><p>因为Tikv的需要较大的磁盘，当时是直接挂载了阿里云的SSD磁盘，不过当时没有将挂载磁盘设置为开机自动挂载。导致这次升级配置的时候（阿里云ECS升级配置的时候需要重启生效），重启后，磁盘没有挂上，只升级了Tidb（Servers），Pd，而Tikv仍然是原来版本。简直吐血···</p>
+<h4 id="Thanks-to-Tidb-Group"><a href="#Thanks-to-Tidb-Group" class="headerlink" title="Thanks to Tidb Group"></a>Thanks to Tidb Group</h4><p>最后联系了Tidb团队，Tidb的大佬远程协助了我们，一堆操作猛如虎，最后升级了版本，也保证了数据。吸取教训，防止以后再跌跟头~</p>
 <p>待续…</p>
 
       
@@ -411,6 +421,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/29/深入理解Java虚拟机--读书笔记/" rel="prev" title="深入理解Java虚拟机--读书笔记">
+                深入理解Java虚拟机--读书笔记 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -484,7 +498,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -497,7 +511,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">12</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -557,7 +571,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#raft-sync-log"><span class="nav-number">1.</span> <span class="nav-text">raft sync-log</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#raft-sync-log"><span class="nav-number">1.</span> <span class="nav-text">raft sync-log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#惊魂三小时"><span class="nav-number">2.</span> <span class="nav-text">惊魂三小时</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ansible"><span class="nav-number">2.1.</span> <span class="nav-text">ansible</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阿里云ECS设置自动挂载磁盘"><span class="nav-number">2.2.</span> <span class="nav-text">阿里云ECS设置自动挂载磁盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Thanks-to-Tidb-Group"><span class="nav-number">2.3.</span> <span class="nav-text">Thanks to Tidb Group</span></a></li></ol></li></ol></div>
             
 
           </div>
