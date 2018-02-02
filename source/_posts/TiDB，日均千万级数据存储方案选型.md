@@ -57,7 +57,7 @@ tidb的分布式的架构，且根据PD 之间的调度和tikv之间raft算法�
      
 ### 集群部署 — ansible方式部署
 
-具体可以看[官方部署文档](https://pingcap.com/doc-ansible-deployment-zh) 
+具体可以看[官方部署文档](https://pingcap.com/docs-cn/op-guide/ansible-deployment/) 
 按照流程便可以完成, 文档中有服务器要求， 需要注意的是 保证机器``entos7.3``以上， 且``文件系统推荐 ext4``，且服务器之间要配置``ssh免密登录``。当前是部署的最新版本是ga版本的1.0.1，ansile支持滚动升级，详见官方文档。
 
 如果在执行 ``ansible-playbook bootstrap.yml`` 命令的时候出现校准机器配置之类的error，
