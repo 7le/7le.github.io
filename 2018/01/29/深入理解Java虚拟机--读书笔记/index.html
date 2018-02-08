@@ -103,7 +103,7 @@
 <meta property="og:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png">
-<meta property="og:updated_time" content="2018-02-02T16:19:37.838Z">
+<meta property="og:updated_time" content="2018-02-08T15:12:00.005Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -353,7 +353,7 @@
 <h3 id="Part-2"><a href="#Part-2" class="headerlink" title="Part 2"></a>Part 2</h3><blockquote>
 <p>第二部分，<strong>自动内存管理机制</strong></p>
 </blockquote>
-<h4 id="2-2-运行时数据区域"><a href="#2-2-运行时数据区域" class="headerlink" title="2.2 运行时数据区域"></a>2.2 运行时数据区域</h4><p><img src="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png" alt="Java虚拟机运行时数据区"></p>
+<h4 id="运行时数据区域"><a href="#运行时数据区域" class="headerlink" title="运行时数据区域"></a>运行时数据区域</h4><p><img src="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png" alt="Java虚拟机运行时数据区"></p>
 <h5 id="Program-Counter-Register（程序计数器）"><a href="#Program-Counter-Register（程序计数器）" class="headerlink" title="Program Counter Register（程序计数器）"></a>Program Counter Register（程序计数器）</h5><ul>
 <li>较小的内存空间，可以看做是当前线程所执行的字节码的行号指示器，字节码解释器工作时就是通过改变计数器的值来选择下一条的指令，分支、循环、跳转、异常处理、线程恢复也依赖计数器。</li>
 <li>每条线程独立拥有，且互不影响，独立存储（线程私有）</li>
@@ -365,7 +365,30 @@
 <p>上面是JVM规范所定义的抽象概念，那么实际实现呢？</p>
 <p>Java线程总是需要以某种形式映射到OS线程上。映射模型可以是1:1（原生线程模型）、n:1（绿色线程/用户态线程模型）、m:n（混合模型）。</p>
 <p>以HotSpot VM的实现为例，它目前在大多数平台上都使用1:1模型，也就是每个Java线程都直接映射到一个OS线程上执行。此时，native方法就由原生平台直接执行，并不需要理会抽象的JVM层面上的“pc寄存器”概念——原生的CPU上真正的PC寄存器是怎样就是怎样。就像一个用C或C++写的多线程程序，它在线程切换的时候是怎样的，Java的native方法也就是怎样的。</p>
-<p>待续…</p>
+<h5 id="Java-Virtual-Machine-Stacks（Java-虚拟机栈）"><a href="#Java-Virtual-Machine-Stacks（Java-虚拟机栈）" class="headerlink" title="Java Virtual Machine Stacks（Java 虚拟机栈）"></a>Java Virtual Machine Stacks（Java 虚拟机栈）</h5><ul>
+<li>同样为线程私有</li>
+<li>每个方法被执行的时候都会同时创建一个栈帧 （Stack Frame）用于存储局部变量表、操作栈、动态链接、方法出口等信息。</li>
+<li>这里的局部变量表存放了各种基本类型（比如int、float等）<strong>其中64位的long和double类型占用2个局部变量空间（Slot）</strong>,其他占用为1个，对象引用和returnA    ddress类型（指向一条字节码指定的地址）</li>
+<li>其中如果线程请求的栈深度大于虚拟机所允许的深度，将抛出StackOverflowError异常。以及在动态扩展内存的时候无法申请到足够的内存，就会抛出OOM异常</li>
+</ul>
+<h5 id="Native-Method-Stacks（本地方法栈）"><a href="#Native-Method-Stacks（本地方法栈）" class="headerlink" title="Native Method Stacks（本地方法栈）"></a>Native Method Stacks（本地方法栈）</h5><p>与虚拟机栈非常相似，对应的是执行native 方法。</p>
+<h5 id="Java-Heap（Java-堆）"><a href="#Java-Heap（Java-堆）" class="headerlink" title="Java Heap（Java 堆）"></a>Java Heap（Java 堆）</h5><ul>
+<li>线程共享的内存区域，存放对象实例。</li>
+<li>GC堆（采用分代收集算法）</li>
+<li>堆可以处于物理上不连续的内存空间，只要逻辑上是连续的就可以。空间可以通过<strong>-Xmx</strong>和<strong>-Xms</strong>控制。</li>
+<li>如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，将会抛出OOM异常</li>
+</ul>
+<h5 id="Method-Area-方法区"><a href="#Method-Area-方法区" class="headerlink" title="Method Area (方法区)"></a>Method Area (方法区)</h5><ul>
+<li>线程共享的内存区域，存放jvm加载的类信息、常量、静态变量、即时编译器编译后的代码块等数据</li>
+<li>当方法区无法满足内存分配需求时，会抛出OOM异常</li>
+</ul>
+<blockquote>
+<p>Runtime Constant Pool（运行时常量池）也是方法区的一部分，它是每个类私有的。每个class文件里的“常量池”在类被加载器加载之后，就映射存放在这个地方。<br>而String pool（字符串常量池）和运行时常量池不是一个概念<strong>（容易混淆）</strong>，String pool是全局共享的，<strong>不在方法区内，在GC堆外（native memory）</strong>。String pool的实现是一个StringTable类，它是一个Hash表。.在java7，8中使用 <strong>-XX:StringTableSize</strong> 参数设置字符串常量池的map大小。</p>
+</blockquote>
+<h5 id="Direct-Memory-直接内存"><a href="#Direct-Memory-直接内存" class="headerlink" title="Direct Memory (直接内存)"></a>Direct Memory (直接内存)</h5><ul>
+<li>不属于虚拟机运行时数据区的一部分，但是频繁被调用，也可能导致出现OOM异常，在配置虚拟机参数时也需要注意。<strong>（-XX:MaxDirectMemorySize）</strong></li>
+</ul>
+<p>用心读，细细写（待续…）</p>
 
       
     </div>
@@ -563,7 +586,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-1"><span class="nav-number">1.</span> <span class="nav-text">Part 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-2"><span class="nav-number">2.</span> <span class="nav-text">Part 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-运行时数据区域"><span class="nav-number">2.1.</span> <span class="nav-text">2.2 运行时数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Program-Counter-Register（程序计数器）"><span class="nav-number">2.1.1.</span> <span class="nav-text">Program Counter Register（程序计数器）</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-1"><span class="nav-number">1.</span> <span class="nav-text">Part 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-2"><span class="nav-number">2.</span> <span class="nav-text">Part 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行时数据区域"><span class="nav-number">2.1.</span> <span class="nav-text">运行时数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Program-Counter-Register（程序计数器）"><span class="nav-number">2.1.1.</span> <span class="nav-text">Program Counter Register（程序计数器）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Virtual-Machine-Stacks（Java-虚拟机栈）"><span class="nav-number">2.1.2.</span> <span class="nav-text">Java Virtual Machine Stacks（Java 虚拟机栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Native-Method-Stacks（本地方法栈）"><span class="nav-number">2.1.3.</span> <span class="nav-text">Native Method Stacks（本地方法栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Heap（Java-堆）"><span class="nav-number">2.1.4.</span> <span class="nav-text">Java Heap（Java 堆）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Method-Area-方法区"><span class="nav-number">2.1.5.</span> <span class="nav-text">Method Area (方法区)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Direct-Memory-直接内存"><span class="nav-number">2.1.6.</span> <span class="nav-text">Direct Memory (直接内存)</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
