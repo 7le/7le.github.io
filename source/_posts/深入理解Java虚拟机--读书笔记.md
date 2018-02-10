@@ -70,6 +70,22 @@ Java线程总是需要以某种形式映射到OS线程上。映射模型可以�
 > Runtime Constant Pool（运行时常量池）也是方法区的一部分，它是每个类私有的。每个class文件里的“常量池”在类被加载器加载之后，就映射存放在这个地方。
 而String pool（字符串常量池）和运行时常量池不是一个概念**（容易混淆）**，String pool是全局共享的，**不在方法区内，在GC堆外（native memory）**。String pool的实现是一个StringTable类，它是一个Hash表。.在java7，8中使用 **-XX:StringTableSize** 参数设置字符串常量池的map大小。
 
+###### Metaspace
+
+> 在jdk8中 PermGen被移除，方法区移至 Metaspace ，可以通过**-XX:MaxMetaspaceSize**调整大小。（针对于Hotspot）
+
+首先Metaspace（元空间）是哪一块区域呢？官方的解释是：
+``In JDK 8, classes metadata is now stored in the native heap and this space is called Metaspace.``
+
+翻译过来就是：JDK 8 开始把类的元数据放到本地堆内存(native heap)中，这一块区域就叫 Metaspace。
+
+再了解一下PermGen：
+而PermGen（永久代）是Hotspot虚拟机特有的概念，是方法区的一种实现，别的JVM都没有这个东西。而方法区（Method area）只是JVM规范中定义的一个概念，用于存储类信息、常量池、静态变量、JIT编译后的代码等数据，具体放在哪里，不同的实现可以放在不同的地方。
+
+以及被移除的原因：
+
+* 一部分是PermGen内存经常会溢出，导致OOM。
+* 另外移除PermGen 可以促进 HotSpot JVM 与 JRockit VM 的融合，因为 JRockit 并没有永久代。
 
 ##### Direct Memory (直接内存)
 
