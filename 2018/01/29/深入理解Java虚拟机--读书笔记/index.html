@@ -103,7 +103,7 @@
 <meta property="og:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png">
-<meta property="og:updated_time" content="2018-02-08T15:12:00.005Z">
+<meta property="og:updated_time" content="2018-02-10T08:14:21.776Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -385,6 +385,17 @@
 <blockquote>
 <p>Runtime Constant Pool（运行时常量池）也是方法区的一部分，它是每个类私有的。每个class文件里的“常量池”在类被加载器加载之后，就映射存放在这个地方。<br>而String pool（字符串常量池）和运行时常量池不是一个概念<strong>（容易混淆）</strong>，String pool是全局共享的，<strong>不在方法区内，在GC堆外（native memory）</strong>。String pool的实现是一个StringTable类，它是一个Hash表。.在java7，8中使用 <strong>-XX:StringTableSize</strong> 参数设置字符串常量池的map大小。</p>
 </blockquote>
+<h6 id="Metaspace"><a href="#Metaspace" class="headerlink" title="Metaspace"></a>Metaspace</h6><blockquote>
+<p>在jdk8中 PermGen被移除，方法区移至 Metaspace ，可以通过<strong>-XX:MaxMetaspaceSize</strong>调整大小。（针对于Hotspot）</p>
+</blockquote>
+<p>首先Metaspace（元空间）是哪一块区域呢？官方的解释是：<br><code>In JDK 8, classes metadata is now stored in the native heap and this space is called Metaspace.</code></p>
+<p>翻译过来就是：JDK 8 开始把类的元数据放到本地堆内存(native heap)中，这一块区域就叫 Metaspace。</p>
+<p>再了解一下PermGen：<br>而PermGen（永久代）是Hotspot虚拟机特有的概念，是方法区的一种实现，别的JVM都没有这个东西。而方法区（Method area）只是JVM规范中定义的一个概念，用于存储类信息、常量池、静态变量、JIT编译后的代码等数据，具体放在哪里，不同的实现可以放在不同的地方。</p>
+<p>以及被移除的原因：</p>
+<ul>
+<li>一部分是PermGen内存经常会溢出，导致OOM。</li>
+<li>另外移除PermGen 可以促进 HotSpot JVM 与 JRockit VM 的融合，因为 JRockit 并没有永久代。</li>
+</ul>
 <h5 id="Direct-Memory-直接内存"><a href="#Direct-Memory-直接内存" class="headerlink" title="Direct Memory (直接内存)"></a>Direct Memory (直接内存)</h5><ul>
 <li>不属于虚拟机运行时数据区的一部分，但是频繁被调用，也可能导致出现OOM异常，在配置虚拟机参数时也需要注意。<strong>（-XX:MaxDirectMemorySize）</strong></li>
 </ul>
@@ -586,7 +597,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-1"><span class="nav-number">1.</span> <span class="nav-text">Part 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-2"><span class="nav-number">2.</span> <span class="nav-text">Part 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行时数据区域"><span class="nav-number">2.1.</span> <span class="nav-text">运行时数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Program-Counter-Register（程序计数器）"><span class="nav-number">2.1.1.</span> <span class="nav-text">Program Counter Register（程序计数器）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Virtual-Machine-Stacks（Java-虚拟机栈）"><span class="nav-number">2.1.2.</span> <span class="nav-text">Java Virtual Machine Stacks（Java 虚拟机栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Native-Method-Stacks（本地方法栈）"><span class="nav-number">2.1.3.</span> <span class="nav-text">Native Method Stacks（本地方法栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Heap（Java-堆）"><span class="nav-number">2.1.4.</span> <span class="nav-text">Java Heap（Java 堆）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Method-Area-方法区"><span class="nav-number">2.1.5.</span> <span class="nav-text">Method Area (方法区)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Direct-Memory-直接内存"><span class="nav-number">2.1.6.</span> <span class="nav-text">Direct Memory (直接内存)</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-1"><span class="nav-number">1.</span> <span class="nav-text">Part 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-2"><span class="nav-number">2.</span> <span class="nav-text">Part 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行时数据区域"><span class="nav-number">2.1.</span> <span class="nav-text">运行时数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Program-Counter-Register（程序计数器）"><span class="nav-number">2.1.1.</span> <span class="nav-text">Program Counter Register（程序计数器）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Virtual-Machine-Stacks（Java-虚拟机栈）"><span class="nav-number">2.1.2.</span> <span class="nav-text">Java Virtual Machine Stacks（Java 虚拟机栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Native-Method-Stacks（本地方法栈）"><span class="nav-number">2.1.3.</span> <span class="nav-text">Native Method Stacks（本地方法栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Heap（Java-堆）"><span class="nav-number">2.1.4.</span> <span class="nav-text">Java Heap（Java 堆）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Method-Area-方法区"><span class="nav-number">2.1.5.</span> <span class="nav-text">Method Area (方法区)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Metaspace"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">Metaspace</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Direct-Memory-直接内存"><span class="nav-number">2.1.6.</span> <span class="nav-text">Direct Memory (直接内存)</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
