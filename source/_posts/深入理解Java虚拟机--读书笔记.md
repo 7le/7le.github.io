@@ -75,12 +75,13 @@ Java线程总是需要以某种形式映射到OS线程上。映射模型可以�
 > 在jdk8中 PermGen被移除，方法区移至 Metaspace ，可以通过**-XX:MaxMetaspaceSize**调整大小。（针对于Hotspot）
 
 首先Metaspace（元空间）是哪一块区域呢？官方的解释是：
-``In JDK 8, classes metadata is now stored in the native heap and this space is called Metaspace.``
+> In JDK 8, classes metadata is now stored in the native heap and this space is called Metaspace.
 
 翻译过来就是：JDK 8 开始把类的元数据放到本地堆内存(native heap)中，这一块区域就叫 Metaspace。
 
 再了解一下PermGen：
-而PermGen（永久代）是Hotspot虚拟机特有的概念，是方法区的一种实现，别的JVM都没有这个东西。而方法区（Method area）只是JVM规范中定义的一个概念，用于存储类信息、常量池、静态变量、JIT编译后的代码等数据，具体放在哪里，不同的实现可以放在不同的地方。
+
+PermGen（永久代）是Hotspot虚拟机特有的概念，是方法区的一种实现，别的JVM都没有这个东西。而方法区（Method area）只是JVM规范中定义的一个概念，用于存储类信息、常量池、静态变量、JIT编译后的代码等数据，具体放在哪里，不同的实现可以放在不同的地方。
 
 以及被移除的原因：
 
