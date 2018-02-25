@@ -103,7 +103,7 @@
 <meta property="og:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png">
-<meta property="og:updated_time" content="2018-02-10T08:19:17.153Z">
+<meta property="og:updated_time" content="2018-02-25T15:58:10.745Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -403,6 +403,30 @@
 <h5 id="Direct-Memory-直接内存"><a href="#Direct-Memory-直接内存" class="headerlink" title="Direct Memory (直接内存)"></a>Direct Memory (直接内存)</h5><ul>
 <li>不属于虚拟机运行时数据区的一部分，但是频繁被调用，也可能导致出现OOM异常，在配置虚拟机参数时也需要注意。<strong>（-XX:MaxDirectMemorySize）</strong></li>
 </ul>
+<h3 id="Part-3"><a href="#Part-3" class="headerlink" title="Part 3"></a>Part 3</h3><blockquote>
+<p>第三部分，<strong>垃圾收集器与内存分配策略</strong></p>
+</blockquote>
+<h4 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h4><p>目前可达性分析算法是判定对象是否存活的主流实现方式，从<strong>GC Roots</strong>的对象作为起点向下搜索，搜索中的路径称为引用链，当一个对象到<strong>GC Roots</strong>没有任何引用链相连时，则证明此对象是不可用。</p>
+<p>那么是如何来判断<strong>GC Roots</strong>是否有引用链呢?</p>
+<blockquote>
+<p>所谓<strong>GC root</strong>，就是一组必须活跃的引用。</p>
+</blockquote>
+<p>这些引用可能包括：</p>
+<ul>
+<li>所有Java活线程当前跃的栈帧里指向GC堆里的对象的引用；换句话说，当前所有正在被调用的方法的引用类型的参数/局部变量/临时值。</li>
+<li>虚拟机栈中的引用的对象</li>
+<li>本地方法栈中JNI的引用的对象</li>
+<li>（看情况）所有当前被加载的Java类</li>
+<li>（看情况）Java类的引用类型静态变量</li>
+<li>（看情况）Java类的运行时常量池里的引用类型常量（String或Class类型）</li>
+<li>（看情况）String常量池（StringTable）里的引用</li>
+</ul>
+<p><strong>GC root</strong>的根本思路就是：给定一个集合的引用作为根出发，通过引用关系遍历对象图，能被遍历到的（可到达的）对象就被判定为存活，其余对象就自然被判定为死亡。<strong>GC root</strong>的本质是通过找出所有活对象来把其余空间认定为“无用”，而不是找出所有死掉的对象并回收它们占用的空间。</p>
+<p>而这些被判定为死亡的对象不是直接会被回收，而是至少经历两次标记过程。</p>
+<ul>
+<li>第一次标记并进行一次筛选，筛选的条件是此对象是否有必要执行finalize()方法。</li>
+<li>第二次标记，如果这个对象被判定为有必要执行finalize（）方法，那么这个对象将会被放置在一个名为：F-Queue的队列之中，并在稍后由一条虚拟机自动建立的、低优先级的Finalizer线程去执行。如果对象要在finalize（）中重新与引用链上的任何的一个对象建立关联将避免回收，反之则被回收。</li>
+</ul>
 <p>用心读，细细写（待续…）</p>
 
       
@@ -601,7 +625,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-1"><span class="nav-number">1.</span> <span class="nav-text">Part 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-2"><span class="nav-number">2.</span> <span class="nav-text">Part 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行时数据区域"><span class="nav-number">2.1.</span> <span class="nav-text">运行时数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Program-Counter-Register（程序计数器）"><span class="nav-number">2.1.1.</span> <span class="nav-text">Program Counter Register（程序计数器）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Virtual-Machine-Stacks（Java-虚拟机栈）"><span class="nav-number">2.1.2.</span> <span class="nav-text">Java Virtual Machine Stacks（Java 虚拟机栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Native-Method-Stacks（本地方法栈）"><span class="nav-number">2.1.3.</span> <span class="nav-text">Native Method Stacks（本地方法栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Heap（Java-堆）"><span class="nav-number">2.1.4.</span> <span class="nav-text">Java Heap（Java 堆）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Method-Area-方法区"><span class="nav-number">2.1.5.</span> <span class="nav-text">Method Area (方法区)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Metaspace"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">Metaspace</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Direct-Memory-直接内存"><span class="nav-number">2.1.6.</span> <span class="nav-text">Direct Memory (直接内存)</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-1"><span class="nav-number">1.</span> <span class="nav-text">Part 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-2"><span class="nav-number">2.</span> <span class="nav-text">Part 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行时数据区域"><span class="nav-number">2.1.</span> <span class="nav-text">运行时数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Program-Counter-Register（程序计数器）"><span class="nav-number">2.1.1.</span> <span class="nav-text">Program Counter Register（程序计数器）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Virtual-Machine-Stacks（Java-虚拟机栈）"><span class="nav-number">2.1.2.</span> <span class="nav-text">Java Virtual Machine Stacks（Java 虚拟机栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Native-Method-Stacks（本地方法栈）"><span class="nav-number">2.1.3.</span> <span class="nav-text">Native Method Stacks（本地方法栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Heap（Java-堆）"><span class="nav-number">2.1.4.</span> <span class="nav-text">Java Heap（Java 堆）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Method-Area-方法区"><span class="nav-number">2.1.5.</span> <span class="nav-text">Method Area (方法区)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Metaspace"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">Metaspace</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Direct-Memory-直接内存"><span class="nav-number">2.1.6.</span> <span class="nav-text">Direct Memory (直接内存)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-3"><span class="nav-number">3.</span> <span class="nav-text">Part 3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#可达性分析算法"><span class="nav-number">3.1.</span> <span class="nav-text">可达性分析算法</span></a></li></ol></li></ol></div>
             
 
           </div>
