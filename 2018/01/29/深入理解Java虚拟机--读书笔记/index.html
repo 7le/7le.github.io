@@ -103,7 +103,7 @@
 <meta property="og:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png">
-<meta property="og:updated_time" content="2018-02-25T15:58:10.745Z">
+<meta property="og:updated_time" content="2018-02-26T03:36:15.207Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -392,7 +392,7 @@
 <blockquote>
 <p>In JDK 8, classes metadata is now stored in the native heap and this space is called Metaspace.</p>
 </blockquote>
-<p>翻译过来就是：JDK 8 开始把类的元数据放到本地堆内存(native heap)中，这一块区域就叫 Metaspace。</p>
+<p>翻译过来就是：JDK 8 开始把类的元数据放到本地堆内存(native heap)中，这一块区域就叫 Metaspace。其中Oracle blog 提到的 native heap 应该是归属于 native memory（I guess）。</p>
 <p>再了解一下PermGen：</p>
 <p>PermGen（永久代）是Hotspot虚拟机特有的概念，是方法区的一种实现，别的JVM都没有这个东西。而方法区（Method area）只是JVM规范中定义的一个概念，用于存储类信息、常量池、静态变量、JIT编译后的代码等数据，具体放在哪里，不同的实现可以放在不同的地方。</p>
 <p>以及被移除的原因：</p>
