@@ -106,7 +106,9 @@
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-4.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-2.jpg">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-3.png">
-<meta property="og:updated_time" content="2018-02-26T03:36:15.199Z">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb_select.jpg">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb_coprocessor_select.jpg">
+<meta property="og:updated_time" content="2018-03-02T14:57:45.506Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tidb的日常">
 <meta name="twitter:description" content="TiDB也使用了一段时间，持续记录一些日常，防止大家也踩到同样的坑~">
@@ -369,6 +371,30 @@
 <p>这个版本的binlog是基于kafak的，如果要local的话，有个<code>release-1.0-binlog-local</code>版本</p>
 <h4 id="阿里云ECS设置自动挂载磁盘"><a href="#阿里云ECS设置自动挂载磁盘" class="headerlink" title="阿里云ECS设置自动挂载磁盘"></a>阿里云ECS设置自动挂载磁盘</h4><p>因为Tikv的需要较大的磁盘，当时是直接挂载了阿里云的SSD磁盘，不过当时没有将挂载磁盘设置为开机自动挂载。导致这次升级配置的时候（阿里云ECS升级配置的时候需要重启生效），重启后，磁盘没有挂上，只升级了Tidb（Servers），Pd，而Tikv仍然是原来版本。简直吐血···</p>
 <h4 id="Thanks-to-Tidb-Group"><a href="#Thanks-to-Tidb-Group" class="headerlink" title="Thanks to Tidb Group"></a>Thanks to Tidb Group</h4><p>最后联系了Tidb团队，Tidb的大佬远程协助了我们，一堆操作猛如虎，最后升级了版本，也保证了数据。吸取教训，防止以后再跌跟头~</p>
+<h3 id="Tidb-查询流程"><a href="#Tidb-查询流程" class="headerlink" title="Tidb 查询流程"></a>Tidb 查询流程</h3><p><img src="http://oqipguzbl.bkt.clouddn.com/tidb_select.jpg" alt="tidb_select"></p>
+<p>流程如下：</p>
+<ul>
+<li>tidb 收到来自客户端的 select 请求。</li>
+<li>tidb 分析该请求，准备执行计划；同时，tidb 向 pd 获取 start_ts。</li>
+<li>tidb 从缓存中获取 information_schema，若没有，从 tikv 获取 information_schema。</li>
+<li>tidb 从 information_schema 中获取到当前用户所操作的 table 的元信息。</li>
+<li>tidb 根据准备好的执行计划，将 tidb 这边的 keyrange 带上 table 的元信息后组织成 tikv 的 keyrange。</li>
+<li>tidb 从缓存或 PD 获取每个 keyrange 所在的 regions 信息。</li>
+<li>tidb 根据 regions 对 keyrange 进行分组。</li>
+<li>tidb 并发向所有 regions 对应的 tikv 分发 select 请求。</li>
+<li>tidb 收到所有结果后，整理数据。</li>
+<li>tidb 执行下一个执行计划 5，或返回客户端数据。</li>
+</ul>
+<p>简单的说，就是 TiDB 在收到客户端的查询请求后，切分成一个个以 Range 为单位的子任务， 并行下发到所在的 TIKV 上。</p>
+<p>具体的查询如：<code>select count(*) from t where a+b&gt;5</code></p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb_coprocessor_select.jpg" alt="tidb_coprocessor_select"></p>
+<p>假设表 t 的数据落在三个 region 上，各个 region 所包含的主键 (handle) 范围如下：</p>
+<ul>
+<li>region1 包含了 t 的 [0,100)</li>
+<li>region2 包含了 t 的 [100,1000)</li>
+<li>region3 包含了 t 的 [1000,+~)</li>
+</ul>
+<p>那么只需要在各个 region 上分别统计符合条件 a+b&gt;5 的数据，然后在 tidb 再将这三份数据聚合即可。</p>
 <p>待续…</p>
 
       
@@ -571,7 +597,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#raft-sync-log"><span class="nav-number">1.</span> <span class="nav-text">raft sync-log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#惊魂三小时"><span class="nav-number">2.</span> <span class="nav-text">惊魂三小时</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ansible"><span class="nav-number">2.1.</span> <span class="nav-text">ansible</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阿里云ECS设置自动挂载磁盘"><span class="nav-number">2.2.</span> <span class="nav-text">阿里云ECS设置自动挂载磁盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Thanks-to-Tidb-Group"><span class="nav-number">2.3.</span> <span class="nav-text">Thanks to Tidb Group</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#raft-sync-log"><span class="nav-number">1.</span> <span class="nav-text">raft sync-log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#惊魂三小时"><span class="nav-number">2.</span> <span class="nav-text">惊魂三小时</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ansible"><span class="nav-number">2.1.</span> <span class="nav-text">ansible</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阿里云ECS设置自动挂载磁盘"><span class="nav-number">2.2.</span> <span class="nav-text">阿里云ECS设置自动挂载磁盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Thanks-to-Tidb-Group"><span class="nav-number">2.3.</span> <span class="nav-text">Thanks to Tidb Group</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tidb-查询流程"><span class="nav-number">3.</span> <span class="nav-text">Tidb 查询流程</span></a></li></ol></div>
             
 
           </div>

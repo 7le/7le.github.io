@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="在一个项目中，事务，异常处理和拦截器都是必不可少的，今天就先记录一下事务的笔记~">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-26T03:36:15.199Z">
+<meta property="og:updated_time" content="2018-03-02T14:57:45.506Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springboot项目笔记：(三) 事务">
 <meta name="twitter:description" content="在一个项目中，事务，异常处理和拦截器都是必不可少的，今天就先记录一下事务的笔记~">
@@ -353,11 +353,23 @@
 </blockquote>
 <h4 id="注释配置事务的传播行为和隔离级别"><a href="#注释配置事务的传播行为和隔离级别" class="headerlink" title="注释配置事务的传播行为和隔离级别"></a>注释配置事务的传播行为和隔离级别</h4><blockquote>
 <p>贴上注释的重要参数，以备方便查阅</p>
+</blockquote>
+<blockquote>
 <p>事物传播行为介绍:<br>@Transactional(propagation=Propagation.REQUIRED)<br>如果有事务, 那么加入事务, 没有的话新建一个(默认情况下)<br>@Transactional(propagation=Propagation.NOT_SUPPORTED)<br>容器不为这个方法开启事务<br>@Transactional(propagation=Propagation.REQUIRES_NEW)<br>不管是否存在事务,都创建一个新的事务,原来的挂起,新的执行完毕,继续执行老的事务<br>@Transactional(propagation=Propagation.MANDATORY)<br>必须在一个已有的事务中执行,否则抛出异常<br>@Transactional(propagation=Propagation.NEVER)<br>必须在一个没有的事务中执行,否则抛出异常(与Propagation.MANDATORY相反)<br>@Transactional(propagation=Propagation.SUPPORTS)<br>如果其他bean调用这个方法,在其他bean中声明事务,那就用事务.如果其他bean没有声明事务,那就不用事务.</p>
+</blockquote>
+<blockquote>
 <p>事物超时设置:<br>@Transactional(timeout=30) //默认是30秒</p>
+</blockquote>
+<blockquote>
 <p>事务隔离级别:<br>@Transactional(isolation = Isolation.READ_UNCOMMITTED)<br>读取未提交数据(会出现脏读, 不可重复读) 基本不使用<br>@Transactional(isolation = Isolation.READ_COMMITTED)<br>读取已提交数据(会出现不可重复读和幻读)<br>@Transactional(isolation = Isolation.REPEATABLE_READ)<br>可重复读(会出现幻读)<br>@Transactional(isolation = Isolation.SERIALIZABLE)<br>串行化</p>
+</blockquote>
+<blockquote>
 <p>MYSQL: 默认为REPEATABLE_READ级别<br>SQLSERVER: 默认为READ_COMMITTED</p>
+</blockquote>
+<blockquote>
 <p>脏读 : 一个事务读取到另一事务未提交的更新数据<br>不可重复读 : 在同一事务中, 多次读取同一数据返回的结果有所不同, 换句话说, 后续读取可以读到另一事务已提交的更新数据. 相反, “可重复读”在同一事务中多次读取数据时, 能够保证所读数据一样, 也就是后续读取不能读到另一事务已提交的更新数据<br>幻读 : 一个事务读到另一个事务已提交的insert数据</p>
+</blockquote>
+<blockquote>
 <p>rollbackFor：<br>指定单一异常类：@Transactional(rollbackFor=RuntimeException.class)<br>指定多个异常类：@Transactional(rollbackFor={RuntimeException.class, Exception.class})</p>
 </blockquote>
 <p>完。^.^</p>

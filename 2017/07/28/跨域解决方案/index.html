@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="前后端分离的思想越来越普及，要做好前后端分离，那就要先跨好域~">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-02-26T03:36:15.207Z">
+<meta property="og:updated_time" content="2018-03-02T14:57:45.506Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="跨域解决方案">
 <meta name="twitter:description" content="前后端分离的思想越来越普及，要做好前后端分离，那就要先跨好域~">
@@ -350,12 +350,26 @@
 <h3 id="什么是跨域"><a href="#什么是跨域" class="headerlink" title="什么是跨域"></a>什么是跨域</h3><p>跨域顾名思义，就是跨出了同一个域。我们可以看以下的示例帮助我们更好理解：</p>
 <blockquote>
 <p><a href="http://www.a.com/a.js" target="_blank" rel="noopener">http://www.a.com/a.js</a><br> <a href="http://www.a.com/b.js" target="_blank" rel="noopener">http://www.a.com/b.js</a>      同一域名下   允许通信</p>
+</blockquote>
+<blockquote>
 <p><a href="http://www.a.com/lab/a.js" target="_blank" rel="noopener">http://www.a.com/lab/a.js</a><br> <a href="http://www.a.com/script/b.js" target="_blank" rel="noopener">http://www.a.com/script/b.js</a>   同一域名下不同文件夹 允许通信</p>
+</blockquote>
+<blockquote>
 <p><a href="http://www.a.com:8000/a.js" target="_blank" rel="noopener">http://www.a.com:8000/a.js</a><br> <a href="http://www.a.com/b.js" target="_blank" rel="noopener">http://www.a.com/b.js</a>      同一域名，不同端口  不允许通信</p>
+</blockquote>
+<blockquote>
 <p><a href="http://www.a.com/a.js" target="_blank" rel="noopener">http://www.a.com/a.js</a><br> <a href="https://www.a.com/b.js" target="_blank" rel="noopener">https://www.a.com/b.js</a>    同一域名，不同协议 不允许通信</p>
+</blockquote>
+<blockquote>
 <p><a href="http://www.a.com/a.js" target="_blank" rel="noopener">http://www.a.com/a.js</a><br> <a href="http://70.32.92.74/b.js" target="_blank" rel="noopener">http://70.32.92.74/b.js</a>    域名和域名对应ip 不允许通信</p>
+</blockquote>
+<blockquote>
 <p><a href="http://www.a.com/a.js" target="_blank" rel="noopener">http://www.a.com/a.js</a><br> <a href="http://script.a.com/b.js" target="_blank" rel="noopener">http://script.a.com/b.js</a>   主域相同，子域不同 不允许通信</p>
+</blockquote>
+<blockquote>
 <p><a href="http://www.a.com/a.js" target="_blank" rel="noopener">http://www.a.com/a.js</a><br> <a href="http://a.com/b.js" target="_blank" rel="noopener">http://a.com/b.js</a>          同一域名，不同二级域名（同上）不允许通信（cookie这种情况下也不允许访问）</p>
+</blockquote>
+<blockquote>
 <p><a href="http://www.cnblogs.com/a.js" target="_blank" rel="noopener">http://www.cnblogs.com/a.js</a><br> <a href="http://www.a.com/b.js" target="_blank" rel="noopener">http://www.a.com/b.js</a>    不同域名 不允许通信</p>
 </blockquote>
 <h3 id="跨域的方案"><a href="#跨域的方案" class="headerlink" title="跨域的方案"></a>跨域的方案</h3><p>那出现了问题，我们就结束问题喽，跨域的方式挺多种的。比如jsonp就可以解决，但jsonp有它的局限性，这里就不介绍它了，因为它不是主角~ 这次主要的解决方案是通过nginx来实现CORS。</p>
