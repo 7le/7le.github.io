@@ -57,5 +57,35 @@ git clone -b release-1.0 https://github.com/pingcap/tidb-ansible.git
 
 最后联系了Tidb团队，Tidb的大佬远程协助了我们，一堆操作猛如虎，最后升级了版本，也保证了数据。吸取教训，防止以后再跌跟头~
 
+### Tidb 查询流程
+
+![tidb_select](http://oqipguzbl.bkt.clouddn.com/tidb_select.jpg)
+
+流程如下：
+
+* tidb 收到来自客户端的 select 请求。
+* tidb 分析该请求，准备执行计划；同时，tidb 向 pd 获取 start_ts。
+* tidb 从缓存中获取 information_schema，若没有，从 tikv 获取 information_schema。
+* tidb 从 information_schema 中获取到当前用户所操作的 table 的元信息。
+* tidb 根据准备好的执行计划，将 tidb 这边的 keyrange 带上 table 的元信息后组织成 tikv 的 keyrange。
+* tidb 从缓存或 PD 获取每个 keyrange 所在的 regions 信息。
+* tidb 根据 regions 对 keyrange 进行分组。
+* tidb 并发向所有 regions 对应的 tikv 分发 select 请求。
+* tidb 收到所有结果后，整理数据。
+* tidb 执行下一个执行计划 5，或返回客户端数据。
+
+简单的说，就是 TiDB 在收到客户端的查询请求后，切分成一个个以 Range 为单位的子任务， 并行下发到所在的 TIKV 上。
+
+具体的查询如：``` select count(*) from t where a+b>5 ```
+
+![tidb_coprocessor_select](http://oqipguzbl.bkt.clouddn.com/tidb_coprocessor_select.jpg)
+
+假设表 t 的数据落在三个 region 上，各个 region 所包含的主键 (handle) 范围如下：
+
+* region1 包含了 t 的 [0,100)
+* region2 包含了 t 的 [100,1000)
+* region3 包含了 t 的 [1000,+~)
+
+那么只需要在各个 region 上分别统计符合条件 a+b>5 的数据，然后在 tidb 再将这三份数据聚合即可。
 
 待续...
