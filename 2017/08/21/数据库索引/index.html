@@ -104,9 +104,9 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/db1.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/db2.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/db3.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/db4.png">
-<meta property="og:updated_time" content="2018-03-05T06:08:00.273Z">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/b+tree.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/b-tree.png">
+<meta property="og:updated_time" content="2018-03-05T13:12:52.264Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库索引整理">
 <meta name="twitter:description" content="整理一下近段时间学习的数据库知识点~">
@@ -396,9 +396,9 @@
 <p>create index index_score_and_name on user_info(score, name);//建立索引 姓名，分数<br>  select name from student where score = 100;//查询分数为100分的学生名字<br>上面通过非聚集索引index_score_and_name查找分数为100的叶节点的内容，因为叶节点中保存了聚集索引的key值还有name的内容，所以不需要省去通过聚集索引去查找数据行的步骤，直接返回name，大大的提高了查询性能。</p>
 </blockquote>
 <h3 id="btree"><a href="#btree" class="headerlink" title="btree"></a>btree</h3><p>大家在建普通索引（非聚焦索引）的时候，在Innodb下往往会有两种索引方法，一种是btree，一种是hash。这里的btree是指b+tree。这里就会有个容易混淆的东西，那就是b+tree和b-tree。</p>
-<p>b+tree 如图：<br><img src="http://oqipguzbl.bkt.clouddn.com/db3.png" alt="b+tree"></p>
-<p>b-tree 如图：<br><img src="http://oqipguzbl.bkt.clouddn.com/db4.png" alt="b-tree"></p>
-<p>观察两种结构，我们可以发现b-tree和b+tree最重要的一个区别就是B+tree只有叶子节点存放指向记录的指针，而B-tree是每个节点都会有指向记录的指针。另外b+tree中所有叶子节点都是通过指针连接在一起，而b-tree不会。</p>
+<p>b+tree 如图：<br><img src="http://oqipguzbl.bkt.clouddn.com/b+tree.png" alt="b+tree"></p>
+<p>b-tree 如图：<br><img src="http://oqipguzbl.bkt.clouddn.com/b-tree.png" alt="b-tree"></p>
+<p>观察两种结构，我们可以发现b-tree和b+tree最重要的一个区别就是B+tree只有叶子节点存放数据，而B-tree是每个节点都会存放数据。另外b+tree中所有叶子节点都是通过指针连接在一起，而b-tree不会。</p>
 <p>所以相对b-tree，b+tree的层数会更少，因为它的叶子节点存放数据，所以它层数很少，可以达到减少磁盘IO次数的效果，当查询数据的时候，最好的情况就是很快找到目标索引，然后读取数据。而B-tree的每个结点都有data域，这无疑增大了节点大小，说白了增加了磁盘IO次数（磁盘IO一次读出的数据量大小是固定的，单个数据变大，每次读出的就少，IO次数增多，每次IO都是相当耗时的），而B+树除了叶子节点其它节点并不存储数据，节点小，磁盘IO次数就少。这是优点之一。另外就是b+tree的叶子节点之间通过指针来连接，范围扫描将十分简单，而对于b-tree来说，则需要在叶子节点和内部节点不停的往返移动</p>
 <p>Mysql采用的是b+tree，而不是b-tree，不是说b-tree不好，而是b+tree更加适合mysql，更加适合关系型数据库。为什么这么说呢，因为我们大家熟知的Mongodb采用的就是b-tree。Mongodb是文档型的nosql，它是以Bson(Binary JSON)格式作为存储<br>目的就是<strong>高性能，高可用，易扩展</strong>。首先它摆脱了关系模型，MongoDB使用B-树，对于在内部节点的数据，可直接得到，不必根据叶子节点来定位，只要找到指定索引就可以进行访问，无疑提升单次查询的效率。</p>
 <p>本人才疏学浅，不知道有没有理解的错误，大家可以看下大神的回答<a href="https://stackoverflow.com/questions/870218/differences-between-b-trees-and-b-trees" target="_blank" rel="noopener">Differences between B trees and B+ trees</a></p>
