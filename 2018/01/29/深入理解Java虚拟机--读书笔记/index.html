@@ -103,7 +103,7 @@
 <meta property="og:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png">
-<meta property="og:updated_time" content="2018-03-02T14:57:45.506Z">
+<meta property="og:updated_time" content="2018-03-05T06:08:00.273Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -409,11 +409,11 @@
 <h4 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h4><p>目前可达性分析算法是判定对象是否存活的主流实现方式，从<strong>GC Roots</strong>的对象作为起点向下搜索，搜索中的路径称为引用链，当一个对象到<strong>GC Roots</strong>没有任何引用链相连时，则证明此对象是不可用。</p>
 <p>那么是如何来判断<strong>GC Roots</strong>是否有引用链呢?</p>
 <blockquote>
-<p>所谓<strong>GC root</strong>，就是一组必须活跃的引用。</p>
+<p>所谓<strong>GC Roots</strong>，就是一组必须活跃的引用。</p>
 </blockquote>
 <p>这些引用可能包括：</p>
 <ul>
-<li>所有Java活线程当前跃的栈帧里指向GC堆里的对象的引用；换句话说，当前所有正在被调用的方法的引用类型的参数/局部变量/临时值。</li>
+<li>所有Java线程当前活跃的栈帧里指向GC堆里的对象的引用；换句话说，当前所有正在被调用的方法的引用类型的参数/局部变量/临时值。</li>
 <li>虚拟机栈中的引用的对象</li>
 <li>本地方法栈中JNI的引用的对象</li>
 <li>（看情况）所有当前被加载的Java类</li>
@@ -421,10 +421,12 @@
 <li>（看情况）Java类的运行时常量池里的引用类型常量（String或Class类型）</li>
 <li>（看情况）String常量池（StringTable）里的引用</li>
 </ul>
-<p><strong>GC root</strong>的根本思路就是：给定一个集合的引用作为根出发，通过引用关系遍历对象图，能被遍历到的（可到达的）对象就被判定为存活，其余对象就自然被判定为死亡。<strong>GC root</strong>的本质是通过找出所有活对象来把其余空间认定为“无用”，而不是找出所有死掉的对象并回收它们占用的空间。</p>
+<p>另外<strong>GC Roots</strong>是否可以方便获取也至关重要，最初的虚拟机很多采用保守式GC，不记录这些信息，实现简单但是效率低。现在主流的虚拟机都采用准确式的GC，尽量早和方便地收集这些信息，加快整个标记的速度。</p>
+<p>大致的实现思路是JVM采用了OopMap这个数据结构记录了<strong>GC Roots</strong>，GC的标记开始的时候，从OopMap就可以获得GC roots。OopMap记录了特定时刻栈上(内存)和寄存器(CPU)的哪些位置是引用，通过这些引用就可以找到堆中的对象，这些对象就是GC roots. 而不需要一个一个的去判断某个内存位置的值是不是引用。</p>
+<p>有了OopMap就可以快速获得<strong>GC Roots</strong>，接着就可以开始标记了。标记的基本思路就是遍历一个有向图，节点是对象，边是引用，能被遍历到的（可到达的）对象就被判定为存活，其余对象就自然被判定为死亡。<strong>GC Roots</strong>的本质是通过找出所有活对象来把其余空间认定为“无用”，而不是找出所有死掉的对象并回收它们占用的空间。</p>
 <p>而这些被判定为死亡的对象不是直接会被回收，而是至少经历两次标记过程。</p>
 <ul>
-<li>第一次标记并进行一次筛选，筛选的条件是此对象是否有必要执行finalize()方法。</li>
+<li>第一次标记并进行一次筛选，筛选的条件是此对象是否有必要执行finalize（）方法。</li>
 <li>第二次标记，如果这个对象被判定为有必要执行finalize（）方法，那么这个对象将会被放置在一个名为：F-Queue的队列之中，并在稍后由一条虚拟机自动建立的、低优先级的Finalizer线程去执行。如果对象要在finalize（）中重新与引用链上的任何的一个对象建立关联将避免回收，反之则被回收。</li>
 </ul>
 <p>用心读，细细写（待续…）</p>
