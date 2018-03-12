@@ -103,7 +103,7 @@
 <meta property="og:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png">
-<meta property="og:updated_time" content="2018-03-08T12:06:57.571Z">
+<meta property="og:updated_time" content="2018-03-12T07:31:29.012Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -429,6 +429,25 @@
 <li>第一次标记并进行一次筛选，筛选的条件是此对象是否有必要执行finalize（）方法。</li>
 <li>第二次标记，如果这个对象被判定为有必要执行finalize（）方法，那么这个对象将会被放置在一个名为：F-Queue的队列之中，并在稍后由一条虚拟机自动建立的、低优先级的Finalizer线程去执行。如果对象要在finalize（）中重新与引用链上的任何的一个对象建立关联将避免回收，反之则被回收。</li>
 </ul>
+<h4 id="Reference-（引用）"><a href="#Reference-（引用）" class="headerlink" title="Reference （引用）"></a>Reference （引用）</h4><ul>
+<li>强引用: 用<strong>new</strong> 关键字修饰，只要强引用还存在，垃圾收集器永远不会回收掉被引用的对象</li>
+<li>软引用: 用来描述一些还有用但是不是必需的对象。在将要oom的时候会将这些对象列进回首范围进行第二次回收。</li>
+<li>弱引用: 用来描述非必需的对象，当垃圾收集器工作时，无论内存是否足够，都会回收掉被弱引用关联的对象。</li>
+<li>虚引用: 它是最弱的一种引用关系，为一个对象设置虚引用关联的唯一目的就是能在这个对象被收集器回收时收到一个系统通知。</li>
+</ul>
+<p>demo戳<a href="https://github.com/7le/shine-learning/tree/master/java/src/main/java/com/java/references" target="_blank" rel="noopener">Reference demo</a></p>
+<h4 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h4><h5 id="CMS-收集器-（Concurrent-Mark-Sweep）"><a href="#CMS-收集器-（Concurrent-Mark-Sweep）" class="headerlink" title="CMS 收集器 （Concurrent Mark Sweep）"></a>CMS 收集器 （Concurrent Mark Sweep）</h5><blockquote>
+<p>CMS收集器是一种以获取最短回收停顿时间为目标的收集器，基于<strong>标记-清除</strong>算法实现，作用于老年代。</p>
+</blockquote>
+<p>对于<strong>标记-清除</strong>算法，可以分为初始标记（CMS initial mark），并发标记（CMS concurrent mark），重新标记（CMS remark），并发清除（CMS concurrent sweep）。</p>
+<p>CMS 收集器主要优点是并发收集、低停顿，但也有一些明显的缺点。其中初始标记和重新标记是需要<strong>Stop The World</strong>，对于并发清除阶段是没有进行stw的，那就会产生一些浮动垃圾（Floating Garbage），以及并发处理会对CPU资源敏感和<strong>标记-清除</strong>算法所带来的空间碎片。</p>
+<h5 id="G1-收集器-（Garbage-First）"><a href="#G1-收集器-（Garbage-First）" class="headerlink" title="G1 收集器 （Garbage-First）"></a>G1 收集器 （Garbage-First）</h5><blockquote>
+<p>G1 收集器可以支持并行与并发，单个收集器就可以管理整个GC堆（分代算法），与CMS不同的是基于<strong>标记-整理</strong>算法，以及支持可预测的停顿。</p>
+</blockquote>
+<p>对于<strong>标记-整理</strong>算法，可以分为初始标记（Initial Marking），并发标记（Concurrent Marking），最终标记（Final Marking），筛选回收（Live Data Counting and Evacuation）。</p>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><blockquote>
+<p>总的来说，除了G1目前都可分为新生代和老年代算法。这些算法有两个性能侧重点：1. 回收停顿时间；2. 吞吐量。<br>偏向前者的有 CMS 和 G1，CMS 属于老年代收集器，常与 CMS 搭配使用的是 ParNew 收集器。<br>偏重吞吐量的算法是 Parellel Scavenge（赋值算法），这是个新生代收集器，常与之搭配的老生代算法是 Parellel Old（多线程、标记-整理算法）。</p>
+</blockquote>
 <p>用心读，细细写（待续…）</p>
 
       
@@ -627,7 +646,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-1"><span class="nav-number">1.</span> <span class="nav-text">Part 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-2"><span class="nav-number">2.</span> <span class="nav-text">Part 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行时数据区域"><span class="nav-number">2.1.</span> <span class="nav-text">运行时数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Program-Counter-Register（程序计数器）"><span class="nav-number">2.1.1.</span> <span class="nav-text">Program Counter Register（程序计数器）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Virtual-Machine-Stacks（Java-虚拟机栈）"><span class="nav-number">2.1.2.</span> <span class="nav-text">Java Virtual Machine Stacks（Java 虚拟机栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Native-Method-Stacks（本地方法栈）"><span class="nav-number">2.1.3.</span> <span class="nav-text">Native Method Stacks（本地方法栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Heap（Java-堆）"><span class="nav-number">2.1.4.</span> <span class="nav-text">Java Heap（Java 堆）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Method-Area-方法区"><span class="nav-number">2.1.5.</span> <span class="nav-text">Method Area (方法区)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Metaspace"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">Metaspace</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Direct-Memory-直接内存"><span class="nav-number">2.1.6.</span> <span class="nav-text">Direct Memory (直接内存)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-3"><span class="nav-number">3.</span> <span class="nav-text">Part 3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#可达性分析算法"><span class="nav-number">3.1.</span> <span class="nav-text">可达性分析算法</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-1"><span class="nav-number">1.</span> <span class="nav-text">Part 1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-2"><span class="nav-number">2.</span> <span class="nav-text">Part 2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#运行时数据区域"><span class="nav-number">2.1.</span> <span class="nav-text">运行时数据区域</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Program-Counter-Register（程序计数器）"><span class="nav-number">2.1.1.</span> <span class="nav-text">Program Counter Register（程序计数器）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Virtual-Machine-Stacks（Java-虚拟机栈）"><span class="nav-number">2.1.2.</span> <span class="nav-text">Java Virtual Machine Stacks（Java 虚拟机栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Native-Method-Stacks（本地方法栈）"><span class="nav-number">2.1.3.</span> <span class="nav-text">Native Method Stacks（本地方法栈）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Java-Heap（Java-堆）"><span class="nav-number">2.1.4.</span> <span class="nav-text">Java Heap（Java 堆）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Method-Area-方法区"><span class="nav-number">2.1.5.</span> <span class="nav-text">Method Area (方法区)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Metaspace"><span class="nav-number">2.1.5.1.</span> <span class="nav-text">Metaspace</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Direct-Memory-直接内存"><span class="nav-number">2.1.6.</span> <span class="nav-text">Direct Memory (直接内存)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Part-3"><span class="nav-number">3.</span> <span class="nav-text">Part 3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#可达性分析算法"><span class="nav-number">3.1.</span> <span class="nav-text">可达性分析算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reference-（引用）"><span class="nav-number">3.2.</span> <span class="nav-text">Reference （引用）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#垃圾收集器"><span class="nav-number">3.3.</span> <span class="nav-text">垃圾收集器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#CMS-收集器-（Concurrent-Mark-Sweep）"><span class="nav-number">3.3.1.</span> <span class="nav-text">CMS 收集器 （Concurrent Mark Sweep）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#G1-收集器-（Garbage-First）"><span class="nav-number">3.3.2.</span> <span class="nav-text">G1 收集器 （Garbage-First）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#总结"><span class="nav-number">3.3.3.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
