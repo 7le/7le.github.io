@@ -103,7 +103,7 @@
 <meta property="og:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png">
-<meta property="og:updated_time" content="2018-03-13T01:27:00.603Z">
+<meta property="og:updated_time" content="2018-03-13T01:36:16.409Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -448,8 +448,8 @@
 <h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><blockquote>
 <p>总的来说，除了G1目前都可分为新生代和老年代算法。这些算法有两个性能侧重点：1. 回收停顿时间；2. 吞吐量。<br>偏向前者的有 CMS 和 G1，CMS 属于老年代收集器，常与 CMS 搭配使用的是 ParNew 收集器。<br>偏重吞吐量的算法是 Parallel Scavenge（赋值算法），这是个新生代收集器，常与之搭配的老生代算法是 Parallel Old（多线程、标记-整理算法）。</p>
 </blockquote>
-<h4 id="理解gc日志"><a href="#理解gc日志" class="headerlink" title="理解gc日志"></a>理解gc日志</h4><p>阅读GC日志是处理jvm的基础技能，可以配置上<figure class="highlight plain"><figcaption><span>-XX:+PrintGCTimeStamps -Xloggc:/logs/gc.log```,jvm就能为我们将日志输出到指定的路径下。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></p>
-<p>4.533: [GC (Allocation Failure) 4.533: [ParNew: 1041729K-&gt;77803K(1061696K), 0.0825433 secs] 1041729K-&gt;87450K(3027776K), 0.0826023 secs] [Times: user=0.16 sys=0.03, real=0.08 secs]<br>99.631: [Full GC (System.gc()) 99.631: [CMS: 9646K-&gt;53928K(1966080K), 0.2198137 secs] 883651K-&gt;53928K(3027776K), [Metaspace: 45355K-&gt;45355K(1089536K)], 0.2201145 secs] [Times: user=0.24 sys=0.00, real=0.22 secs]<br><code>`</code></p>
+<h4 id="理解gc日志"><a href="#理解gc日志" class="headerlink" title="理解gc日志"></a>理解gc日志</h4><p>阅读GC日志是处理jvm的基础技能，可以配置上<code>-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/logs/gc.log</code>,jvm就能为我们将日志输出到指定的路径下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">4.533: [GC (Allocation Failure) 4.533: [ParNew: 1041729K-&gt;77803K(1061696K), 0.0825433 secs] 1041729K-&gt;87450K(3027776K), 0.0826023 secs] [Times: user=0.16 sys=0.03, real=0.08 secs]</span><br><span class="line">99.631: [Full GC (System.gc()) 99.631: [CMS: 9646K-&gt;53928K(1966080K), 0.2198137 secs] 883651K-&gt;53928K(3027776K), [Metaspace: 45355K-&gt;45355K(1089536K)], 0.2201145 secs] [Times: user=0.24 sys=0.00, real=0.22 secs]</span><br></pre></td></tr></table></figure>
 <p>最前的数字，<strong>4.533</strong>和<strong>99.631</strong>代表GC发生的时间，是从jvm启动以来经过的秒数。</p>
 <p>后面的<strong>GC</strong>和<strong>Full GC</strong>是用来区分收集区域的。<strong>GC</strong>说明只收集GC堆的部分区域。通常就是minor GC，只收集young gen。<strong>Full GC</strong>说明收集了整个GC堆的所有区域，包括young、old、perm（如果有perm）。后面中的<strong>Allocation Failure</strong>，<strong>System.gc()</strong>是触发的原因。</p>
 <p>然后<strong>ParNew</strong>和<strong>CMS</strong>是分代的垃圾收集器，上面有提及过。<strong>1041729K-&gt;77803K(1061696K)</strong>表示GC前该区域已使用容量-&gt;GC后该区域已使用容量</p>
