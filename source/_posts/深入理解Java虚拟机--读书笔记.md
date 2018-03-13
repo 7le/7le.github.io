@@ -131,7 +131,7 @@ PermGen（永久代）是Hotspot虚拟机特有的概念，是方法区的一种
 * 弱引用: 用来描述非必需的对象，当垃圾收集器工作时，无论内存是否足够，都会回收掉被弱引用关联的对象。
 * 虚引用: 它是最弱的一种引用关系，为一个对象设置虚引用关联的唯一目的就是能在这个对象被收集器回收时收到一个系统通知。
 
-demo戳[Reference demo](https://github.com/7le/shine-learning/tree/master/java/src/main/java/com/java/references)
+demo戳 [Reference demo](https://github.com/7le/shine-learning/tree/master/java/src/main/java/com/java/references)
 
 #### 垃圾收集器
 
@@ -153,7 +153,24 @@ CMS 收集器主要优点是并发收集、低停顿，但也有一些明显的�
 
 > 总的来说，除了G1目前都可分为新生代和老年代算法。这些算法有两个性能侧重点：1. 回收停顿时间；2. 吞吐量。
 偏向前者的有 CMS 和 G1，CMS 属于老年代收集器，常与 CMS 搭配使用的是 ParNew 收集器。
-偏重吞吐量的算法是 Parellel Scavenge（赋值算法），这是个新生代收集器，常与之搭配的老生代算法是 Parellel Old（多线程、标记-整理算法）。
+偏重吞吐量的算法是 Parallel Scavenge（赋值算法），这是个新生代收集器，常与之搭配的老生代算法是 Parallel Old（多线程、标记-整理算法）。
+
+#### 理解gc日志
+
+阅读GC日志是处理jvm的基础技能，可以配置上```-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/logs/gc.log```,jvm就能为我们将日志输出到指定的路径下。
+
+```
+4.533: [GC (Allocation Failure) 4.533: [ParNew: 1041729K->77803K(1061696K), 0.0825433 secs] 1041729K->87450K(3027776K), 0.0826023 secs] [Times: user=0.16 sys=0.03, real=0.08 secs]
+99.631: [Full GC (System.gc()) 99.631: [CMS: 9646K->53928K(1966080K), 0.2198137 secs] 883651K->53928K(3027776K), [Metaspace: 45355K->45355K(1089536K)], 0.2201145 secs] [Times: user=0.24 sys=0.00, real=0.22 secs]
+```
+
+最前的数字，**4.533**和**99.631**代表GC发生的时间，是从jvm启动以来经过的秒数。
+
+后面的**GC**和**Full GC**是用来区分收集区域的。**GC**说明只收集GC堆的部分区域。通常就是minor GC，只收集young gen。**Full GC**说明收集了整个GC堆的所有区域，包括young、old、perm（如果有perm）。后面中的**Allocation Failure**，**System.gc()**是触发的原因。
+
+然后**ParNew**和**CMS**是分代的垃圾收集器，上面有提及过。**1041729K->77803K(1061696K)**表示GC前该区域已使用容量->GC后该区域已使用容量
+
+再往后**[Times: user=0.16 sys=0.03, real=0.08 secs]**与Linux命令所输出的时间含义一致，分别代表用户态消耗的CPU时间、内核态消耗的CPU时间和操作从开始到结束锁经过的墙钟时间（Wall Clock Time）。墙钟时间与 CPU时间的区别是，墙钟时间包括各种非运算的等待耗时，例如等待磁盘I/O、等待线程紫塞。而CPU时间不包括这些，但是多CPU或者多核，多线程操作会叠加这些CPU时间。
 
 
 
