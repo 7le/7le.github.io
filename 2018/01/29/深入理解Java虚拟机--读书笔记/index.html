@@ -103,7 +103,7 @@
 <meta property="og:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png">
-<meta property="og:updated_time" content="2018-03-13T01:49:10.576Z">
+<meta property="og:updated_time" content="2018-03-14T08:21:47.193Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -368,7 +368,7 @@
 <h5 id="Java-Virtual-Machine-Stacks（Java-虚拟机栈）"><a href="#Java-Virtual-Machine-Stacks（Java-虚拟机栈）" class="headerlink" title="Java Virtual Machine Stacks（Java 虚拟机栈）"></a>Java Virtual Machine Stacks（Java 虚拟机栈）</h5><ul>
 <li>同样为线程私有</li>
 <li>每个方法被执行的时候都会同时创建一个栈帧 （Stack Frame）用于存储局部变量表、操作栈、动态链接、方法出口等信息。</li>
-<li>这里的局部变量表存放了各种基本类型（比如int、float等）<strong>其中64位的long和double类型占用2个局部变量空间（Slot）</strong>,其他占用为1个，对象引用和returnA    ddress类型（指向一条字节码指定的地址）</li>
+<li>这里的局部变量表存放了各种基本类型（比如int、float等）<strong>其中64位的long和double类型占用2个局部变量空间（Slot）</strong>,其他占用为1个，<strong>对象引用</strong>（reference类型，它不等同于对象本身，可能是一个指向对象起始地址的引用指针，也可能是指向一个代表对象的句柄或其他与此对象相关的位置）和returnAddress类型（指向一条字节码指定的地址）</li>
 <li>其中如果线程请求的栈深度大于虚拟机所允许的深度，将抛出StackOverflowError异常。以及在动态扩展内存的时候无法申请到足够的内存，就会抛出OOM异常</li>
 </ul>
 <h5 id="Native-Method-Stacks（本地方法栈）"><a href="#Native-Method-Stacks（本地方法栈）" class="headerlink" title="Native Method Stacks（本地方法栈）"></a>Native Method Stacks（本地方法栈）</h5><p>与虚拟机栈非常相似，对应的是执行native 方法。</p>
