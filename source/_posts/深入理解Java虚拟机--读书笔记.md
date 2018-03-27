@@ -57,7 +57,7 @@ Java线程总是需要以某种形式映射到OS线程上。映射模型可以�
 
 ##### Java Heap（Java 堆）
 
-* 线程共享的内存区域，存放对象实例以及数组的数据。
+* 线程共享的内存区域，存放对象实例以及数组。
 * GC堆（采用分代收集算法）
 * 堆可以处于物理上不连续的内存空间，只要逻辑上是连续的就可以。空间可以通过**-Xmx**和**-Xms**控制。
 * 如果在堆中没有内存完成实例分配，并且堆也无法再扩展时，将会抛出OOM异常
@@ -67,8 +67,13 @@ Java线程总是需要以某种形式映射到OS线程上。映射模型可以�
 * 线程共享的内存区域，存放jvm加载的类信息、常量、静态变量、即时编译器编译后的代码块等数据
 * 当方法区无法满足内存分配需求时，会抛出OOM异常
 
-> Runtime Constant Pool（运行时常量池）也是方法区的一部分，它是每个类私有的。每个class文件里的“常量池”在类被加载器加载之后，就映射存放在这个地方。
-而String pool（字符串常量池）和运行时常量池不是一个概念**（容易混淆）**，String pool是全局共享的，**不在方法区内，在GC堆外（native memory）**。String pool的实现是一个StringTable类，它是一个Hash表。.在java7，8中使用 **-XX:StringTableSize** 参数设置字符串常量池的map大小。
+##### Runtime Constant Pool（运行时常量池）
+
+Runtime Constant Pool 是方法区的一部分，Class文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项信息是Constant Pool Table（常量池），用于存放编译期生成的各种字面量和[符号引用](https://www.zhihu.com/question/30300585/answer/51335493)。
+
+这里提一下String pool（字符串常量池），字符串常量池和运行时常量池不是一个概念**（容易混淆）**，String pool是全局共享的，在GC堆外（native memory）。String pool的实现是一个StringTable类，它是一个Hash表。.在java7，8中使用 **-XX:StringTableSize** 参数设置字符串常量池的map大小。
+
+再补充一点，对HotSpot VM来说，不受GC管理的内存都是native memory；受GC管理的内存叫做GC heap或者managed heap。
 
 ###### Metaspace
 
