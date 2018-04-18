@@ -1,0 +1,830 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="TOzgkVPl_tllvkMlt51RjNeTAmmf13oTLBbxTqhSO5E" />
+<meta name="baidu-site-verification" content="j9xl21v0cA" />
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="springcloud," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="springboot2.0出来也有一小段时间了，之前一直钟情于vert.x的响应式编程，现在springboot也支持了，那就结合springcloud全家桶玩起来~">
+<meta name="keywords" content="springcloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springcloud：实现zuul的动态路由和集群通知">
+<meta property="og:url" content="http://yoursite.com/2018/04/18/springcloud：实现zuul的动态路由和集群通知/index.html">
+<meta property="og:site_name" content="Shine">
+<meta property="og:description" content="springboot2.0出来也有一小段时间了，之前一直钟情于vert.x的响应式编程，现在springboot也支持了，那就结合springcloud全家桶玩起来~">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-04-18T12:18:29.303Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="springcloud：实现zuul的动态路由和集群通知">
+<meta name="twitter:description" content="springboot2.0出来也有一小段时间了，之前一直钟情于vert.x的响应式编程，现在springboot也支持了，那就结合springcloud全家桶玩起来~">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/04/18/springcloud：实现zuul的动态路由和集群通知/"/>
+
+
+
+
+
+  <title> springcloud：实现zuul的动态路由和集群通知 | Shine </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?467d29ed3a4fecd3a1dca094a8c5a369";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shine</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耶和华是我的牧者，我必不致缺乏。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/04/18/springcloud：实现zuul的动态路由和集群通知/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="7le">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/ly.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shine">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                springcloud：实现zuul的动态路由和集群通知
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-18T20:13:08+08:00">
+                2018-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>springboot2.0出来也有一小段时间了，之前一直钟情于vert.x的响应式编程，现在springboot也支持了，那就结合springcloud全家桶玩起来~</p>
+</blockquote>
+<a id="more"></a>
+<p>微服务中网关至关重要，相应的解决方案也比较多，像 Nginx+ Lua ，Spring Cloud Zuul， Spring Cloud Gateway（spring不再继续兼容zuul2.0，自研的网关中间件）。</p>
+<p>因为Spring Cloud Gateway尚在观望，就先用zuul来做网关，比较坑的是它的很多功能需要自行实现。</p>
+<h3 id="动态路由"><a href="#动态路由" class="headerlink" title="动态路由"></a>动态路由</h3><p>实现动态路由的方案一般有两种：</p>
+<ul>
+<li>DiscoveryClientRouteLocator的重新覆盖</li>
+<li>实现了RefreshableRouteLocator接口 </li>
+</ul>
+<p>两种方案选了第二种去尝试，具体实现有大佬已经写过文章了，就不赘述了 <a href="https://blog.csdn.net/u013815546/article/details/68944039" target="_blank" rel="noopener">Zuul动态路由</a>。看了下相应的源码，是通过事件来刷新路由。为什么要这样实现呢，其实看了源码会发现，<strong>Spring Cloud Zuul</strong>是基于spring的事件驱动模型。（PS. 好多组件都用了这个模式）</p>
+<p>源码中实现了ApplicationListener的监听器ZuulRefreshListener：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">//刷新路由</span><br><span class="line">private static class ZuulRefreshListener</span><br><span class="line">		implements ApplicationListener&lt;ApplicationEvent&gt; &#123;</span><br><span class="line">	@Autowired</span><br><span class="line">	private ZuulHandlerMapping zuulHandlerMapping;</span><br><span class="line">	private HeartbeatMonitor heartbeatMonitor = new HeartbeatMonitor();</span><br><span class="line">	@Override</span><br><span class="line">	public void onApplicationEvent(ApplicationEvent event) &#123;</span><br><span class="line">		if (event instanceof ContextRefreshedEvent</span><br><span class="line">				|| event instanceof RefreshScopeRefreshedEvent</span><br><span class="line">				|| event instanceof RoutesRefreshedEvent) &#123;</span><br><span class="line">			this.zuulHandlerMapping.setDirty(true);</span><br><span class="line">		&#125;</span><br><span class="line">		else if (event instanceof HeartbeatEvent) &#123;</span><br><span class="line">			if (this.heartbeatMonitor.update(((HeartbeatEvent) event).getValue())) &#123;</span><br><span class="line">				this.zuulHandlerMapping.setDirty(true);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那我们只需要通过publish RoutesRefreshedEvent就可以触发。</p>
+<h3 id="集群通知"><a href="#集群通知" class="headerlink" title="集群通知"></a>集群通知</h3><p>上面虽然实现了动态路由，但是现在的服务为了保证<strong>高可用</strong>，不可能只有一个节点，网关也不例外。那每次要更新网关的路由，就要一个个节点去触发更新，那就太不优雅了。所以再折腾下，以达到触发单个节点，可以通知整个集群进行更新。</p>
+<p>首先我们需要引入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-cloud-starter-bus-amqp&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Spring-Cloud-Bus"><a href="#Spring-Cloud-Bus" class="headerlink" title="Spring Cloud Bus"></a>Spring Cloud Bus</h4><p><strong>Spring Cloud Bus</strong>的主要任务是将Spring的事件处理机制（又是事件驱动模型）和消息中间件消息的发送和接收整合起来，可以实现多个节点之间的通信，正符合我们的需求，下面就混带着源码和扩展来讲下如何实现。</p>
+<h5 id="创建-endpoint"><a href="#创建-endpoint" class="headerlink" title="创建 endpoint"></a>创建 endpoint</h5><p>首先，我们可以参考源码中的端点，如<code>RefreshBusEndpoint</code>来实现我们自己的端点：<code>AutoRouteEndpoint</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@Endpoint(id = &quot;route-refresh&quot;)</span><br><span class="line">public class AutoRouteEndpoint extends AbstractBusEndpoint &#123;</span><br><span class="line"></span><br><span class="line">    public AutoRouteEndpoint(ApplicationEventPublisher context, String appId) &#123;</span><br><span class="line">        super(context, appId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @WriteOperation</span><br><span class="line">    public void refreshRouteWithDestination(@Selector String destination) &#123; //TODO: document destination</span><br><span class="line">        publish(new AutoRouteEvent(this, getInstanceId(), destination));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @WriteOperation</span><br><span class="line">    public void refreshRoute() &#123;</span><br><span class="line">        publish(new AutoRouteEvent(this, getInstanceId(), null));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class ActuatorExtConfig &#123;</span><br><span class="line"></span><br><span class="line">    @Bean</span><br><span class="line">    @ConditionalOnEnabledEndpoint</span><br><span class="line">    public AutoRouteEndpoint autoRouteEndpoint(ApplicationContext context, BusProperties bus) &#123;</span><br><span class="line">        return new AutoRouteEndpoint(context,bus.getId());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="接收消息"><a href="#接收消息" class="headerlink" title="接收消息"></a>接收消息</h5><p>然后主要是注意源码中的<code>BusAutoConfiguration</code>类，下面是接受消息的代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@EventListener(classes = RemoteApplicationEvent.class)</span><br><span class="line">	public void acceptLocal(RemoteApplicationEvent event) &#123;</span><br><span class="line">		if (this.serviceMatcher.isFromSelf(event)</span><br><span class="line">				&amp;&amp; !(event instanceof AckRemoteApplicationEvent)) &#123;</span><br><span class="line">			this.cloudBusOutboundChannel.send(MessageBuilder.withPayload(event).build());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>通过<code>@EventListener</code>来注册监听者，简化了以前需要实现<code>ApplicationListener</code>(像上面的<code>ZuulRefreshListener</code>)。</p>
+<p>这个注解如何实现注册呢，需要通过<code>EventListenerFactory</code>的实现类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class DefaultEventListenerFactory implements EventListenerFactory, Ordered &#123;</span><br><span class="line"></span><br><span class="line">	private int order = LOWEST_PRECEDENCE;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public int getOrder() &#123;</span><br><span class="line">		return order;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setOrder(int order) &#123;</span><br><span class="line">		this.order = order;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public boolean supportsMethod(Method method) &#123;</span><br><span class="line">		return true;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public ApplicationListener&lt;?&gt; createApplicationListener(String beanName, Class&lt;?&gt; type, Method method) &#123;</span><br><span class="line">		return new ApplicationListenerMethodAdapter(beanName, type, method);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>具体大家可以跟下<code>ApplicationListenerMethodAdapter</code>就清晰了。</p>
+<p>那么我们需要创建一个更新路由的event和一个Listener来接受消息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class AutoRouteEvent extends RemoteApplicationEvent &#123;</span><br><span class="line"></span><br><span class="line">    protected AutoRouteEvent() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    protected AutoRouteEvent(Object source, String originService) &#123;</span><br><span class="line">        super(source, originService, null);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public AutoRouteEvent(Object source, String originService, String destinationService) &#123;</span><br><span class="line">        super(source, originService, destinationService);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@RemoteApplicationEventScan(&#123;&quot;com.cloud.gateway.event&quot;&#125;)</span><br><span class="line">public class BusConfiguration &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    RouteRefreshService routeRefreshService;</span><br><span class="line"></span><br><span class="line">    @EventListener(classes = AutoRouteEvent.class)</span><br><span class="line">    public void routeRefresh() &#123;</span><br><span class="line">        routeRefreshService.routeRefresh();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="发送消息"><a href="#发送消息" class="headerlink" title="发送消息"></a>发送消息</h5><p>代码同样在<code>BusAutoConfiguration</code>类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">@StreamListener(SpringCloudBusClient.INPUT)</span><br><span class="line">	public void acceptRemote(RemoteApplicationEvent event) &#123;</span><br><span class="line">		if (event instanceof AckRemoteApplicationEvent) &#123;</span><br><span class="line">			if (this.bus.getTrace().isEnabled() &amp;&amp; !this.serviceMatcher.isFromSelf(event)</span><br><span class="line">					&amp;&amp; this.applicationEventPublisher != null) &#123;</span><br><span class="line">				this.applicationEventPublisher.publishEvent(event);</span><br><span class="line">			&#125;</span><br><span class="line">			// If it&apos;s an ACK we are finished processing at this point</span><br><span class="line">			return;</span><br><span class="line">		&#125;</span><br><span class="line">		if (this.serviceMatcher.isForSelf(event)</span><br><span class="line">				&amp;&amp; this.applicationEventPublisher != null) &#123;</span><br><span class="line">			if (!this.serviceMatcher.isFromSelf(event)) &#123;</span><br><span class="line">				this.applicationEventPublisher.publishEvent(event);</span><br><span class="line">			&#125;</span><br><span class="line">			if (this.bus.getAck().isEnabled()) &#123;</span><br><span class="line">				AckRemoteApplicationEvent ack = new AckRemoteApplicationEvent(this,</span><br><span class="line">						this.serviceMatcher.getServiceId(),</span><br><span class="line">						this.bus.getAck().getDestinationService(),</span><br><span class="line">						event.getDestinationService(), event.getId(), event.getClass());</span><br><span class="line">				this.cloudBusOutboundChannel</span><br><span class="line">						.send(MessageBuilder.withPayload(ack).build());</span><br><span class="line">				this.applicationEventPublisher.publishEvent(ack);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		if (this.bus.getTrace().isEnabled() &amp;&amp; this.applicationEventPublisher != null) &#123;</span><br><span class="line">			// We are set to register sent events so publish it for local consumption,</span><br><span class="line">			// irrespective of the origin</span><br><span class="line">			this.applicationEventPublisher.publishEvent(new SentApplicationEvent(this,</span><br><span class="line">					event.getOriginService(), event.getDestinationService(),</span><br><span class="line">					event.getId(), event.getClass()));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>一样通过注解来注册，当接收到消息，根据消息的来源，目的地（destination）配置等信息，将数据转化为<code>RemoteApplicationEvent</code>对象，再次publish到spring context中。这一块代码可以复用，不需要重写。</p>
+<p>自此我们就已经实现了动态路由和集群通知了~</p>
+<h4 id="Spring-Cloud-Actuator"><a href="#Spring-Cloud-Actuator" class="headerlink" title="Spring Cloud Actuator"></a>Spring Cloud Actuator</h4><p><strong>Spring Cloud Bus</strong>中的endpoint是依赖于Actuator，它的主要作用是用于监控与管理。提供了许多端点，可以查看信息，也可以自定义端点（像上面的<strong>route-refresh</strong>）。</p>
+<p>Actuator 部分端点：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">HTTP 方法</th>
+<th style="text-align:right">路径</th>
+<th style="text-align:center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">GET</td>
+<td style="text-align:right">/beans</td>
+<td style="text-align:center">描述应用程序上下文里全部的Bean，以及它们的关系</td>
+</tr>
+<tr>
+<td style="text-align:left">GET</td>
+<td style="text-align:right">/health</td>
+<td style="text-align:center">健康检查</td>
+</tr>
+<tr>
+<td style="text-align:left">GET</td>
+<td style="text-align:right">/env</td>
+<td style="text-align:center">获取全部环境属性</td>
+</tr>
+<tr>
+<td style="text-align:left">GET</td>
+<td style="text-align:right">/env/{toMatch}</td>
+<td style="text-align:center">根据名称获取特定的环境属性值</td>
+</tr>
+<tr>
+<td style="text-align:left">GET</td>
+<td style="text-align:right">/configprops</td>
+<td style="text-align:center">描述配置属性(包含默认值)如何注入Bean</td>
+</tr>
+<tr>
+<td style="text-align:left">GET</td>
+<td style="text-align:right">/mappings</td>
+<td style="text-align:center">描述全部的URI路径，以及它们和控制器(包含Actuator端点)的映射关系</td>
+</tr>
+<tr>
+<td style="text-align:left">GET</td>
+<td style="text-align:right">/metrics</td>
+<td style="text-align:center">报告各种应用程序度量信息，比如内存用量和HTTP请求计数</td>
+</tr>
+<tr>
+<td style="text-align:left">GET</td>
+<td style="text-align:right">/metrics/{requiredMetricName}</td>
+<td style="text-align:center">报告指定名称的应用程序度量值</td>
+</tr>
+<tr>
+<td style="text-align:left">POST</td>
+<td style="text-align:right">/bus-refresh</td>
+<td style="text-align:center">端点手动刷新配置</td>
+</tr>
+<tr>
+<td style="text-align:left">GET</td>
+<td style="text-align:right">/httptrace</td>
+<td style="text-align:center">提供基本的HTTP请求跟踪信息(时间戳、HTTP头等)</td>
+</tr>
+</tbody>
+</table>
+<p>需要注意的是，对于spring-boot2.x 需要自己开放端点，配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">management:</span><br><span class="line">  endpoints:</span><br><span class="line">    web:</span><br><span class="line">      exposure:</span><br><span class="line">        include: &apos;*&apos;   # 代表全部放开，可以自行选择</span><br><span class="line">      base-path: /application</span><br></pre></td></tr></table></figure>
+<p>完。^.^</p>
+<p><a href="http://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/springcloud/" rel="tag"># springcloud</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/29/深入理解Java虚拟机--读书笔记/" rel="next" title="深入理解Java虚拟机--读书笔记">
+                <i class="fa fa-chevron-left"></i> 深入理解Java虚拟机--读书笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/ly.jpg"
+               alt="7le" />
+          <p class="site-author-name" itemprop="name">7le</p>
+           
+              <p class="site-description motion-element" itemprop="description">我只有一件事，就是忘记背后，努力面前的</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/7le" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://palmer.arkstack.cn" title="palmerye" target="_blank">palmerye</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#动态路由"><span class="nav-number">1.</span> <span class="nav-text">动态路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集群通知"><span class="nav-number">2.</span> <span class="nav-text">集群通知</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Spring-Cloud-Bus"><span class="nav-number">2.1.</span> <span class="nav-text">Spring Cloud Bus</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#创建-endpoint"><span class="nav-number">2.1.1.</span> <span class="nav-text">创建 endpoint</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#接收消息"><span class="nav-number">2.1.2.</span> <span class="nav-text">接收消息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#发送消息"><span class="nav-number">2.1.3.</span> <span class="nav-text">发送消息</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Spring-Cloud-Actuator"><span class="nav-number">2.2.</span> <span class="nav-text">Spring Cloud Actuator</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+<div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">7le</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io" rel="external nofollow">Hexo</a>
+</div>
+
+<span id="busuanzi_container_site_pv">
+  PV <span id="busuanzi_value_site_pv"></span>
+</span>
+<span id="busuanzi_container_site_uv">
+  &nbsp&nbsp | &nbsp&nbsp UV <span id="busuanzi_value_site_uv"></span>
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
