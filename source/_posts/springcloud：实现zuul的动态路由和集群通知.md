@@ -256,6 +256,7 @@ management:
       base-path: /application
 ```
 
+实现的代码在 [springcloud-config](https://github.com/7le/springcloud-analysis/tree/master/config)
 
 完。^.^
 
