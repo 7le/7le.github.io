@@ -104,7 +104,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D%E6%8B%85%E4%BF%9D.png">
-<meta property="og:updated_time" content="2018-04-26T15:24:06.322Z">
+<meta property="og:updated_time" content="2018-04-27T15:23:51.315Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -470,7 +470,6 @@
 <h5 id="空间分配担保"><a href="#空间分配担保" class="headerlink" title="空间分配担保"></a>空间分配担保</h5><p><img src="http://oqipguzbl.bkt.clouddn.com/%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D%E6%8B%85%E4%BF%9D.png" alt="空间分配担保"></p>
 <p>图中提到了是否允许担保失败，当新生代使用复制收集算法，但是为了内存利用率，只使用其中一个<code>Survivor</code>空间来作为轮换备份，因此当出现大量对象在<code>Minor GC</code>后依然存活（最极端就是内存回收后新生代中所有对象都存活），就需要老年代进行分配担保，把<code>Survivor</code>无法容纳的对象直接进入老年代。但是多少会晋升到老年代在实际内存回收前是无法明确知道的，所以只好取之前每一次回收晋升到老年代对象容量的平均值作为经验值，与老年代剩余空间比较，决定是否进行<code>Full GC</code>来让老年代腾出更多空间。</p>
 <p>取平均值任然是一种动态概率的手段，依然会出现担保失败，那时绕的圈子是最大的，但大部分情况下还是会将<code>HandlePromotionFailure</code>打开，避免<code>Full GC</code>过于频繁。</p>
-<p>用心读，细细写（待续…）</p>
 
       
     </div>
