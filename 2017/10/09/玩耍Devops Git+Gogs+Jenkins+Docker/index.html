@@ -124,7 +124,7 @@
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-20.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-21.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/Devops-22.png">
-<meta property="og:updated_time" content="2018-05-08T13:47:09.850Z">
+<meta property="og:updated_time" content="2018-05-08T14:04:45.317Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="玩耍Devops Git+Gogs+Jenkins+Docker">
 <meta name="twitter:description" content="最近受人熏陶，准备尝试一下自己搭建一套自己的Devops，故此记录一番。">
@@ -468,8 +468,9 @@
 <p>将一长段环境变量复制到配置中，就OK了<br><img src="http://oqipguzbl.bkt.clouddn.com/Devops-22.png" alt="环境变量配置"></p>
 <h4 id="项目无法后台运行"><a href="#项目无法后台运行" class="headerlink" title="项目无法后台运行"></a>项目无法后台运行</h4><p>出现这个问题的时候，jenkins 的job显示是success的，但是查看自己的服务器，对应的项目死活起不来。经过一番google，在jenkins的官网中找到了答案。<br><a href="https://wiki.jenkins.io/display/JENKINS/ProcessTreeKiller" target="_blank" rel="noopener">jenkins-ProcessTreeKiller</a>,大概的意思就是说jenkins的特性会杀掉在任务中运行的生成的进程。<code>To reliably kill processes spawned by a job during a build</code> 就是这句话。</p>
 <p>那我们只需要关掉这个特性就可以了，同样修改<code>/etc/sysconfig/jenkins</code> 中的<code>JENKINS_JAVA_OPTIONS=&quot;-Djava.awt.headless=true -Dhudson.util.ProcessTree.disable=true&quot;</code> 记得修改后重启下jenkins</p>
-<p>罗里吧嗦了一堆，希望大家也都能顺利搭建起来~<br>完。^.^</p>
-<p><a href="http://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+<p>罗里吧嗦了一堆，希望大家也都能顺利搭建起来~ </p>
+<hr>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="http://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
 
       
     </div>
