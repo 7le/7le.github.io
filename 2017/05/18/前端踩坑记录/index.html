@@ -97,14 +97,14 @@
 <meta name="description" content="学习的道路就是不停的踩坑…">
 <meta name="keywords" content="前端">
 <meta property="og:type" content="article">
-<meta property="og:title" content="form表单和ajax的那些小事">
-<meta property="og:url" content="http://yoursite.com/2017/05/18/form表单和ajax的那些小事/index.html">
+<meta property="og:title" content="前端踩坑记录">
+<meta property="og:url" content="http://yoursite.com/2017/05/18/前端踩坑记录/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="学习的道路就是不停的踩坑…">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-05-07T15:07:39.753Z">
+<meta property="og:updated_time" content="2018-05-08T13:47:09.850Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="form表单和ajax的那些小事">
+<meta name="twitter:title" content="前端踩坑记录">
 <meta name="twitter:description" content="学习的道路就是不停的踩坑…">
 
 
@@ -133,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/05/18/form表单和ajax的那些小事/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/05/18/前端踩坑记录/"/>
 
 
 
 
 
-  <title> form表单和ajax的那些小事 | Shine </title>
+  <title> 前端踩坑记录 | Shine </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -268,7 +268,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/18/form表单和ajax的那些小事/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/18/前端踩坑记录/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -289,7 +289,7 @@
             
             
               
-                form表单和ajax的那些小事
+                前端踩坑记录
               
             
           </h1>
@@ -344,6 +344,10 @@
 <p>学习的道路就是不停的踩坑…</p>
 </blockquote>
 <a id="more"></a>
+<h4 id="Long类型转json精度丢失"><a href="#Long类型转json精度丢失" class="headerlink" title="Long类型转json精度丢失"></a>Long类型转json精度丢失</h4><p>今天在开发的时候，用swagger做测试，莫名的发现返回的Long类型的id跟数据库的对应不上。去搜了一下才发现，js内置有32位整数，而number类型的安全整数是53位。如果超过53位的，就会丢失精度,而Long类型恰恰是64位。</p>
+<p>解决方式可以添加2个类，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * Long 类型字段序列化时转为字符串，避免js丢失精度</span><br><span class="line"> */</span><br><span class="line">public class LongJsonSerializer extends JsonSerializer&lt;Long&gt; &#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void serialize(Long value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException &#123;</span><br><span class="line">        String text = (value == null ? null : String.valueOf(value));</span><br><span class="line">        if (text != null) &#123;</span><br><span class="line">            jsonGenerator.writeString(text);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * 将字符串转为Long</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line">public class LongJsonDeserializer extends JsonDeserializer&lt;Long&gt; &#123;</span><br><span class="line">    private static final Logger logger = LoggerFactory.getLogger(LongJsonDeserializer.class);</span><br><span class="line">  </span><br><span class="line">    @Override</span><br><span class="line">    public Long deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException &#123;</span><br><span class="line">        String value = jsonParser.getText();</span><br><span class="line">        try &#123;</span><br><span class="line">            return value == null ? null : Long.parseLong(value);</span><br><span class="line">        &#125; catch (NumberFormatException e) &#123;</span><br><span class="line">            logger.error(&quot;解析长整形错误&quot;, e);</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后在需要处理的Long类型的id字段上，加上注解</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@JsonSerialize(using = LongJsonSerializer.class)</span><br><span class="line">@JsonDeserialize(using = LongJsonDeserializer.class)</span><br><span class="line">private Long id;</span><br></pre></td></tr></table></figure>
 <h4 id="form表单点击button，ajax提交自动刷新"><a href="#form表单点击button，ajax提交自动刷新" class="headerlink" title="form表单点击button，ajax提交自动刷新"></a>form表单点击button，ajax提交自动刷新</h4><p>话不多说，直接上代码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">&lt;form&gt;</span><br><span class="line">    //省略一堆代码</span><br><span class="line">    &lt;div class=&quot;hr-line-dashed&quot;&gt;&lt;/div&gt;</span><br><span class="line">        &lt;div class=&quot;form-group&quot;&gt;</span><br><span class="line">            &lt;div class=&quot;col-sm-4 col-sm-offset-2&quot;&gt;</span><br><span class="line">            &lt;button class=&quot;btn btn-primary&quot;  onclick=&quot;submitAcc()&quot;&gt;保存内容&lt;/button&gt;</span><br><span class="line">            &lt;button class=&quot;btn btn-white&quot;&gt;取消&lt;/button&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">function submitAcc() &#123;</span><br><span class="line">        $.ajax(&#123;</span><br><span class="line">            type: &quot;POST&quot;,</span><br><span class="line">            url: &quot;/backend/account&quot;,</span><br><span class="line">            data: $(&apos;#accAdd&apos;).serialize(),</span><br><span class="line">            success: function (result) &#123;</span><br><span class="line">                if(result.success==true)&#123;</span><br><span class="line">                    swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;success&quot;&#125;, function()&#123;</span><br><span class="line">                        //跳转至列表界面</span><br><span class="line">                        location.href = &quot;/backend/account/list&quot;;</span><br><span class="line">                    &#125;);</span><br><span class="line">                &#125;else &#123;</span><br><span class="line">                    swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;error&quot;&#125;, function()&#123;</span><br><span class="line">                        //刷新</span><br><span class="line">                        location.reload();</span><br><span class="line">                    &#125;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            error: function (result) &#123;</span><br><span class="line">                swal(&#123;title: &quot;你的小账本~&quot;, text: result.msg, type: &quot;error&quot;&#125;, function()&#123;</span><br><span class="line">                    //刷新</span><br><span class="line">                    location.reload();</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
 <p>本来就是想一个添加数据的功能，每次点击提交后硬是给我刷新页面，搞的头晕脑胀。后来各种尝试，<br>发现form中存在button标签时，用ajax异步提交表单就会刷新。</p>
 <p>原因：button 存在时会再次提交一下表单，所以页面被刷新了。（之前认为button type=’submit’ 时）button才有提交表单的功能。</p>
@@ -360,8 +364,8 @@
 <li>3、form标签添加enctype=”multipart/form-data”属性。</li>
 <li>4、cache设置为false，上传文件不需要缓存。contentType设置为false。因为是由form表单构造的FormData对象，且已经声明了属性enctype=”multipart/form-data”，所以这里设置为false。</li>
 </ul>
-<p>完。^.^</p>
-<p><a href="http://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+<hr>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="http://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
 
       
     </div>
@@ -563,7 +567,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#form表单点击button，ajax提交自动刷新"><span class="nav-number">1.</span> <span class="nav-text">form表单点击button，ajax提交自动刷新</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ajax使用FormData对象上传文件"><span class="nav-number">2.</span> <span class="nav-text">ajax使用FormData对象上传文件</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Long类型转json精度丢失"><span class="nav-number">1.</span> <span class="nav-text">Long类型转json精度丢失</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#form表单点击button，ajax提交自动刷新"><span class="nav-number">2.</span> <span class="nav-text">form表单点击button，ajax提交自动刷新</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ajax使用FormData对象上传文件"><span class="nav-number">3.</span> <span class="nav-text">ajax使用FormData对象上传文件</span></a></li></ol></div>
             
 
           </div>
