@@ -89,3 +89,7 @@ git clone -b release-1.0 https://github.com/pingcap/tidb-ansible.git
 那么只需要在各个 region 上分别统计符合条件 a+b>5 的数据，然后在 tidb 再将这三份数据聚合即可。
 
 待续...
+
+---
+[Github](https://github.com/7le) 不要吝啬你的star ^.^
+[更多精彩 戳我](http://7le.top)

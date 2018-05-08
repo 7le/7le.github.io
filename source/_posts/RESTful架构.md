@@ -85,7 +85,7 @@ RESTful和以前的接口设计思想有很大的不同，我们以前设计接�
 > GET /7le/instance?batch=[{"method":"DELETE","id":"aa"},{"method":"DELETE","id":"bb"},
 {"method":"DELETE","id":"cc"}]：facebook 的设计（墙外）
 
-以上就是我的一点点学习的总结和见解，欢迎大家交流拍砖，共同学习~ 
-完。^.^
 
+---
+[Github](https://github.com/7le) 不要吝啬你的star ^.^
 [更多精彩 戳我](http://7le.top)

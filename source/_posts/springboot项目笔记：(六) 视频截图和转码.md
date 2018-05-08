@@ -201,6 +201,7 @@ public class VideoUtil {
 * 4、redirectErrorStream属性：最初，此属性为false，意思是子进程的标准输出和错误输出被发送给两个独立的流，这些流可以通过 Process.getInputStream() 和Process.getErrorStream() 方法来访问。如果将值设置为true，标准错误将与标准输出合并。这使得关联错误消息和相应的输出变得更容易。在此情况下，合并的数据可从Process.getInputStream(）返回的流读取，而从Process.getErrorStream()返回的流读取将直接到达文件尾。所以就有，ProcessBuilder为进程提供了更多的控制。
 
 最后要注意的就是ProcessBuilder是线程不安全的~
-完。^.^
 
+---
+[Github](https://github.com/7le) 不要吝啬你的star ^.^
 [更多精彩 戳我](http://7le.top)

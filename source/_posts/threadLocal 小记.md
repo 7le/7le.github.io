@@ -73,6 +73,7 @@ acceptCount：指定当所有可以使用的处理请求的线程数都被使用
 ```
 set JAVA_OPTS=-Xms1024m -Xmx1024m -XX:PermSize=128M -XX:MaxPermSize=256m
 ```
-完。^.^
 
+---
+[Github](https://github.com/7le) 不要吝啬你的star ^.^
 [更多精彩 戳我](http://7le.top)

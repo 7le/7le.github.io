@@ -351,6 +351,7 @@ chown -R root:root /var/log/jenkins
 那我们只需要关掉这个特性就可以了，同样修改``/etc/sysconfig/jenkins`` 中的``JENKINS_JAVA_OPTIONS="-Djava.awt.headless=true -Dhudson.util.ProcessTree.disable=true"`` 记得修改后重启下jenkins
 
 罗里吧嗦了一堆，希望大家也都能顺利搭建起来~ 
-完。^.^
 
+---
+[Github](https://github.com/7le) 不要吝啬你的star ^.^
 [更多精彩 戳我](http://7le.top)

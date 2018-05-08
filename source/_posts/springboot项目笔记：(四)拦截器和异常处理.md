@@ -167,6 +167,7 @@ public class ExceptionAdvice extends BaseController{
 补充一下@ControllerAdvice是spring3.2的新注释，从名字上可以看出大体意思是控制器增强。
 
 这里就是一些基本的http状态码对应的异常处理，有需要可以自己添加，springboot中拦截器和异常处理的使用就记录到这了。
-完。^.^
 
+---
+[Github](https://github.com/7le) 不要吝啬你的star ^.^
 [更多精彩 戳我](http://7le.top)

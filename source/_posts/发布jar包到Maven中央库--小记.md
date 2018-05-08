@@ -120,6 +120,7 @@ failureMessage	No public key: Key with id: (your_id) was not able to be located 
 ![search](http://oqipguzbl.bkt.clouddn.com/maven-search.png)
 
 如果你也需要，可以戳[vertx-shine-web](https://github.com/7le/vertx-shine)
-完。^.^
 
+---
+[Github](https://github.com/7le) 不要吝啬你的star ^.^
 [更多精彩 戳我](http://7le.top)

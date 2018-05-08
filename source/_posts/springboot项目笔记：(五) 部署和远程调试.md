@@ -49,6 +49,7 @@ export CATALINA_OPTS="-agentlib:jdwp=transport=dt_socket,address=8888（自定�
 
 ```
 这里还有个注意的点，就是别加在最末尾，嵌套在指令里面，不然会失效。
-完。^.^
 
+---
+[Github](https://github.com/7le) 不要吝啬你的star ^.^
 [更多精彩 戳我](http://7le.top)

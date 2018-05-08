@@ -413,6 +413,7 @@ public class SwaggerConfig {
 ![swagger2](http://oqipguzbl.bkt.clouddn.com/springboot-2-4.png)
 
 最后在加上代码的地址，大家可以互相交流学习[springboot](https://github.com/7le/video) 
-完。^.^
 
+---
+[Github](https://github.com/7le) 不要吝啬你的star ^.^
 [更多精彩 戳我](http://7le.top)

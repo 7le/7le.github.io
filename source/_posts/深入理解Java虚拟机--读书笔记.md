@@ -203,3 +203,6 @@ CMS 收集器主要优点是并发收集、低停顿，但也有一些明显的�
 
 取平均值任然是一种动态概率的手段，依然会出现担保失败，那时绕的圈子是最大的，但大部分情况下还是会将``HandlePromotionFailure``打开，避免``Full GC``过于频繁。
 
+---
+[Github](https://github.com/7le) 不要吝啬你的star ^.^
+[更多精彩 戳我](http://7le.top)
