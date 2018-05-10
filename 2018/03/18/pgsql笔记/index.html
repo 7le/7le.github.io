@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="springboot," />
+  <meta name="keywords" content="pgsql," />
 
 
 
@@ -94,23 +94,18 @@
 
 
 
-<meta name="description" content="springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。">
-<meta name="keywords" content="springboot">
+<meta name="description" content="最近项目中用到pgsql，遇到些麻烦事，记录一下。">
+<meta name="keywords" content="pgsql">
 <meta property="og:type" content="article">
-<meta property="og:title" content="springboot项目笔记：(五) 部署和远程调试">
-<meta property="og:url" content="http://yoursite.com/2017/06/19/springboot项目笔记：(五) 部署和远程调试/index.html">
+<meta property="og:title" content="pgsql笔记">
+<meta property="og:url" content="http://yoursite.com/2018/03/18/pgsql笔记/index.html">
 <meta property="og:site_name" content="Shine">
-<meta property="og:description" content="springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。">
+<meta property="og:description" content="最近项目中用到pgsql，遇到些麻烦事，记录一下。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-1.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-2.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-3.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-4.png">
 <meta property="og:updated_time" content="2018-05-10T11:20:31.761Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="springboot项目笔记：(五) 部署和远程调试">
-<meta name="twitter:description" content="springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。">
-<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-1.png">
+<meta name="twitter:title" content="pgsql笔记">
+<meta name="twitter:description" content="最近项目中用到pgsql，遇到些麻烦事，记录一下。">
 
 
 
@@ -138,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/06/19/springboot项目笔记：(五) 部署和远程调试/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/03/18/pgsql笔记/"/>
 
 
 
 
 
-  <title> springboot项目笔记：(五) 部署和远程调试 | Shine </title>
+  <title> pgsql笔记 | Shine </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -273,7 +268,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/19/springboot项目笔记：(五) 部署和远程调试/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/03/18/pgsql笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -294,7 +289,7 @@
             
             
               
-                springboot项目笔记：(五) 部署和远程调试
+                pgsql笔记
               
             
           </h1>
@@ -309,8 +304,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-19T23:12:35+08:00">
-                2017-06-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-18T21:19:08+08:00">
+                2018-03-18
               </time>
             
 
@@ -346,21 +341,33 @@
 
       
         <blockquote>
-<p>springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。</p>
+<p>最近项目中用到pgsql，遇到些麻烦事，记录一下。</p>
 </blockquote>
 <a id="more"></a>
-<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>在idea中，在命令行中输入mvn package<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-1.png" alt="打包"></p>
-<p>成功后会出现<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-2.png" alt="成功"></p>
-<p>然后我们只需要把jar包放到linux中，然后cd到目录下输入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup java -jar xxx.jar &gt; /tmp/web.log.out 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure></p>
-<p>就大功告成拉~</p>
-<h3 id="远程调试"><a href="#远程调试" class="headerlink" title="远程调试"></a>远程调试</h3><p>远程调试可以帮我们检查一些在日志中判断不出来的bug，对于idea我们需要如图：<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-3.png" alt="idea远程调试"></p>
-<p>需要输入服务器的地址，和你开启用来远程调试的端口号。这个端口号如何开启呢？对于springboot的项目来说</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// address 端口号可以自己设置 要跟remote中的port一样，还要注意不要跟linux已经使用的端口号冲突</span><br><span class="line">java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -jar XXX.jar &amp;</span><br></pre></td></tr></table></figure>
-<p>然后如图所示就是成功远程调试了<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-4.png" alt="idea连接成功"></p>
-<p>补充一下，如果是用tomcat来部署的话，修改如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// bin\startup.bat（.sh）文件，在里面添加</span><br><span class="line"> </span><br><span class="line">// windows</span><br><span class="line">set CATALINA_OPTS=&quot;-agentlib:jdwp=transport=dt_socket,address=8888（自定义调试端口）,server=y,suspend=n %CATALINA_OPTS%&quot;</span><br><span class="line"> </span><br><span class="line">// linux</span><br><span class="line">export CATALINA_OPTS=&quot;-agentlib:jdwp=transport=dt_socket,address=8888（自定义调试端口）,server=y,suspend=n $CATALINA_OPTS&quot;</span><br></pre></td></tr></table></figure></p>
-<p>这里还有个注意的点，就是别加在最末尾，嵌套在指令里面，不然会失效。</p>
-<hr>
-<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="http://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+<h3 id="pgsql-array-类型"><a href="#pgsql-array-类型" class="headerlink" title="pgsql array 类型"></a>pgsql array 类型</h3><p>不知道大家对于pgsql的Array类型是否用的频繁，我在用Mybatis做持久层的时候，<code>ARRAY</code>类型对应的是<code>java.sql.Array</code>。</p>
+<p>这时候问题就来了，在写业务代码的时候发现java类型不能直接转换成Array的实现类，这就头痛了。</p>
+<p>翻看了JDK的文档，<code>Connection</code>接口中有：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Modifier and Type</th>
+<th style="text-align:right">Method</th>
+<th style="text-align:right">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Array</td>
+<td style="text-align:right">createArrayOf(String typeName, Object[] elements)</td>
+<td style="text-align:right">Factory method for creating Array objects.</td>
+</tr>
+</tbody>
+</table>
+<p>于是乎，我们就可以利用Mybatis的<code>TypeHandler</code>来解决这个问题了。具体代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 自定义Mybatis ARRAY类型处理器</span><br><span class="line"> *</span><br><span class="line"> * @author 7le</span><br><span class="line"> */</span><br><span class="line">@MappedTypes(Object.class)</span><br><span class="line">@MappedJdbcTypes(JdbcType.ARRAY)</span><br><span class="line">public class ArrayTypeHandler extends BaseTypeHandler&lt;Object[]&gt; &#123;</span><br><span class="line"></span><br><span class="line">    private static final String TYPE_NAME_VARCHAR = &quot;varchar&quot;;</span><br><span class="line">    private static final String TYPE_NAME_INTEGER = &quot;integer&quot;;</span><br><span class="line">    private static final String TYPE_NAME_BOOLEAN = &quot;boolean&quot;;</span><br><span class="line">    private static final String TYPE_NAME_NUMERIC = &quot;numeric&quot;;</span><br><span class="line">    private static final String TYPE_NAME_BIGINT = &quot;bigint&quot;;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void setNonNullParameter(PreparedStatement ps, int i, Object[] parameter, JdbcType jdbcType) throws SQLException &#123;</span><br><span class="line">        String typeName = null;</span><br><span class="line">        if (parameter instanceof Integer[]) &#123;</span><br><span class="line">            typeName = TYPE_NAME_INTEGER;</span><br><span class="line">        &#125; else if (parameter instanceof String[]) &#123;</span><br><span class="line">            typeName = TYPE_NAME_VARCHAR;</span><br><span class="line">        &#125; else if (parameter instanceof Boolean[]) &#123;</span><br><span class="line">            typeName = TYPE_NAME_BOOLEAN;</span><br><span class="line">        &#125; else if (parameter instanceof Double[]) &#123;</span><br><span class="line">            typeName = TYPE_NAME_NUMERIC;</span><br><span class="line">        &#125; else if (parameter instanceof Long[]) &#123;</span><br><span class="line">            typeName = TYPE_NAME_BIGINT;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            typeName = TYPE_NAME_VARCHAR;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Connection conn = ps.getConnection();</span><br><span class="line">        Array array = conn.createArrayOf(typeName, parameter);</span><br><span class="line">        ps.setArray(i, array);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Object[] getNullableResult(ResultSet resultSet, String s) throws SQLException &#123;</span><br><span class="line">        return getArray(resultSet.getArray(s));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Object[] getNullableResult(ResultSet resultSet, int i) throws SQLException &#123;</span><br><span class="line">        return getArray(resultSet.getArray(i));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public Object[] getNullableResult(CallableStatement callableStatement, int i) throws SQLException &#123;</span><br><span class="line">        return getArray(callableStatement.getArray(i));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Object[] getArray(Array array) &#123;</span><br><span class="line">        if (array == null) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        try &#123;</span><br><span class="line">            return (Object[]) array.getArray();</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在<code>application.yml</code>中加上<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mybatis:</span><br><span class="line">  type-handlers-package: xxx.xxx.handler   #自定义handler的路径</span><br></pre></td></tr></table></figure></p>
+<p>如果不是springboot的话，用spring的配置方式就可以了。</p>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
 
       
     </div>
@@ -390,7 +397,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/springboot/" rel="tag"># springboot</a>
+            <a href="/tags/pgsql/" rel="tag"># pgsql</a>
           
         </div>
       
@@ -403,8 +410,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/06/13/springboot项目笔记：(四)拦截器和异常处理/" rel="next" title="springboot项目笔记：(四) 拦截器和异常处理">
-                <i class="fa fa-chevron-left"></i> springboot项目笔记：(四) 拦截器和异常处理
+              <a href="/2018/01/29/深入理解Java虚拟机--读书笔记/" rel="next" title="深入理解Java虚拟机--读书笔记">
+                <i class="fa fa-chevron-left"></i> 深入理解Java虚拟机--读书笔记
               </a>
             
           </div>
@@ -413,8 +420,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/06/21/springboot项目笔记：(六) 视频截图和转码/" rel="prev" title="springboot项目笔记：(六) 视频截图和转码">
-                springboot项目笔记：(六) 视频截图和转码 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/04/18/springcloud：实现zuul的动态路由和集群通知/" rel="prev" title="springcloud：实现zuul的动态路由和集群通知">
+                springcloud：实现zuul的动态路由和集群通知 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -562,7 +569,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#部署"><span class="nav-number">1.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#远程调试"><span class="nav-number">2.</span> <span class="nav-text">远程调试</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#pgsql-array-类型"><span class="nav-number">1.</span> <span class="nav-text">pgsql array 类型</span></a></li></ol></div>
             
 
           </div>
