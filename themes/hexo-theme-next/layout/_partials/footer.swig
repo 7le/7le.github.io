@@ -7,7 +7,9 @@
   <span class="with-love">
     <i class="fa fa-{{ theme.authoricon }}"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">{{ config.author }}</span>
+  <a class="theme-link" href="https://github.com/7le" target="view_window" style="cursor: pointer" rel="external nofollow">
+    {{ config.author }}
+  </a>
 </div>
 
 {% if theme.copyright %}
