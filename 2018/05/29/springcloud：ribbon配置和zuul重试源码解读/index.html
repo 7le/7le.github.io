@@ -1,0 +1,783 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="TOzgkVPl_tllvkMlt51RjNeTAmmf13oTLBbxTqhSO5E" />
+<meta name="baidu-site-verification" content="j9xl21v0cA" />
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="springcloud," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近刚刚把springcloud的版本升级到Finchley.RC1，就遇到些小麻烦，分享一下解决的过程和收获。">
+<meta name="keywords" content="springcloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springcloud：ribbon配置和zuul重试源码解读">
+<meta property="og:url" content="http://yoursite.com/2018/05/29/springcloud：ribbon配置和zuul重试源码解读/index.html">
+<meta property="og:site_name" content="Shine">
+<meta property="og:description" content="最近刚刚把springcloud的版本升级到Finchley.RC1，就遇到些小麻烦，分享一下解决的过程和收获。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/propertySources.PNG">
+<meta property="og:updated_time" content="2018-05-30T11:24:07.621Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="springcloud：ribbon配置和zuul重试源码解读">
+<meta name="twitter:description" content="最近刚刚把springcloud的版本升级到Finchley.RC1，就遇到些小麻烦，分享一下解决的过程和收获。">
+<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/propertySources.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/29/springcloud：ribbon配置和zuul重试源码解读/"/>
+
+
+
+
+
+  <title> springcloud：ribbon配置和zuul重试源码解读 | Shine </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" />
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?467d29ed3a4fecd3a1dca094a8c5a369";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shine</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耶和华是我的牧者，我必不致缺乏。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/29/springcloud：ribbon配置和zuul重试源码解读/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="7le">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/ly.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shine">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                springcloud：ribbon配置和zuul重试源码解读
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-05-29T22:33:18+08:00">
+                2018-05-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>最近刚刚把springcloud的版本升级到<strong>Finchley.RC1</strong>，就遇到些小麻烦，分享一下解决的过程和收获。</p>
+</blockquote>
+<a id="more"></a>
+<p>springcloud最近的版本更迭很快，为了更好的契合springboot2，我也把版本从<strong>Finchley.M9</strong>升级到<strong>Finchley.RC1</strong>，重新跑了下gateway，发现zuul重试功能莫名的失效了。因为一开始直接拿了网上的配置，也没有多去考究，正好趁着这个机会好好挖掘一下。</p>
+<blockquote>
+<p>注：文章有点长，包括<strong>ribbon</strong>配置源码查阅的思路和<strong>zuul</strong>重试源码的解读，可以根据导航栏选择需要的阅读。</p>
+</blockquote>
+<h3 id="ribbon-配置问题"><a href="#ribbon-配置问题" class="headerlink" title="ribbon 配置问题"></a>ribbon 配置问题</h3><p>如果要实现<strong>zuul</strong>重试功能是要先引入：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.retry&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-retry&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>然后添加配置，我一开始的配置是这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">zuul:</span><br><span class="line">  retryable: true</span><br><span class="line">ribbon:</span><br><span class="line">  connectTimeout: 500                 # 请求连接的超时时间</span><br><span class="line">  readTimeout:  1000                  # 请求处理的超时时间</span><br><span class="line">  maxAutoRetries: 2                   # 对当前实例的重试次数</span><br><span class="line">  maxAutoRetriesNextServer: 1         # 切换实例的重试次数</span><br><span class="line">  okToRetryOnAllOperations: false     # 对所有操作请求都进行重试</span><br></pre></td></tr></table></figure></p>
+<p>查阅源码后发现正确的写法应该是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">zuul:</span><br><span class="line">  retryable: true</span><br><span class="line">ribbon:</span><br><span class="line">  ConnectTimeout: 500                 # 请求连接的超时时间</span><br><span class="line">  ReadTimeout: 1000                   # 请求处理的超时时间</span><br><span class="line">  MaxAutoRetries: 2                   # 对当前实例的重试次数</span><br><span class="line">  MaxAutoRetriesNextServer: 1         # 切换实例的重试次数</span><br><span class="line">  OkToRetryOnAllOperations: false     # 对所有操作请求都进行重试</span><br></pre></td></tr></table></figure></p>
+<p>上面的方式是全局的配置，如果需要局部的配置，可以这样写成<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">（serviceId）:</span><br><span class="line">	ribbon:	</span><br><span class="line">  		ConnectTimeout: 500                 # 请求连接的超时时间</span><br><span class="line">  		ReadTimeout: 1000                   # 请求处理的超时时间</span><br><span class="line">  		MaxAutoRetries: 2                   # 对当前实例的重试次数</span><br><span class="line">  		MaxAutoRetriesNextServer: 1         # 切换实例的重试次数</span><br><span class="line">  		OkToRetryOnAllOperations: false     # 对所有操作请求都进行重试</span><br></pre></td></tr></table></figure></p>
+<p>其实，就是大小写导致参数失效，而且这些在配置文件中是不给提示的，那就是代表没有对应的<strong>@ConfigurationProperties</strong>，那是如何生效呢，这就勾起了我的好奇心。</p>
+<h3 id="ribbon-源码解读"><a href="#ribbon-源码解读" class="headerlink" title="ribbon 源码解读"></a>ribbon 源码解读</h3><p>对应这些配置的参数查阅源码，可以发现<code>ribbon-core</code>源码里有对应的<code>CommonClientConfigKey</code>类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public abstract class CommonClientConfigKey&lt;T&gt; implements IClientConfigKey&lt;T&gt; &#123;</span><br><span class="line">	......</span><br><span class="line"></span><br><span class="line">	public static final IClientConfigKey&lt;Integer&gt; MaxAutoRetries = new CommonClientConfigKey&lt;Integer&gt;(&quot;MaxAutoRetries&quot;)&#123;&#125;;</span><br><span class="line">    </span><br><span class="line">    public static final IClientConfigKey&lt;Integer&gt; MaxAutoRetriesNextServer = new CommonClientConfigKey&lt;Integer&gt;(&quot;MaxAutoRetriesNextServer&quot;)&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    public static final IClientConfigKey&lt;Boolean&gt; OkToRetryOnAllOperations = new CommonClientConfigKey&lt;Boolean&gt;(&quot;OkToRetryOnAllOperations&quot;)&#123;&#125;;</span><br><span class="line">   	</span><br><span class="line">   	......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这3个参数在<code>DefaultLoadBalancerRetryHandler</code>类中被使用，而这个类在<code>RibbonClientConfiguration</code>中完成初始化的，因为<strong>@ConditionalOnMissingBean</strong>则不会被多次加载。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">@ConditionalOnMissingBean</span><br><span class="line">public RetryHandler retryHandler(IClientConfig config) &#123;</span><br><span class="line">	return new DefaultLoadBalancerRetryHandler(config);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其他参数也是类似，不过被使用在其他类中。它们去获得对应的value都是使用<strong>getProperty</strong>方法，通过调用<strong>getInstance</strong>获得包装过的动态属性类，再拿到对应的value。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">public class DefaultClientConfigImpl implements IClientConfig &#123;</span><br><span class="line">    </span><br><span class="line">    /**</span><br><span class="line">     * 参数获取对应属性值</span><br><span class="line">     */</span><br><span class="line">    protected Object getProperty(String key) &#123;</span><br><span class="line">        if (enableDynamicProperties) &#123;</span><br><span class="line">            String dynamicValue = null;</span><br><span class="line">            DynamicStringProperty dynamicProperty = dynamicProperties.get(key);</span><br><span class="line">            if (dynamicProperty != null) &#123;</span><br><span class="line">                dynamicValue = dynamicProperty.get();</span><br><span class="line">            &#125;</span><br><span class="line">            if (dynamicValue == null) &#123;</span><br><span class="line">                dynamicValue = DynamicProperty.getInstance(getConfigKey(key)).getString();</span><br><span class="line">                if (dynamicValue == null) &#123;</span><br><span class="line">                    dynamicValue = DynamicProperty.getInstance(getDefaultPropName(key)).getString();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (dynamicValue != null) &#123;</span><br><span class="line">                return dynamicValue;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return properties.get(key);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class DynamicProperty &#123;</span><br><span class="line"></span><br><span class="line">	public static DynamicProperty getInstance(String propName) &#123;</span><br><span class="line">        // This is to ensure that a configuration source is registered with</span><br><span class="line">        // DynamicProperty</span><br><span class="line">        if (dynamicPropertySupportImpl == null) &#123;</span><br><span class="line">            DynamicPropertyFactory.getInstance();</span><br><span class="line">        &#125;</span><br><span class="line">        DynamicProperty prop = ALL_PROPS.get(propName);</span><br><span class="line">        if (prop == null) &#123;</span><br><span class="line">            prop = new DynamicProperty(propName);</span><br><span class="line">            DynamicProperty oldProp = ALL_PROPS.putIfAbsent(propName, prop);</span><br><span class="line">            if (oldProp != null) &#123;</span><br><span class="line">                prop = oldProp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return prop;</span><br><span class="line">    &#125;</span><br><span class="line">｝</span><br></pre></td></tr></table></figure>
+<p>到这里其实整个向下的流程我们已经知道了，那剩余的就是看看<strong>ALL_PROPS</strong>是在何时被填充数据的了。这里面牵扯的类比较多，源码就不一一呈现了，捡取几个重要的。</p>
+<p>其中在<code>DefaultClientConfigImpl</code>有个很重要的方法<strong>loadProperties</strong>，作用是来加载配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 加载给定的客户端属性</span><br><span class="line"> */</span><br><span class="line">@Override</span><br><span class="line">public void loadProperties(String restClientName)&#123;</span><br><span class="line">	enableDynamicProperties = true;</span><br><span class="line">    setClientName(restClientName);</span><br><span class="line">    //重要：加载默认值，有手动设置的话，使用设置的值</span><br><span class="line">    loadDefaultValues();</span><br><span class="line">    Configuration props = ConfigurationManager.getConfigInstance().subset(restClientName);</span><br><span class="line">    for (Iterator&lt;String&gt; keys = props.getKeys(); keys.hasNext(); )&#123;</span><br><span class="line">        String key = keys.next();</span><br><span class="line">        String prop = key;</span><br><span class="line">        try &#123;</span><br><span class="line">            if (prop.startsWith(getNameSpace()))&#123;</span><br><span class="line">                prop = prop.substring(getNameSpace().length() + 1);</span><br><span class="line">            &#125;</span><br><span class="line">            setPropertyInternal(prop, getStringValue(props, key));</span><br><span class="line">        &#125; catch (Exception ex) &#123;</span><br><span class="line">            throw new RuntimeException(String.format(&quot;Property %s is invalid&quot;, prop));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过<strong>loadDefaultValues</strong>方法调<code>ConcurrentCompositeConfiguration</code>的<strong>getProperty</strong>方法，再调<code>PropertySourcesPropertyResolver</code>的<strong>getProperty</strong>方法。这样就从<strong>archauus-core</strong>包调到了<strong>spring-core</strong>包了。在<strong>propertySources</strong>中就包含了我们在yml的设置的参数。然后再通过<code>DefaultClientConfigImpl</code>类的<strong>setPropertyInternal</strong>方法完成一系列对<strong>dynamicProperties</strong>和<strong>ALL_PROPS</strong>的数据填充。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/propertySources.PNG" alt="propertySources"></p>
+<h3 id="zuul-源码解读"><a href="#zuul-源码解读" class="headerlink" title="zuul 源码解读"></a>zuul 源码解读</h3><p>上面已经分析了配置的参数是如何被使用，但是还是有一个问题，那就是很关键的<strong>loadProperties</strong>的方法是何时被调用。查看源码可以发现该方法是在<code>RibbonClientConfiguration</code>类中被调用。查看所在的jar包的<code>spring.factories</code>，发现这个类并不会在服务启动时被加载。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\</span><br><span class="line">org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration</span><br></pre></td></tr></table></figure>
+<p>那既然不是在服务启动的时候加载，那猜测是从<strong>Zuul</strong>进行路由转发的时候准备的，继续挖源码。很自然我们的目标就在<code>ZuulFilter</code>的子类上了。其中一个很重要的Filter就是<code>RibbonRoutingFilter</code>，它主要是完成请求的路由转发，很符合我们的想法，查看它的<strong>run</strong>方法，然后我们跟进到<strong>forward</strong>方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">public class RibbonRoutingFilter extends ZuulFilter &#123;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public Object run() &#123;</span><br><span class="line">		RequestContext context = RequestContext.getCurrentContext();</span><br><span class="line">		this.helper.addIgnoredHeaders();</span><br><span class="line">		try &#123;</span><br><span class="line">			RibbonCommandContext commandContext = buildCommandContext(context);</span><br><span class="line">			ClientHttpResponse response = forward(commandContext);</span><br><span class="line">			setResponse(response);</span><br><span class="line">			return response;</span><br><span class="line">		&#125;</span><br><span class="line">		catch (ZuulException ex) &#123;</span><br><span class="line">			throw new ZuulRuntimeException(ex);</span><br><span class="line">		&#125;</span><br><span class="line">		catch (Exception ex) &#123;</span><br><span class="line">			throw new ZuulRuntimeException(ex);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	protected ClientHttpResponse forward(RibbonCommandContext context) throws Exception &#123;</span><br><span class="line">		Map&lt;String, Object&gt; info = this.helper.debug(context.getMethod(),</span><br><span class="line">				context.getUri(), context.getHeaders(), context.getParams(),</span><br><span class="line">				context.getRequestEntity());</span><br><span class="line"></span><br><span class="line">		RibbonCommand command = this.ribbonCommandFactory.create(context);</span><br><span class="line">		try &#123;</span><br><span class="line">			ClientHttpResponse response = command.execute();</span><br><span class="line">			this.helper.appendDebug(info, response.getRawStatusCode(), response.getHeaders());</span><br><span class="line">			return response;</span><br><span class="line">		&#125;</span><br><span class="line">		catch (HystrixRuntimeException ex) &#123;</span><br><span class="line">			return handleException(info, ex);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">｝</span><br></pre></td></tr></table></figure>
+<p>其中有2个重要的方法，分别是<strong>create</strong>和<strong>execute</strong>。很明显配置加载的工作只有可能在<strong>create</strong>方法中，为了验证之前的想法，继续看<strong>create</strong>的源码。这里的<strong>ribbonCommandFactory</strong>是在<code>RibbonCommandFactoryConfiguration</code>完成初始化，查看<code>spring.factories</code>，该类会在服务启动的时候加载。上面的<strong>@import</strong>很重要，跟进去可以发现，会先去判断是否有<code>ribbon.restclient.enabled</code>配置，再判断是否有<code>okhttp3.OkHttpClient</code>类，如果都没有设置的话，这个<strong>ribbonCommandFactory</strong>将会是<code>HttpClientRibbonCommandFactory</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@Import(&#123; RibbonCommandFactoryConfiguration.RestClientRibbonConfiguration.class,</span><br><span class="line">		RibbonCommandFactoryConfiguration.OkHttpRibbonConfiguration.class,</span><br><span class="line">		RibbonCommandFactoryConfiguration.HttpClientRibbonConfiguration.class,</span><br><span class="line">		HttpClientConfiguration.class &#125;)</span><br><span class="line">@ConditionalOnBean(ZuulProxyMarkerConfiguration.Marker.class)</span><br><span class="line">public class ZuulProxyAutoConfiguration extends ZuulServerAutoConfiguration &#123;</span><br><span class="line"></span><br><span class="line">	// route filters</span><br><span class="line">	@Bean</span><br><span class="line">	public RibbonRoutingFilter ribbonRoutingFilter(ProxyRequestHelper helper,</span><br><span class="line">			RibbonCommandFactory&lt;?&gt; ribbonCommandFactory) &#123;</span><br><span class="line">		RibbonRoutingFilter filter = new RibbonRoutingFilter(helper, ribbonCommandFactory,</span><br><span class="line">				this.requestCustomizers);</span><br><span class="line">		return filter;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>查看<code>HttpClientRibbonCommandFactory</code>的<strong>create</strong>方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">public class HttpClientRibbonCommandFactory extends AbstractRibbonCommandFactory &#123;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public HttpClientRibbonCommand create(final RibbonCommandContext context) &#123;</span><br><span class="line">		//提供路由发生故障时的回调（降级方法）</span><br><span class="line">		FallbackProvider zuulFallbackProvider = getFallbackProvider(context.getServiceId());</span><br><span class="line">		final String serviceId = context.getServiceId();</span><br><span class="line">		//创建处理请求转发类</span><br><span class="line">		final RibbonLoadBalancingHttpClient client = this.clientFactory.getClient(</span><br><span class="line">				serviceId, RibbonLoadBalancingHttpClient.class);</span><br><span class="line"></span><br><span class="line">		client.setLoadBalancer(this.clientFactory.getLoadBalancer(serviceId));</span><br><span class="line"></span><br><span class="line">		return new HttpClientRibbonCommand(serviceId, client, context, zuulProperties, zuulFallbackProvider,</span><br><span class="line">				clientFactory.getClientConfig(serviceId));</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样的道理，准备的工作一般会在创建的时候完成，往<strong>getClient</strong>方法跟下去，这里涉及的类也不详细列举了，跟下去后会到<code>NamedContextFactory</code>的<strong>createContext</strong>方法的<code>context.refresh();</code>，刷新了context，会调用到<strong>finishBeanFactoryInitialization</strong>方法中的<code>beanFactory.preInstantiateSingletons()</code>，该方法会将这个上下文的bean工厂初始化，并初始化所有剩余的单例bean。这样之前的疑问就解答了，果然是在<strong>zuul</strong>做转发的时候完成了加载。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">public void preInstantiateSingletons() throws BeansException &#123;</span><br><span class="line">	if (this.logger.isDebugEnabled()) &#123;</span><br><span class="line">		this.logger.debug(&quot;Pre-instantiating singletons in &quot; + this);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// Iterate over a copy to allow for init methods which in turn register new bean definitions.</span><br><span class="line">	// While this may not be part of the regular factory bootstrap, it does otherwise work fine.</span><br><span class="line">	List&lt;String&gt; beanNames = new ArrayList&lt;&gt;(this.beanDefinitionNames);</span><br><span class="line"></span><br><span class="line">	// Trigger initialization of all non-lazy singleton beans...</span><br><span class="line">	for (String beanName : beanNames) &#123;</span><br><span class="line">		RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);</span><br><span class="line">		if (!bd.isAbstract() &amp;&amp; bd.isSingleton() &amp;&amp; !bd.isLazyInit()) &#123;</span><br><span class="line">			if (isFactoryBean(beanName)) &#123;</span><br><span class="line">				Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);</span><br><span class="line">				if (bean instanceof FactoryBean) &#123;</span><br><span class="line">					final FactoryBean&lt;?&gt; factory = (FactoryBean&lt;?&gt;) bean;</span><br><span class="line">					boolean isEagerInit;</span><br><span class="line">					if (System.getSecurityManager() != null &amp;&amp; factory instanceof SmartFactoryBean) &#123;</span><br><span class="line">						isEagerInit = AccessController.doPrivileged((PrivilegedAction&lt;Boolean&gt;)</span><br><span class="line">										((SmartFactoryBean&lt;?&gt;) factory)::isEagerInit,</span><br><span class="line">								getAccessControlContext());</span><br><span class="line">					&#125;</span><br><span class="line">					else &#123;</span><br><span class="line">						isEagerInit = (factory instanceof SmartFactoryBean &amp;&amp;</span><br><span class="line">								((SmartFactoryBean&lt;?&gt;) factory).isEagerInit());</span><br><span class="line">					&#125;</span><br><span class="line">					if (isEagerInit) &#123;</span><br><span class="line">						getBean(beanName);</span><br><span class="line">					&#125;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			else &#123;</span><br><span class="line">				getBean(beanName);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	// Trigger post-initialization callback for all applicable beans...</span><br><span class="line">	......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到此，<strong>forward</strong>中的<strong>create</strong>方法已经看了，问题也解决了。那把剩余的<strong>execute</strong>也一并看了吧。该方法最后执行的会是<code>AbstractRibbonCommand</code>的<strong>run</strong>方法，里面重要的就是<strong>executeWithLoadBalancer</strong>方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">public abstract class AbstractLoadBalancerAwareClient&lt;S extends ClientRequest, T extends IResponse&gt; extends LoadBalancerContext implements IClient&lt;S, T&gt;, IClientConfigAware &#123;</span><br><span class="line"></span><br><span class="line">	public T executeWithLoadBalancer(final S request, final IClientConfig requestConfig) throws ClientException &#123;</span><br><span class="line">        LoadBalancerCommand&lt;T&gt; command = buildLoadBalancerCommand(request, requestConfig);</span><br><span class="line"></span><br><span class="line">        // 主要是创建了Observable(RxJava)，并且为这个Observable设置了重试次数，最终回调了RetryableRibbonLoadBalancingHttpClient的execute方法</span><br><span class="line">        // 如果没有设置重试会回调RibbonLoadBalancingHttpClient的execute方法</span><br><span class="line">        try &#123;</span><br><span class="line">            return command.submit(</span><br><span class="line">                new ServerOperation&lt;T&gt;() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public Observable&lt;T&gt; call(Server server) &#123;</span><br><span class="line">                        URI finalUri = reconstructURIWithServer(server, request.getUri());</span><br><span class="line">                        S requestForServer = (S) request.replaceUri(finalUri);</span><br><span class="line">                        try &#123;</span><br><span class="line">                            return Observable.just(AbstractLoadBalancerAwareClient.this.execute(requestForServer, requestConfig));</span><br><span class="line">                        &#125; </span><br><span class="line">                        catch (Exception e) &#123;</span><br><span class="line">                            return Observable.error(e);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;)</span><br><span class="line">                .toBlocking()</span><br><span class="line">                .single();</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            Throwable t = e.getCause();</span><br><span class="line">            if (t instanceof ClientException) &#123;</span><br><span class="line">                throw (ClientException) t;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                throw new ClientException(e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    protected LoadBalancerCommand&lt;T&gt; buildLoadBalancerCommand(final S request, final IClientConfig config) &#123;</span><br><span class="line">    	//创建一个RetryHandler，决定利用RxJava的Observable是否进行重试的标准</span><br><span class="line">		RequestSpecificRetryHandler handler = getRequestSpecificRetryHandler(request, config);</span><br><span class="line"></span><br><span class="line">		//创建一个LoadBalancerCommand，创建Observable以及根据RetryHandler来判断是否进行重试操作。</span><br><span class="line">		LoadBalancerCommand.Builder&lt;T&gt; builder = LoadBalancerCommand.&lt;T&gt;builder()</span><br><span class="line">				.withLoadBalancerContext(this)</span><br><span class="line">				.withRetryHandler(handler)</span><br><span class="line">				.withLoadBalancerURI(request.getUri());</span><br><span class="line">		customizeLoadBalancerCommandBuilder(request, config, builder);</span><br><span class="line">		return builder.build();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后就是<code>LoadBalancerCommand</code>的<strong>submit</strong>方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">public Observable&lt;T&gt; submit(final ServerOperation&lt;T&gt; operation) &#123;</span><br><span class="line">        </span><br><span class="line">		......</span><br><span class="line"></span><br><span class="line">		//相同server的重试次数(去除首次请求)</span><br><span class="line">        final int maxRetrysSame = retryHandler.getMaxRetriesOnSameServer();</span><br><span class="line">        //集群内其他Server的重试个数</span><br><span class="line">        final int maxRetrysNext = retryHandler.getMaxRetriesOnNextServer();</span><br><span class="line"></span><br><span class="line">        // 使用负载均衡</span><br><span class="line">        Observable&lt;T&gt; o = </span><br><span class="line">                (server == null ? selectServer() : Observable.just(server))</span><br><span class="line">                .concatMap(new Func1&lt;Server, Observable&lt;T&gt;&gt;() &#123;</span><br><span class="line">                    </span><br><span class="line">					// 对选择的服务器进行调用</span><br><span class="line">                    @Override</span><br><span class="line">                    public Observable&lt;T&gt; call(Server server) &#123;</span><br><span class="line">                        context.setServer(server);</span><br><span class="line">                        final ServerStats stats = loadBalancerContext.getServerStats(server);</span><br><span class="line">                        </span><br><span class="line">                        Observable&lt;T&gt; o = Observable</span><br><span class="line">                                .just(server)</span><br><span class="line">                                .concatMap(......);</span><br><span class="line"></span><br><span class="line">                        if (maxRetrysSame &gt; 0) </span><br><span class="line">                            o = o.retry(retryPolicy(maxRetrysSame, true));</span><br><span class="line">                        return o;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">         </span><br><span class="line">        if (maxRetrysNext &gt; 0 &amp;&amp; server == null) </span><br><span class="line">            o = o.retry(retryPolicy(maxRetrysNext, false));</span><br><span class="line">        </span><br><span class="line">        return o.onErrorResumeNext(new Func1&lt;Throwable, Observable&lt;T&gt;&gt;() &#123;</span><br><span class="line"></span><br><span class="line">        	//转发请求失败时，会进入此方法。通过此方法进行判断,是否超过重试次数maxRetrysSame、maxRetrysNext。</span><br><span class="line">            @Override</span><br><span class="line">            public Observable&lt;T&gt; call(Throwable e) &#123;</span><br><span class="line">            	......</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>最后就是<code>RetryableRibbonLoadBalancingHttpClient</code>的<strong>execute</strong>方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public RibbonApacheHttpResponse execute(final RibbonApacheHttpRequest request, final IClientConfig configOverride) throws Exception &#123;</span><br><span class="line"></span><br><span class="line">   	//创建RequestConfig(请求信息)</span><br><span class="line">   	final RequestConfig requestConfig = builder.build();</span><br><span class="line">   	final LoadBalancedRetryPolicy retryPolicy = loadBalancedRetryPolicyFactory.create(this.getClientName(), this);</span><br><span class="line">   </span><br><span class="line">   	//创建RetryCallbck，实现重试时候的回调</span><br><span class="line">   	RetryCallback&lt;RibbonApacheHttpResponse, Exception&gt; retryCallback = context -&gt; &#123;......&#125;</span><br><span class="line">   </span><br><span class="line">   	//创建Spring-retry的模板类，RetryTemplate。</span><br><span class="line">   	RetryTemplate retryTemplate = new RetryTemplate();</span><br><span class="line">   </span><br><span class="line">   	// 设置重试规则</span><br><span class="line">   	retryTemplate.setRetryPolicy(......);</span><br><span class="line">	</span><br><span class="line">	//发起请求</span><br><span class="line">	return retryTemplate.execute(callback, recoveryCallback);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>唠唠叨叨了好多，就先到这了~</p>
+<h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><p><a href="http://blog.didispace.com/spring-cloud-zuul-retry-detail/" target="_blank" rel="noopener">http://blog.didispace.com/spring-cloud-zuul-retry-detail/</a></p>
+<hr>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/springcloud/" rel="tag"># springcloud</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/18/springcloud：实现zuul的动态路由和集群通知/" rel="next" title="springcloud：实现zuul的动态路由和集群通知">
+                <i class="fa fa-chevron-left"></i> springcloud：实现zuul的动态路由和集群通知
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/ly.jpg"
+               alt="7le" />
+          <p class="site-author-name" itemprop="name">7le</p>
+           
+              <p class="site-description motion-element" itemprop="description">我只有一件事，就是忘记背后，努力面前的</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/7le" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://palmer.arkstack.cn" title="palmerye" target="_blank">palmerye</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ribbon-配置问题"><span class="nav-number">1.</span> <span class="nav-text">ribbon 配置问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ribbon-源码解读"><span class="nav-number">2.</span> <span class="nav-text">ribbon 源码解读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zuul-源码解读"><span class="nav-number">3.</span> <span class="nav-text">zuul 源码解读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文献"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+<div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <a class="theme-link" href="https://github.com/7le" target="view_window" style="cursor: pointer" rel="external nofollow">
+    7le
+  </a>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io" rel="external nofollow">Hexo</a>
+</div>
+
+<span id="busuanzi_container_site_pv">
+  PV <span id="busuanzi_value_site_pv"></span>
+</span>
+<span id="busuanzi_container_site_uv">
+  &nbsp&nbsp | &nbsp&nbsp UV <span id="busuanzi_value_site_uv"></span>
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <a class="github-fork-ribbon left-bottom fixed" href="https://github.com/7le/7le.github.io" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+</body>
+</html>
+
+</body>
+</html>
