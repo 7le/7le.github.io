@@ -66,15 +66,15 @@ ribbon:
 
 ```
 public abstract class CommonClientConfigKey<T> implements IClientConfigKey<T> {
-	......
+    ......
 
-	public static final IClientConfigKey<Integer> MaxAutoRetries = new CommonClientConfigKey<Integer>("MaxAutoRetries"){};
+    public static final IClientConfigKey<Integer> MaxAutoRetries = new CommonClientConfigKey<Integer>("MaxAutoRetries"){};
     
     public static final IClientConfigKey<Integer> MaxAutoRetriesNextServer = new CommonClientConfigKey<Integer>("MaxAutoRetriesNextServer"){};
 
     public static final IClientConfigKey<Boolean> OkToRetryOnAllOperations = new CommonClientConfigKey<Boolean>("OkToRetryOnAllOperations"){};
    	
-   	......
+    ......
 }
 ```
 
@@ -371,9 +371,9 @@ public abstract class AbstractLoadBalancerAwareClient<S extends ClientRequest, T
 ```
 public Observable<T> submit(final ServerOperation<T> operation) {
         
-		......
+	......
 
-		//相同server的重试次数(去除首次请求)
+	//相同server的重试次数(去除首次请求)
         final int maxRetrysSame = retryHandler.getMaxRetriesOnSameServer();
         //集群内其他Server的重试个数
         final int maxRetrysNext = retryHandler.getMaxRetriesOnNextServer();
@@ -404,7 +404,7 @@ public Observable<T> submit(final ServerOperation<T> operation) {
         
         return o.onErrorResumeNext(new Func1<Throwable, Observable<T>>() {
 
-        	//转发请求失败时，会进入此方法。通过此方法进行判断,是否超过重试次数maxRetrysSame、maxRetrysNext。
+            //转发请求失败时，会进入此方法。通过此方法进行判断,是否超过重试次数maxRetrysSame、maxRetrysNext。
             @Override
             public Observable<T> call(Throwable e) {
             	......
