@@ -50,12 +50,12 @@ ribbon:
 上面的方式是全局的配置，如果需要局部的配置，可以这样写成
 ```
 （serviceId）:
-	ribbon:	
-  		ConnectTimeout: 500                 # 请求连接的超时时间
-  		ReadTimeout: 1000                   # 请求处理的超时时间
-  		MaxAutoRetries: 2                   # 对当前实例的重试次数
-  		MaxAutoRetriesNextServer: 1         # 切换实例的重试次数
-  		OkToRetryOnAllOperations: false     # 对所有操作请求都进行重试	
+  ribbon:	
+    ConnectTimeout: 500                 # 请求连接的超时时间
+    ReadTimeout: 1000                   # 请求处理的超时时间
+    MaxAutoRetries: 2                   # 对当前实例的重试次数
+    MaxAutoRetriesNextServer: 1         # 切换实例的重试次数
+    OkToRetryOnAllOperations: false     # 对所有操作请求都进行重试	
 ```
 
 其实，就是大小写导致参数失效，而且这些在配置文件中是不给提示的，那就是代表没有对应的**@ConfigurationProperties**，那是如何生效呢，这就勾起了我的好奇心。
@@ -119,7 +119,7 @@ public class DefaultClientConfigImpl implements IClientConfig {
 
 public class DynamicProperty {
 
-	public static DynamicProperty getInstance(String propName) {
+    public static DynamicProperty getInstance(String propName) {
         // This is to ensure that a configuration source is registered with
         // DynamicProperty
         if (dynamicPropertySupportImpl == null) {
@@ -148,7 +148,7 @@ public class DynamicProperty {
  */
 @Override
 public void loadProperties(String restClientName){
-	enableDynamicProperties = true;
+    enableDynamicProperties = true;
     setClientName(restClientName);
     //重要：加载默认值，有手动设置的话，使用设置的值
     loadDefaultValues();
