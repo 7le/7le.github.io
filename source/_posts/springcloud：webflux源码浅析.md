@@ -91,31 +91,31 @@ public class DeferredResult<T> {
      * 重要
      */ 
     private boolean setResultInternal(Object result) {
-		// 查验是否过期
+	// 查验是否过期
+	if (isSetOrExpired()) {
+		return false;
+	}
+	DeferredResultHandler resultHandlerToUse;
+	//这里很关键
+	synchronized (this) {
+		// 抢占到了锁，再次查验是否过期
 		if (isSetOrExpired()) {
 			return false;
 		}
-		DeferredResultHandler resultHandlerToUse;
-		//这里很关键
-		synchronized (this) {
-			// 抢占到了锁，再次查验是否过期
-			if (isSetOrExpired()) {
-				return false;
-			}
-			// 将传进来的结果赋值给result，注意result是volatile修饰的
-			this.result = result;
-			resultHandlerToUse = this.resultHandler;
-			if (resultHandlerToUse == null) {
-				// 是否设置了handler 没有设置返回true
-				return true;
-			}
-			// 清除handler
-			this.resultHandler = null;
+		// 将传进来的结果赋值给result，注意result是volatile修饰的
+		this.result = result;
+		resultHandlerToUse = this.resultHandler;
+		if (resultHandlerToUse == null) {
+			// 是否设置了handler 没有设置返回true
+			return true;
 		}
-		// 如果设置了handler，进行回调
-		resultHandlerToUse.handleResult(result);
-		return true;
+		// 清除handler
+		this.resultHandler = null;
 	}
+	// 如果设置了handler，进行回调
+	resultHandlerToUse.handleResult(result);
+	return true;
+    }
 }
 ```
 
