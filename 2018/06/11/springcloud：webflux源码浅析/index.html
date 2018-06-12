@@ -1,0 +1,777 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="google-site-verification" content="TOzgkVPl_tllvkMlt51RjNeTAmmf13oTLBbxTqhSO5E" />
+<meta name="baidu-site-verification" content="j9xl21v0cA" />
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="springcloud," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="spring-webflux采用了事件驱动异步非阻塞模式，借助EventLoop以少量线程应对高并发的访问，这样的改变使spring也变得像vert.x一样有趣~">
+<meta name="keywords" content="springcloud">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springcloud：webflux源码浅析">
+<meta property="og:url" content="http://yoursite.com/2018/06/11/springcloud：webflux源码浅析/index.html">
+<meta property="og:site_name" content="Shine">
+<meta property="og:description" content="spring-webflux采用了事件驱动异步非阻塞模式，借助EventLoop以少量线程应对高并发的访问，这样的改变使spring也变得像vert.x一样有趣~">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/event-loop.png">
+<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/thread-process.png">
+<meta property="og:updated_time" content="2018-06-12T09:34:33.862Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="springcloud：webflux源码浅析">
+<meta name="twitter:description" content="spring-webflux采用了事件驱动异步非阻塞模式，借助EventLoop以少量线程应对高并发的访问，这样的改变使spring也变得像vert.x一样有趣~">
+<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/event-loop.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/06/11/springcloud：webflux源码浅析/"/>
+
+
+
+
+
+  <title> springcloud：webflux源码浅析 | Shine </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" />
+  <script type="text/javascript">
+    var host = "7le.top";
+    if ((host == window.location.host) && (window.location.protocol != "https:"))
+        window.location.protocol = "https";
+  </script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?467d29ed3a4fecd3a1dca094a8c5a369";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shine</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耶和华是我的牧者，我必不致缺乏。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/11/springcloud：webflux源码浅析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="7le">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/image/ly.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shine">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                springcloud：webflux源码浅析
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-11T22:55:17+08:00">
+                2018-06-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>spring-webflux采用了事件驱动异步非阻塞模式，借助EventLoop以少量线程应对高并发的访问，这样的改变使spring也变得像vert.x一样有趣~</p>
+</blockquote>
+<a id="more"></a>
+<p>之前就一直很看好<strong>spring-webflux</strong>，最近这星期就花时间用了用，也看了自己感兴趣的源码（虽然还没看完），就先记录分享一下，省的到时候就忘了。</p>
+<h3 id="webflux-and-vert-x"><a href="#webflux-and-vert-x" class="headerlink" title="webflux and vert.x"></a>webflux and vert.x</h3><p>用过<strong>vert.x</strong>的小伙伴都知道，<strong>vert.x</strong>是函数式开发模式，而<strong>spring-webflux</strong>不但支持函数式，还很贴心的提供了webmvc注解的方式来编写web服务，这让学习和迁移代码上都有很大的便利。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@RestController</span><br><span class="line">public class AdController &#123;</span><br><span class="line"></span><br><span class="line">    @RequestMapping(value = &quot;/&quot;)</span><br><span class="line">    public Mono&lt;Object&gt; test() &#123;</span><br><span class="line">        return Mono.create(s -&gt; &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                TimeUnit.SECONDS.sleep(1);</span><br><span class="line">            &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            s.success(ResultBean.SUCCESS);</span><br><span class="line">        &#125;).subscribeOn(Schedulers.elastic());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之前我封装过<strong>vert.x</strong>，通过注解的方式来声明路由并统一管理，跟webflux非常相似。有兴趣的小伙伴可以去玩耍一下 <a href="https://github.com/7le/vertx-shine" target="_blank" rel="noopener">vertx-shine</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@RouteHandler</span><br><span class="line">@RouteMapping(value = &quot;/video&quot;)</span><br><span class="line">public class VideoVerticle &#123;</span><br><span class="line"></span><br><span class="line">    private Vertx vertx = VerticleLauncher.getStandardVertx();</span><br><span class="line"></span><br><span class="line">    @RouteMapping(method = RequestMethod.GET, value = &quot;/test&quot;)</span><br><span class="line">    public Handler&lt;RoutingContext&gt; test() &#123;</span><br><span class="line">        return routingContext -&gt; vertx.executeBlocking(future -&gt; &#123;</span><br><span class="line">            System.out.println(&quot;executeBlocking: &quot;+Thread.currentThread().getName());</span><br><span class="line">            System.out.println(&quot;type : &quot; + routingContext.request().getParam(&quot;type&quot;));</span><br><span class="line">            //需要调用complete  FutureImpl -&gt; setHandler 需要</span><br><span class="line">            future.complete(1);</span><br><span class="line">        &#125;, false, h -&gt; routingContext.response().setStatusCode(200).end(&quot;It is amazing !&quot;));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>两者大概的思路都是一致的，通过一个eventloop线程来不断循环接收event，并将event（一些耗时的业务逻辑和网络IO等）分配给相应的handler（worker线程）来处理。</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/event-loop.png" alt="event-loop"></p>
+<p>在<strong>vert.x</strong>中两者称为<strong>EventLoop线程</strong>和<strong>Worker线程</strong>，而<strong>webflux</strong>对应的是<strong>NIO线程</strong>和<strong>elastic（single、parallel 看业务需要选择）线程</strong>。</p>
+<p>这是一个简化的模型，很便于理解，而真正有趣的地方是如何来实现这个模型。</p>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>整个实现的源码比较多，先整理出一部分我比较感兴趣的，是关于线程处理完event后，到底是哪个线程返回结果。其实就是上述代码中<code>s.success(ResultBean.SUCCESS);</code>的玄机。</p>
+<blockquote>
+<p>注：使用的依赖版本如下，Servlet容器使用的是<strong>undertow</strong>。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-webflux&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.0.0.RELEASE&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-undertow&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.0.0.RELEASE&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>从<code>s.success()</code>方法进入，会经过很多类<code>MonoCreate</code>-&gt;<code>MonoSubscribeOn</code>-&gt;<code>ScopePassingSpanSubscriber</code>-&gt;<code>StrictSubscriber</code>-&gt;<code>ReactiveTypeHandler</code>，最后到<code>DeferredResult</code>的<strong>setResultInternal</strong>，这里很关键。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public class DeferredResult&lt;T&gt; &#123;</span><br><span class="line">    </span><br><span class="line">    /**</span><br><span class="line">     * 重要</span><br><span class="line">     */ </span><br><span class="line">    private boolean setResultInternal(Object result) &#123;</span><br><span class="line">		// 查验是否过期</span><br><span class="line">		if (isSetOrExpired()) &#123;</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line">		DeferredResultHandler resultHandlerToUse;</span><br><span class="line">		//这里很关键</span><br><span class="line">		synchronized (this) &#123;</span><br><span class="line">			// 抢占到了锁，再次查验是否过期</span><br><span class="line">			if (isSetOrExpired()) &#123;</span><br><span class="line">				return false;</span><br><span class="line">			&#125;</span><br><span class="line">			// 将传进来的结果赋值给result，注意result是volatile修饰的</span><br><span class="line">			this.result = result;</span><br><span class="line">			resultHandlerToUse = this.resultHandler;</span><br><span class="line">			if (resultHandlerToUse == null) &#123;</span><br><span class="line">				// 是否设置了handler 没有设置返回true</span><br><span class="line">				return true;</span><br><span class="line">			&#125;</span><br><span class="line">			// 清除handler</span><br><span class="line">			this.resultHandler = null;</span><br><span class="line">		&#125;</span><br><span class="line">		// 如果设置了handler，进行回调</span><br><span class="line">		resultHandlerToUse.handleResult(result);</span><br><span class="line">		return true;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们继续找<code>DeferredResultHandler</code>函数式接口的实现，发现是在<code>WebAsyncManager</code>。向上去找源码会发现源头是我们熟悉的<code>RequestMappingHandlerAdapter</code>，那该方法就是在请求进来是<strong>NIO线程</strong>来执行的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">public final class WebAsyncManager &#123;</span><br><span class="line">    </span><br><span class="line">    public void startDeferredResultProcessing(</span><br><span class="line">    			final DeferredResult&lt;?&gt; deferredResult, Object... processingContext) throws Exception &#123;</span><br><span class="line">        ......</span><br><span class="line">       </span><br><span class="line">        try &#123;</span><br><span class="line">        	interceptorChain.applyPreProcess(this.asyncWebRequest, deferredResult);</span><br><span class="line">        	// 这个setResultHandler方法，非常重要</span><br><span class="line">        	deferredResult.setResultHandler(result -&gt; &#123;</span><br><span class="line">        		result = interceptorChain.applyPostProcess(this.asyncWebRequest, deferredResult, result);</span><br><span class="line">        		setConcurrentResultAndDispatch(result);</span><br><span class="line">        	&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        catch (Throwable ex) &#123;</span><br><span class="line">        	setConcurrentResultAndDispatch(ex);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class DeferredResult&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 重要</span><br><span class="line">     */ </span><br><span class="line">    public final void setResultHandler(DeferredResultHandler resultHandler) &#123;</span><br><span class="line">    	Assert.notNull(resultHandler, &quot;DeferredResultHandler is required&quot;);</span><br><span class="line">    	// 查验是否过期</span><br><span class="line">    	if (this.expired) &#123;</span><br><span class="line">    		return;</span><br><span class="line">    	&#125;</span><br><span class="line">    	Object resultToHandle;</span><br><span class="line">    	synchronized (this) &#123;</span><br><span class="line">    		// 抢占到了锁，再次查验是否过期</span><br><span class="line">    		if (this.expired) &#123;</span><br><span class="line">    			return;</span><br><span class="line">    		&#125;</span><br><span class="line">    		resultToHandle = this.result;</span><br><span class="line">    		if (resultToHandle == RESULT_NONE) &#123;</span><br><span class="line">    		    //如果结果还没有被设置，将传进来的DeferredResultHandler赋值给resultHandler</span><br><span class="line">    			this.resultHandler = resultHandler;</span><br><span class="line">    			return;</span><br><span class="line">    		&#125;</span><br><span class="line">    	&#125;</span><br><span class="line">    	// 走到这说明result已经被设置了，那就直接执行回调</span><br><span class="line">    	try &#123;</span><br><span class="line">    		resultHandler.handleResult(resultToHandle);</span><br><span class="line">    	&#125;</span><br><span class="line">    	catch (Throwable ex) &#123;</span><br><span class="line">    		logger.debug(&quot;Failed to handle existing result&quot;, ex);</span><br><span class="line">    	&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那我们继续顺着代码往下，假设<code>resultHandlerToUse.handleResult(result);</code>成功回调了，就会到<strong>setConcurrentResultAndDispatch</strong>方法中，也是一些类的跳转，<code>WebAsyncManager</code>-&gt;<code>StandardServletAsyncWebRequest</code>-&gt;<code>AsyncContextImpl</code>的<strong>dispatchAsyncRequest</strong>方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line">public class AsyncContextImpl implements AsyncContext &#123;</span><br><span class="line"></span><br><span class="line">    private void dispatchAsyncRequest(final ServletDispatcher servletDispatcher, final ServletPathMatch pathInfo, final HttpServerExchange exchange) &#123;</span><br><span class="line">        doDispatch(new Runnable() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                Connectors.executeRootHandler(new HttpHandler() &#123;</span><br><span class="line">                    @Override</span><br><span class="line">                    public void handleRequest(final HttpServerExchange exchange) throws Exception &#123;</span><br><span class="line">                        servletDispatcher.dispatchToPath(exchange, pathInfo, DispatcherType.ASYNC);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;, exchange);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private synchronized void doDispatch(final Runnable runnable) &#123;</span><br><span class="line">        if (dispatched) &#123;</span><br><span class="line">            throw UndertowServletMessages.MESSAGES.asyncRequestAlreadyDispatched();</span><br><span class="line">        &#125;</span><br><span class="line">        dispatched = true;</span><br><span class="line">        final HttpServletRequestImpl request = servletRequestContext.getOriginalRequest();</span><br><span class="line">        addAsyncTask(new Runnable() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public void run() &#123;</span><br><span class="line">                request.asyncRequestDispatched();</span><br><span class="line">                runnable.run();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        if (timeoutKey != null) &#123;</span><br><span class="line">            timeoutKey.remove();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public synchronized void addAsyncTask(final Runnable runnable) &#123;</span><br><span class="line">        asyncTaskQueue.add(runnable);</span><br><span class="line">        if (!processingAsyncTask) &#123;</span><br><span class="line">            processAsyncTask();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    private synchronized void processAsyncTask() &#123;</span><br><span class="line">        if (!initialRequestDone) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        updateTimeout();</span><br><span class="line">        final Runnable task = asyncTaskQueue.poll();</span><br><span class="line">        if (task != null) &#123;</span><br><span class="line">            processingAsyncTask = true;</span><br><span class="line">            asyncExecutor().execute(new TaskDispatchRunnable(task));</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            processingAsyncTask = false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>AsyncContextImpl</code>中的方法涉及比较多，<strong>dispatchAsyncRequest</strong>和<strong>doDispatch</strong>方法类似都是包装了一个<code>Runnable</code>，等待被启动，其中<strong>dispatchToPath</strong>方法最后会返回结果到请求方。而<strong>addAsyncTask</strong>和<strong>processAsyncTask</strong>维护了一个双端队列，这里不去深究，关注到<code>asyncExecutor().execute(new TaskDispatchRunnable(task));</code>，其中<strong>asyncExecutor()</strong>方法决定了最后是什么线程来启动之前的<code>Runnable</code>。跟下去会发现到了<code>XnioIoThread</code>，那之前疑惑的答案就已经出来了。</p>
+<h3 id="取其精华"><a href="#取其精华" class="headerlink" title="取其精华"></a>取其精华</h3><p>前面唠叨了一堆，无非就是源码的运行过程，整理了一下线程的流程，如下图：</p>
+<p><img src="http://oqipguzbl.bkt.clouddn.com/thread-process.png" alt="thread-process"></p>
+<p>不过这图只是画出了一种理想的状态，因为<strong>NIO</strong>线程和<strong>elastic</strong>线程两者的时序是无法保证的，所以并不能保证<strong>setResultHandler</strong>是在<strong>setResultInternal</strong>之前执行，就我们上面源码中标识了重要的方法，没有注意到的可以翻回去看看。</p>
+<p>这里就很有意思了，spring的设计是不管这2个线程的时序，而是通过<strong>synchronized</strong>的互斥，来保证同一时刻内只有一个线程能获得<code>DeferredResult</code>这个锁的对象。</p>
+<p>若是先执行<strong>setResultHandler</strong>，会判断被<strong>volatile</strong>修饰的<strong>result</strong>，若没有被重新赋值，那就说明还未执行<strong>setResultInternal</strong>，那就设置<strong>handler</strong>等待<strong>setResultInternal</strong>运行来处理。相对的，如果先执行了<strong>setResultInternal</strong>，会将<strong>result</strong>赋值，有<strong>handler</strong>就让<strong>elastic</strong>执行回调，如果没有则让<strong>NIO</strong>线程自己执行回调。</p>
+<hr>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/springcloud/" rel="tag"># springcloud</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/29/springcloud：ribbon配置和zuul重试源码解读/" rel="next" title="springcloud：ribbon配置和zuul重试源码解读">
+                <i class="fa fa-chevron-left"></i> springcloud：ribbon配置和zuul重试源码解读
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/image/ly.jpg"
+               alt="7le" />
+          <p class="site-author-name" itemprop="name">7le</p>
+           
+              <p class="site-description motion-element" itemprop="description">我只有一件事，就是忘记背后，努力面前的</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/7le" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://palmer.arkstack.cn" title="palmerye" target="_blank">palmerye</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#webflux-and-vert-x"><span class="nav-number">1.</span> <span class="nav-text">webflux and vert.x</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#源码分析"><span class="nav-number">2.</span> <span class="nav-text">源码分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#取其精华"><span class="nav-number">3.</span> <span class="nav-text">取其精华</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+<div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <a class="theme-link" href="https://github.com/7le" target="view_window" style="cursor: pointer" rel="external nofollow">
+    7le
+  </a>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io" rel="external nofollow">Hexo</a>
+</div>
+
+<span id="busuanzi_container_site_pv">
+  PV <span id="busuanzi_value_site_pv"></span>
+</span>
+<span id="busuanzi_container_site_uv">
+  &nbsp&nbsp | &nbsp&nbsp UV <span id="busuanzi_value_site_uv"></span>
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  <a class="github-fork-ribbon left-bottom fixed" href="https://github.com/7le/7le.github.io" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+</body>
+</html>
+
+</body>
+</html>
