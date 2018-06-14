@@ -66,8 +66,10 @@ public class VideoVerticle {
 
 整个实现的源码比较多，先整理出一部分我比较感兴趣的，是关于线程处理完event后，到底是哪个线程返回结果。其实就是上述代码中``s.success(ResultBean.SUCCESS);``的玄机。
 
-> 注：使用的依赖版本如下，Servlet容器使用的是**undertow**。
+> 注： 如果**spring-boot-starter-web**和**spring-boot-starter-webflux**都依赖的话，会默认设置为SpringMVC。
+不过可以使用异步类型（DeferredResult，Flux或SseEmitter）的SpringMVC，这样事件将是异步的，但读写仍然会被阻塞。
 
+使用的依赖版本如下，Servlet容器使用的是**undertow**:
 ```
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -81,6 +83,15 @@ public class VideoVerticle {
     <version>2.0.0.RELEASE</version>
 </dependency>
 ```
+
+可以在启动的时候指定使用**REACTIVE**或**SERVLET**
+```
+    SpringApplication app = new SpringApplication（MyApplication.class）;
+    app.setWebApplicationType（WebApplicationType.REACTIVE）;
+    app.run();
+```
+
+> 因为我的项目中有依赖会引入**spring-boot-starter-web**，所以接下来的分析是基于**SERVLET**，等之后整理了再分析基于**REACTIVE**
 
 从``s.success()``方法进入，会经过很多类``MonoCreate``->``MonoSubscribeOn``->``ScopePassingSpanSubscriber``->``StrictSubscriber``->``ReactiveTypeHandler``，最后到``DeferredResult``的**setResultInternal**，这里很关键。
 
