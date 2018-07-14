@@ -30,32 +30,24 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
 需要设置
 ```
 <servers>
-  <server>
-    <id>sonatype-nexus-snapshots</id>
-    <username>Sonatype网站的账号</username>
-    <password>Sonatype网站的密码</password>
-  </server>
-  <server>
-    <id>sonatype-nexus-staging</id>
-    <username>Sonatype网站的账号</username>
-    <password>Sonatype网站的密码</password>
-  </server>
-</servers>
+    <server>
+      <id>oss</id>
+      <username>Sonatype网站的账号</username>
+      <password>Sonatype网站的密码</password>
+    </server>
+  </servers>
 ```
 以及
 ```
 <profile>
-	<id>shine</id>
-	<distributionManagement>
-        <snapshotRepository>
-            <id>oss</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>oss</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
+  <id>shine</id>
+  <activation>
+    <activeByDefault>true</activeByDefault>
+  </activation>
+  <properties>
+    <gpg.executable>mac填gpg2，windows填gpg</gpg.executable>
+    <gpg.passphrase>生成gpg密钥过程中填写的密码</gpg.passphrase>
+  </properties>
 </profile>
 ```
 
@@ -68,6 +60,17 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
 </parent>
 
 ....
+
+<distributionManagement>
+    <snapshotRepository>
+        <id>oss</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
+    <repository>
+        <id>oss</id>
+        <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+</distributionManagement>
 
 <licenses>
     <license>
@@ -91,6 +94,8 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
     </developer>
 </developers>
 ```
+
+这里需要注意**server**中的**id**要与**snapshotRepository**的**id**一致。
 
 ### deploy & release 
 
