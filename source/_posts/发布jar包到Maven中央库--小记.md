@@ -111,14 +111,22 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
 这里在close的会报一个错误，错误如下
 ```
 typeId	signature-staging
-failureMessage	No public key: Key with id: (your_id) was not able to be located on http://pgp.mit.edu:11371/. Upload your public key and try the operation again.
-failureMessage	No public key: Key with id: (your_id) was not able to be located on http://keyserver.ubuntu.com:11371/. Upload your public key and try the operation again.
-failureMessage	No public key: Key with id: (your_id) was not able to be located on http://pool.sks-keyservers.net:11371/. Upload your public key and try the operation again.
-failureMessage	No public key: Key with id: (your_id) was not able to be located on http://pgp.mit.edu:11371/. Upload your public key and try the operation again.
+failureMessage	No public key: Key with id: (66921d7322339e1) was not able to be located on http://pgp.mit.edu:11371/. Upload your public key and try the operation again.
+failureMessage	No public key: Key with id: (66921d7322339e1) was not able to be located on http://keyserver.ubuntu.com:11371/. Upload your public key and try the operation again.
+failureMessage	No public key: Key with id: (66921d7322339e1) was not able to be located on http://pool.sks-keyservers.net:11371/. Upload your public key and try the operation again.
+failureMessage	No public key: Key with id: (66921d7322339e1) was not able to be located on http://pgp.mit.edu:11371/. Upload your public key and try the operation again.
 .....
 ```
-这里将your_id，上传到第三方的key验证库，如下
-![gpg-addKey](http://oqipguzbl.bkt.clouddn.com/maven-gpg-addKey.png)
+
+先获取``用户id``，再上传到第三方的key验证库
+
+![gpg-key](http://oqipguzbl.bkt.clouddn.com/gpg-key.png)
+
+如果不行可以试试
+```
+gpg --keyserver hkp://pool.sks-keyservers.net --send-keys 322339E1
+gpg --keyserver hkp://keyserver.ubuntu.com/ --send-keys 322339E1
+```
 
 然后再等一段时间，就可以在[Maven中央仓库](http://search.maven.org)搜到了。正式版本和SNAPSHOT大家可以自己选择~
 
