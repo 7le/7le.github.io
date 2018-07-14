@@ -100,7 +100,7 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
 ### deploy & release 
 
 一切就绪后，在命令行输入
-``mvn clean deploy -P sonatype-oss-release -Darguments="gpg.passphrase=设置的Passphrase"``
+``mvn clean deploy``
 ![operation](http://oqipguzbl.bkt.clouddn.com/maven-operation.jpg)
 
 成功之后可以到[Neuxs](https://oss.sonatype.org/index.html#stagingRepositories)查看发布好的jar包：
