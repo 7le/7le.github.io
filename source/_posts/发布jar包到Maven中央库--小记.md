@@ -71,7 +71,87 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
         <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
 </distributionManagement>
-
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.19.1</version>
+            <configuration>
+                <skip>true</skip>
+            </configuration>
+        </plugin>
+        <!-- 编译插件 -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+                <encoding>utf-8</encoding>
+            </configuration>
+        </plugin>
+        <!-- 发布源码插件 -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>attach-sources</id>
+                    <goals>
+                        <goal>jar-no-fork</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <version>3.0.0</version>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.0.0</version>
+            <configuration>
+                <encoding>utf-8</encoding>
+            </configuration>
+        </plug
+        <plugin>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.10.3</version>
+            <executions>
+                <execution>
+                    <id>attach-javadoc</id>
+                    <goals>
+                        <goal>jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <show>public</show>
+                <charset>UTF-8</charset>
+                <encoding>UTF-8</encoding>
+                <docencoding>UTF-8</docencoding>
+                <links>
+                    <link>http://docs.oracle.com/javase/6/docs/api</link>
+                </links>
+                <additionalparam>-Xdoclint:none</additionalparam>
+            </configuration>
+        </plug
+        <!--GPG自动签名的插件-->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+                <execution>
+                    <id>sign-artifacts</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>sign</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plug
+    </plugins>
+</build>
 <licenses>
     <license>
         <name>The Apache Software License, Version 2.0</name>
