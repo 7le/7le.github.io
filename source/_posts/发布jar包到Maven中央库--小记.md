@@ -112,7 +112,7 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
             <configuration>
                 <encoding>utf-8</encoding>
             </configuration>
-        </plug
+        </plugin>
         <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>2.10.3</version>
@@ -134,7 +134,7 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
                 </links>
                 <additionalparam>-Xdoclint:none</additionalparam>
             </configuration>
-        </plug
+        </plugin>
         <!--GPG自动签名的插件-->
         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -149,7 +149,7 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
                     </goals>
                 </execution>
             </executions>
-        </plug
+        </plugin>
     </plugins>
 </build>
 <licenses>
