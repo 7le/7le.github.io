@@ -97,6 +97,18 @@ mybatis:
   type-handlers-package: xxx.xxx.handler   #自定义handler的路径
 ```
 
+或者
+```
+@Bean(name = "sessionFactory")
+public SqlSessionFactory sessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
+    SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
+    bean.setDataSource(dataSource);
+    bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(PgsqlSourceConfig.MAPPER_LOCATION));
+    bean.getObject().getConfiguration().getTypeHandlerRegistry().register(ArrayTypeHandler.class);
+    return bean.getObject();
+}
+```
+
 如果不是springboot的话，用spring的配置方式就可以了。
 
 [Github](https://github.com/7le) 不要吝啬你的star ^.^
