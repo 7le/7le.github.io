@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="springboot," />
+  <meta name="keywords" content="springcloud,db," />
 
 
 
@@ -94,23 +94,18 @@
 
 
 
-<meta name="description" content="springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。">
-<meta name="keywords" content="springboot">
+<meta name="description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
+<meta name="keywords" content="springcloud,db">
 <meta property="og:type" content="article">
-<meta property="og:title" content="springboot项目笔记：(五) 部署和远程调试">
-<meta property="og:url" content="http://yoursite.com/2017/06/19/springboot项目笔记：(五) 部署和远程调试/index.html">
+<meta property="og:title" content="springcloud：实现多数据源事务">
+<meta property="og:url" content="http://yoursite.com/2018/07/28/springcloud：实现多数据源事务/index.html">
 <meta property="og:site_name" content="Shine">
-<meta property="og:description" content="springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。">
+<meta property="og:description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-1.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-2.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-3.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-4.png">
 <meta property="og:updated_time" content="2018-07-28T09:32:00.023Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="springboot项目笔记：(五) 部署和远程调试">
-<meta name="twitter:description" content="springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。">
-<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/springboot-5-1.png">
+<meta name="twitter:title" content="springcloud：实现多数据源事务">
+<meta name="twitter:description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
 
 
 
@@ -138,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/06/19/springboot项目笔记：(五) 部署和远程调试/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/07/28/springcloud：实现多数据源事务/"/>
 
 
 
 
 
-  <title> springboot项目笔记：(五) 部署和远程调试 | Shine </title>
+  <title> springcloud：实现多数据源事务 | Shine </title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" />
   <script type="text/javascript">
     var host = "7le.top";
@@ -279,7 +274,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/19/springboot项目笔记：(五) 部署和远程调试/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/springcloud：实现多数据源事务/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -300,7 +295,7 @@
             
             
               
-                springboot项目笔记：(五) 部署和远程调试
+                springcloud：实现多数据源事务
               
             
           </h1>
@@ -315,8 +310,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-19T23:12:35+08:00">
-                2017-06-19
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-28T17:30:08+08:00">
+                2018-07-28
               </time>
             
 
@@ -352,19 +347,25 @@
 
       
         <blockquote>
-<p>springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。</p>
+<p>最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。</p>
 </blockquote>
 <a id="more"></a>
-<h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>在idea中，在命令行中输入mvn package<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-1.png" alt="打包"></p>
-<p>成功后会出现<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-2.png" alt="成功"></p>
-<p>然后我们只需要把jar包放到linux中，然后cd到目录下输入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup java -jar xxx.jar &gt; /tmp/web.log.out 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure></p>
-<p>就大功告成拉~</p>
-<h3 id="远程调试"><a href="#远程调试" class="headerlink" title="远程调试"></a>远程调试</h3><p>远程调试可以帮我们检查一些在日志中判断不出来的bug，对于idea我们需要如图：<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-3.png" alt="idea远程调试"></p>
-<p>需要输入服务器的地址，和你开启用来远程调试的端口号。这个端口号如何开启呢？对于springboot的项目来说</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// address 端口号可以自己设置 要跟remote中的port一样，还要注意不要跟linux已经使用的端口号冲突</span><br><span class="line">java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -jar XXX.jar &amp;</span><br></pre></td></tr></table></figure>
-<p>然后如图所示就是成功远程调试了<br><img src="http://oqipguzbl.bkt.clouddn.com/springboot-5-4.png" alt="idea连接成功"></p>
-<p>补充一下，如果是用tomcat来部署的话，修改如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// bin\startup.bat（.sh）文件，在里面添加</span><br><span class="line"> </span><br><span class="line">// windows</span><br><span class="line">set CATALINA_OPTS=&quot;-agentlib:jdwp=transport=dt_socket,address=8888（自定义调试端口）,server=y,suspend=n %CATALINA_OPTS%&quot;</span><br><span class="line"> </span><br><span class="line">// linux</span><br><span class="line">export CATALINA_OPTS=&quot;-agentlib:jdwp=transport=dt_socket,address=8888（自定义调试端口）,server=y,suspend=n $CATALINA_OPTS&quot;</span><br></pre></td></tr></table></figure></p>
-<p>这里还有个注意的点，就是别加在最末尾，嵌套在指令里面，不然会失效。</p>
+<p>这次重构项目中，为了支持后续庞大的数据量接入，更迭了数据库，但是为了要兼容老版本，也不能直接拿掉老的数据库。所以就有了兼容多数据源的需求，尤其是要保证事务。</p>
+<p>往往这时候一般会引入一些分布式事务的方案，但是都有点太重了，所以利用<strong>AOP</strong>来轻量的实现这个需求。</p>
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><p>用过<strong>spring</strong>的都知道，我们一般都是使用<strong>@Transactional</strong>注解，但是这个注解在多数据源下，只能支持制定的数据源（不指定就是默认的）。</p>
+<p>所以我们新建个自定义注解：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Target(ElementType.METHOD)</span><br><span class="line">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="line">@Documented</span><br><span class="line">public @interface MultiTransactional &#123;</span><br><span class="line"></span><br><span class="line">    String[] values() default &quot;&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再定义一个切面：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 多数据源事务</span><br><span class="line"> *</span><br><span class="line"> * @author 7le</span><br><span class="line"> */</span><br><span class="line">@Slf4j</span><br><span class="line">@Aspect</span><br><span class="line">@Order(-7)</span><br><span class="line">@Component</span><br><span class="line">public class MultiTransactionalAspect &#123;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    private ApplicationContext applicationContext;</span><br><span class="line"></span><br><span class="line">    @Around(value = &quot;@annotation(multiTransactional)&quot;)</span><br><span class="line">    public Object around(ProceedingJoinPoint pjp, MultiTransactional multiTransactional) throws Throwable &#123;</span><br><span class="line">        Stack&lt;DataSourceTransactionManager&gt; dataSourceTransactionManagerStack = new Stack&lt;&gt;();</span><br><span class="line">        Stack&lt;TransactionStatus&gt; transactionStatusStack = new Stack&lt;&gt;();</span><br><span class="line">        try &#123;</span><br><span class="line">            if (!openTransaction(dataSourceTransactionManagerStack, transactionStatusStack, multiTransactional)) &#123;</span><br><span class="line">                return null;</span><br><span class="line">            &#125;</span><br><span class="line">            Object ret = pjp.proceed();</span><br><span class="line">            commit(dataSourceTransactionManagerStack, transactionStatusStack);</span><br><span class="line">            return ret;</span><br><span class="line">        &#125; catch (Throwable e) &#123;</span><br><span class="line">            rollback(dataSourceTransactionManagerStack, transactionStatusStack);</span><br><span class="line">            log.error(String.format(</span><br><span class="line">                    &quot;MultiTransactionalAspect catch exception class: %s method: %s detail:&quot;, pjp.getTarget().getClass().getSimpleName(),</span><br><span class="line">                    pjp.getSignature().getName()), e);</span><br><span class="line">            throw e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private boolean openTransaction(Stack&lt;DataSourceTransactionManager&gt; dataSourceTransactionManagerStack,</span><br><span class="line">                                    Stack&lt;TransactionStatus&gt; transactionStatusStack, MultiTransactional multiTransactional) &#123;</span><br><span class="line">        String[] transactionMangerNames = multiTransactional.values();</span><br><span class="line">        if (ArrayUtils.isEmpty(multiTransactional.values())) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">        for (String beanName : transactionMangerNames) &#123;</span><br><span class="line">            DataSourceTransactionManager dataSourceTransactionManager = (DataSourceTransactionManager) applicationContext</span><br><span class="line">                    .getBean(beanName);</span><br><span class="line">            TransactionStatus transactionStatus = dataSourceTransactionManager</span><br><span class="line">                    .getTransaction(new DefaultTransactionDefinition());</span><br><span class="line">            transactionStatusStack.push(transactionStatus);</span><br><span class="line">            dataSourceTransactionManagerStack.push(dataSourceTransactionManager);</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    private void commit(Stack&lt;DataSourceTransactionManager&gt; dataSourceTransactionManagerStack,</span><br><span class="line">                        Stack&lt;TransactionStatus&gt; transactionStatusStack) &#123;</span><br><span class="line">        while (!dataSourceTransactionManagerStack.isEmpty()) &#123;</span><br><span class="line">            dataSourceTransactionManagerStack.pop().commit(transactionStatusStack.pop());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void rollback(Stack&lt;DataSourceTransactionManager&gt; dataSourceTransactionManagerStack,</span><br><span class="line">                          Stack&lt;TransactionStatus&gt; transactionStatusStack) &#123;</span><br><span class="line">        while (!dataSourceTransactionManagerStack.isEmpty()) &#123;</span><br><span class="line">            dataSourceTransactionManagerStack.pop().rollback(transactionStatusStack.pop());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就大功告成，只需要在需要的方法上，加上<code>@MultiTransactional({&quot;xxxx&quot;,&quot;xxxxx&quot;})</code></p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p>在使用的时候，需要注意一些细节，要加上<code>@EnableTransactionManagement</code>。</p>
+<p>以及<code>@MultiTransactional({&quot;xxxx&quot;,&quot;xxxxx&quot;})</code>是<strong>AOP</strong>的方式，那就意味着是动态代理的，那下面的方式就会失效：</p>
+<ul>
+<li>private, protected方法无效</li>
+<li>同一个class中public方法无效</li>
+<li>注解写在父类抽象方法上</li>
+</ul>
+<p>实现的代码在 <a href="https://github.com/7le/springcloud-analysis/tree/master/gateway/src/main/java/com/cloud/gateway" target="_blank" rel="noopener">springcloud-gateway</a></p>
 <hr>
 <p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
 
@@ -396,7 +397,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/springboot/" rel="tag"># springboot</a>
+            <a href="/tags/springcloud/" rel="tag"># springcloud</a>
+          
+            <a href="/tags/db/" rel="tag"># db</a>
           
         </div>
       
@@ -409,8 +412,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/06/13/springboot项目笔记：(四)拦截器和异常处理/" rel="next" title="springboot项目笔记：(四) 拦截器和异常处理">
-                <i class="fa fa-chevron-left"></i> springboot项目笔记：(四) 拦截器和异常处理
+              <a href="/2018/06/11/springcloud：webflux源码浅析/" rel="next" title="springcloud：webflux源码浅析">
+                <i class="fa fa-chevron-left"></i> springcloud：webflux源码浅析
               </a>
             
           </div>
@@ -418,10 +421,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/06/21/springboot项目笔记：(六) 视频截图和转码/" rel="prev" title="springboot项目笔记：(六) 视频截图和转码">
-                springboot项目笔记：(六) 视频截图和转码 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -568,7 +567,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#部署"><span class="nav-number">1.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#远程调试"><span class="nav-number">2.</span> <span class="nav-text">远程调试</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#具体实现"><span class="nav-number">1.</span> <span class="nav-text">具体实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意事项"><span class="nav-number">2.</span> <span class="nav-text">注意事项</span></a></li></ol></div>
             
 
           </div>
