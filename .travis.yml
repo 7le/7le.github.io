@@ -26,7 +26,7 @@ after_script:
   - git config user.name "7le"
   - git config user.email "silk.heqian@gmail.com"
   - git add .
-  - git commit -m "Update by Travis-CI ⚽"
+  - git commit -m "Update by Travis-CI 🐳"
   - git push --force --quiet "https://${GH_TOKEN}@${GH_REF}" master:master
 
 branches:
