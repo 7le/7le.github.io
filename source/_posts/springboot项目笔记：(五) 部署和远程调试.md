@@ -22,6 +22,12 @@ nohup java -jar xxx.jar > /tmp/web.log.out 2>&1 &
 ```
 就大功告成拉~
 
+如果还需要增加jvm的参数和gc日志，也可以直接跟在后面，优化的参数根据实际情况来选择，
+
+```
+nohup java -jar -Xmx3072m -Xms3072m -Xmn1152m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:ParallelGCThreads=4 -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/logs/gc/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/logs/gc xxx.jar &
+```
+
 ### 远程调试
 
 远程调试可以帮我们检查一些在日志中判断不出来的bug，对于idea我们需要如图：
