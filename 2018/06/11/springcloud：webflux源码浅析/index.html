@@ -104,7 +104,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/event-loop.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/thread-process.png">
-<meta property="og:updated_time" content="2018-08-10T13:27:39.462Z">
+<meta property="og:updated_time" content="2018-08-14T08:27:24.669Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springcloud：webflux源码浅析">
 <meta name="twitter:description" content="spring-webflux采用了事件驱动异步非阻塞模式，借助EventLoop以少量线程应对高并发的访问，这样的改变使spring也变得像vert.x一样有趣~">
@@ -364,7 +364,7 @@
 <p>这是一个简化的模型，很便于理解，而真正有趣的地方是如何来实现这个模型。</p>
 <h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>整个实现的源码比较多，先整理出一部分我比较感兴趣的，是关于线程处理完event后，到底是哪个线程返回结果。其实就是上述代码中<code>s.success(ResultBean.SUCCESS);</code>的玄机。</p>
 <blockquote>
-<p>注： 如果<strong>spring-boot-starter-web</strong>和<strong>spring-boot-starter-webflux</strong>都依赖的话，会默认设置为SpringMVC。<br>不过可以使用异步类型（DeferredResult，Flux或SseEmitter）的SpringMVC，这样事件将是异步的，但读写仍然会被阻塞。</p>
+<p>注： 如果<strong>spring-boot-starter-web</strong>和<strong>spring-boot-starter-webflux</strong>都依赖的话，会默认设置为SpringMVC。<br>不过在SpringMVC模式下使用异步类型（DeferredResult，Flux或SseEmitter），这将会是异步的，但读写仍然会被阻塞。</p>
 </blockquote>
 <p>使用的依赖版本如下，Servlet容器使用的是<strong>undertow</strong>:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-webflux&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.0.0.RELEASE&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-undertow&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.0.0.RELEASE&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
 <p>可以在启动的时候指定使用<strong>REACTIVE</strong>或<strong>SERVLET</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SpringApplication app = new SpringApplication（MyApplication.class）;</span><br><span class="line">app.setWebApplicationType（WebApplicationType.REACTIVE）;</span><br><span class="line">app.run();</span><br></pre></td></tr></table></figure></p>
