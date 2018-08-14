@@ -67,7 +67,7 @@ public class VideoVerticle {
 整个实现的源码比较多，先整理出一部分我比较感兴趣的，是关于线程处理完event后，到底是哪个线程返回结果。其实就是上述代码中``s.success(ResultBean.SUCCESS);``的玄机。
 
 > 注： 如果**spring-boot-starter-web**和**spring-boot-starter-webflux**都依赖的话，会默认设置为SpringMVC。
-不过可以使用异步类型（DeferredResult，Flux或SseEmitter）的SpringMVC，这样事件将是异步的，但读写仍然会被阻塞。
+不过在SpringMVC模式下使用异步类型（DeferredResult，Flux或SseEmitter），这将会是异步的，但读写仍然会被阻塞。
 
 使用的依赖版本如下，Servlet容器使用的是**undertow**:
 ```
