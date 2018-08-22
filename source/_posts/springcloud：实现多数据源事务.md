@@ -11,7 +11,7 @@ tags: [springcloud,db]
 
 这次重构项目中，为了支持后续庞大的数据量接入，更迭了数据库，但是为了要兼容老版本，也不能直接拿掉老的数据库。所以就有了兼容多数据源的需求，尤其是要保证事务。
 
-往往这时候一般会引入一些分布式事务的方案，但是都有点太重了，所以利用**AOP**来轻量的实现这个需求。
+往往这时候一般会引入一些分布式事务的方案，但是都有点太重了，因为我们的需求对数据一致性要求不是很高，所以利用**AOP**来轻量的实现这个需求。
 
 ### 具体实现
 
@@ -102,6 +102,8 @@ public class MultiTransactionalAspect {
 
 这样就大功告成，只需要在需要的方法上，加上``@MultiTransactional({"xxxx","xxxxx"})``
 
+实现的代码在 [springcloud-gateway](https://github.com/7le/springcloud-analysis/tree/master/gateway/src/main/java/com/cloud/gateway)
+
 ### 注意事项
 
 在使用的时候，需要注意一些细节，要加上``@EnableTransactionManagement``。
@@ -112,8 +114,30 @@ public class MultiTransactionalAspect {
 * 同一个class中public方法无效
 * 注解写在父类抽象方法上
 
+### 隐患
 
-实现的代码在 [springcloud-gateway](https://github.com/7le/springcloud-analysis/tree/master/gateway/src/main/java/com/cloud/gateway)
+上面也提到过这个方案比较轻量，也是针对一些对数据一致性要求不高的场景，因为会存在数据不一致的可能。
+
+我们用伪代码来描述下，假设2个数据源
+
+```
+begin1
+begin2
+sql1
+sql2
+commit1
+commit2
+```
+
+这种方案是可以实现在sql1 sql2之间的异常回滚。如果出现commit1提交成功，commit2提交失败这种情况，就会造成数据不一致，虽然这种情况概率很低，但也是一个隐患。
+
+所以对于一致性要求很高的场景，还是需要**分布式一致性协议（2PC，3PC，TCC）** ，但像**2PC**，**3PC**实现会比较复杂，而且性能不好，而**TCC**相对简单，可是需要对每个事物进行Try，再confirm，就会比较臃肿。
+
+因此根据场景可以选择实现**最终一致性**，具体的可以看[分布式服务化系统一致性的“最佳实干”](https://www.jianshu.com/p/1156151e20c8)
+
+### 参考文献
+
+李艳鹏 著. 分布式服务架构：原理、设计与实战
 
 ---
 [Github](https://github.com/7le) 不要吝啬你的star ^.^
