@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-22T09:24:07.009Z">
+<meta property="og:updated_time" content="2018-08-22T11:15:13.305Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springcloud：实现多数据源事务">
 <meta name="twitter:description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
@@ -372,7 +372,7 @@
 <p>这种方案是可以实现在sql1 sql2之间的异常回滚。如果出现commit1提交成功，commit2提交失败这种情况，就会造成数据不一致，虽然这种情况概率很低，但也是一个隐患。</p>
 <p>所以对于一致性要求很高的场景，还是需要<strong>分布式一致性协议（2PC，3PC，TCC）</strong> ，但像<strong>2PC</strong>，<strong>3PC</strong>实现会比较复杂，而且性能不好，而<strong>TCC</strong>相对简单，可是需要对每个事物进行Try，再confirm，就会比较臃肿。</p>
 <p>因此根据场景可以选择实现<strong>最终一致性</strong>，具体的可以看<a href="https://www.jianshu.com/p/1156151e20c8" target="_blank" rel="noopener">分布式服务化系统一致性的“最佳实干”</a></p>
-<h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><p>李艳鹏 著. 分布式服务架构：原理、设计与实战</p>
+<h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><p>李艳鹏. 著. 分布式服务架构：原理、设计与实战[M].</p>
 <hr>
 <p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
 
