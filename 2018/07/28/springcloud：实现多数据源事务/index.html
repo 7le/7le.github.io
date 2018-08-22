@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="springcloud,db," />
+  <meta name="keywords" content="springcloud,分布式事务," />
 
 
 
@@ -95,14 +95,14 @@
 
 
 <meta name="description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
-<meta name="keywords" content="springcloud,db">
+<meta name="keywords" content="springcloud,分布式事务">
 <meta property="og:type" content="article">
 <meta property="og:title" content="springcloud：实现多数据源事务">
 <meta property="og:url" content="http://yoursite.com/2018/07/28/springcloud：实现多数据源事务/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-22T11:15:13.305Z">
+<meta property="og:updated_time" content="2018-08-22T12:02:32.974Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springcloud：实现多数据源事务">
 <meta name="twitter:description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
@@ -351,7 +351,7 @@
 </blockquote>
 <a id="more"></a>
 <p>这次重构项目中，为了支持后续庞大的数据量接入，更迭了数据库，但是为了要兼容老版本，也不能直接拿掉老的数据库。所以就有了兼容多数据源的需求，尤其是要保证事务。</p>
-<p>往往这时候一般会引入一些分布式事务的方案，但是都有点太重了，因为我们的需求对数据一致性要求不是很高，所以利用<strong>AOP</strong>来轻量的实现这个需求。</p>
+<p>其实这个需求就是要实现分布式事务，但是我们的这个场景是在一个服务内，所以可以利用<strong>AOP</strong>来轻量的实现这个需求，若是多个服务的话，就需要实现一个管理器。</p>
 <h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><p>用过<strong>spring</strong>的都知道，我们一般都是使用<strong>@Transactional</strong>注解，但是这个注解在多数据源下，只能支持制定的数据源（不指定就是默认的）。</p>
 <p>所以我们新建个自定义注解：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Target(ElementType.METHOD)</span><br><span class="line">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="line">@Documented</span><br><span class="line">public @interface MultiTransactional &#123;</span><br><span class="line"></span><br><span class="line">    String[] values() default &quot;&quot;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -369,9 +369,9 @@
 <h3 id="隐患"><a href="#隐患" class="headerlink" title="隐患"></a>隐患</h3><p>上面也提到过这个方案比较轻量，也是针对一些对数据一致性要求不高的场景，因为会存在数据不一致的可能。</p>
 <p>我们用伪代码来描述下，假设2个数据源</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">begin1</span><br><span class="line">begin2</span><br><span class="line">sql1</span><br><span class="line">sql2</span><br><span class="line">commit1</span><br><span class="line">commit2</span><br></pre></td></tr></table></figure>
-<p>这种方案是可以实现在sql1 sql2之间的异常回滚。如果出现commit1提交成功，commit2提交失败这种情况，就会造成数据不一致，虽然这种情况概率很低，但也是一个隐患。</p>
-<p>所以对于一致性要求很高的场景，还是需要<strong>分布式一致性协议（2PC，3PC，TCC）</strong> ，但像<strong>2PC</strong>，<strong>3PC</strong>实现会比较复杂，而且性能不好，而<strong>TCC</strong>相对简单，可是需要对每个事物进行Try，再confirm，就会比较臃肿。</p>
-<p>因此根据场景可以选择实现<strong>最终一致性</strong>，具体的可以看<a href="https://www.jianshu.com/p/1156151e20c8" target="_blank" rel="noopener">分布式服务化系统一致性的“最佳实干”</a></p>
+<p>这种方案是可以实现在sql1 sql2之间的异常回滚。如果出现commit1提交成功，commit2提交失败（或者超时）这种情况，就会造成数据不一致，虽然这种情况概率很低，但也是一个隐患。</p>
+<p>这个实现很类似于<strong>3PC</strong>，都会有在一个参与者执行任务提交后，另一个参与者出现异常而导致数据不一致的问题。</p>
+<p>所以对于一致性要求很高的场景，可以考虑使用<strong>TCC</strong>，对每个事物进行Try，如果执行没有问题，再执行Confirm，如果执行过程中出了问题，则执行操作的逆操Cancel（自动化补偿手段），来实现<strong>最终一致性</strong>，具体的可以看<a href="https://www.jianshu.com/p/1156151e20c8" target="_blank" rel="noopener">分布式服务化系统一致性的“最佳实干”</a></p>
 <h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><p>李艳鹏. 著. 分布式服务架构：原理、设计与实战[M].</p>
 <hr>
 <p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
@@ -406,7 +406,7 @@
           
             <a href="/tags/springcloud/" rel="tag"># springcloud</a>
           
-            <a href="/tags/db/" rel="tag"># db</a>
+            <a href="/tags/分布式事务/" rel="tag"># 分布式事务</a>
           
         </div>
       
