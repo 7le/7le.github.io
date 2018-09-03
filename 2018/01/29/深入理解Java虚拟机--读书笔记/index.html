@@ -104,7 +104,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png">
 <meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D%E6%8B%85%E4%BF%9D.png">
-<meta property="og:updated_time" content="2018-09-02T09:35:26.135Z">
+<meta property="og:updated_time" content="2018-09-03T12:29:30.707Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -460,6 +460,8 @@
 <p>最前的数字，<strong>4.533</strong>和<strong>99.631</strong>代表GC发生的时间，是从jvm启动以来经过的秒数。</p>
 <p>后面的<strong>GC</strong>和<strong>Full GC</strong>是用来区分收集区域的。<strong>GC</strong>说明只收集GC堆的部分区域。通常就是minor GC，只收集young gen。<strong>Full GC</strong>说明收集了整个GC堆的所有区域，包括young、old、perm（如果有perm）。后面中的<strong>Allocation Failure</strong>，<strong>System.gc()</strong>是触发的原因。</p>
 <p>然后<strong>ParNew</strong>和<strong>CMS</strong>是分代的垃圾收集器，上面有提及过。<strong>1041729K-&gt;77803K(1061696K)</strong>表示GC前该区域已使用容量-&gt;GC后该区域已使用容量</p>
+<p>而在方括号外面的<strong>1041729K-&gt;87450K(3027776K)</strong> 表示GC前Java堆已使用容量-&gt;GC后java堆已使用的容量（Java堆总容量）</p>
+<p>从以上的信息我们可以计算出在垃圾收集期间, JVM中的内存使用情况。在垃圾收集之前, 堆内存总的使用了<strong>0.99G(1041729K)</strong>，其中,年轻代使用了<strong>0.99G(1041729K)</strong>，老年代还没开始使用，说明是刚刚开始的gc日志。而从<strong>(1041729K-77803K)-(1041729K-87450K)=9647(9.42M)</strong>可以知道有<strong>9.42M</strong>年轻代对象被提升到老年代中。</p>
 <p>再往后<strong>[Times: user=0.16 sys=0.03, real=0.08 secs]</strong>与Linux命令所输出的时间含义一致，分别代表用户态消耗的CPU时间、内核态消耗的CPU时间和操作从开始到结束锁经过的墙钟时间（Wall Clock Time）。墙钟时间与 CPU时间的区别是，墙钟时间包括各种非运算的等待耗时，例如等待磁盘I/O、等待线程紫塞。而CPU时间不包括这些，但是多CPU或者多核，多线程操作会叠加这些CPU时间。</p>
 <h4 id="内存分配与回收策略"><a href="#内存分配与回收策略" class="headerlink" title="内存分配与回收策略"></a>内存分配与回收策略</h4><h5 id="对象优先分配Eden区"><a href="#对象优先分配Eden区" class="headerlink" title="对象优先分配Eden区"></a>对象优先分配Eden区</h5><blockquote>
 <p>大多数情况下，对象在新生代Eden区中分配。当Eden空间不足，则会发生一次<code>Minor GC</code>。</p>
