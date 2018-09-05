@@ -110,8 +110,8 @@ public class MultiTransactionalAspect {
 
 以及``@MultiTransactional({"xxxx","xxxxx"})``是**AOP**的方式，那就意味着是动态代理的，那下面的方式就会失效：
 
-* private, protected方法无效
-* 同一个class中public方法无效
+* private, protected方法无效 (Spring AOP使用JDK动态代理或者CGLIB来为目标对象创建代理。使用原生的Java的代理是无法代理protected和private类型的方法。CGLIB的代理虽然在技术上可以代理protected和private类型的方法,但是用于AOP的时候不推荐代理protected和private类型的方法.)
+* 同一个class中public方法无效 (@Transactional的事务开启 ，是基于接口或者是类的代理被创建。所以在同一个类中一个无事务的方法调用另一个有事务的方法，将是对this引用进行调用而非代理，事务是不会起作用的。  )
 * 注解写在父类抽象方法上
 
 ### 隐患
