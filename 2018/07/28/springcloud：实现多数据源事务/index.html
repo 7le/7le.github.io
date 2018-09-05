@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-09-03T12:29:30.707Z">
+<meta property="og:updated_time" content="2018-09-05T03:48:07.607Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springcloud：实现多数据源事务">
 <meta name="twitter:description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
@@ -362,8 +362,8 @@
 <h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p>在使用的时候，需要注意一些细节，要加上<code>@EnableTransactionManagement</code>。</p>
 <p>以及<code>@MultiTransactional({&quot;xxxx&quot;,&quot;xxxxx&quot;})</code>是<strong>AOP</strong>的方式，那就意味着是动态代理的，那下面的方式就会失效：</p>
 <ul>
-<li>private, protected方法无效</li>
-<li>同一个class中public方法无效</li>
+<li>private, protected方法无效 (Spring AOP使用JDK动态代理或者CGLIB来为目标对象创建代理。使用原生的Java的代理是无法代理protected和private类型的方法。CGLIB的代理虽然在技术上可以代理protected和private类型的方法,但是用于AOP的时候不推荐代理protected和private类型的方法.)</li>
+<li>同一个class中public方法无效 (@Transactional的事务开启 ，是基于接口或者是类的代理被创建。所以在同一个类中一个无事务的方法调用另一个有事务的方法，将是对this引用进行调用而非代理，事务是不会起作用的。  )</li>
 <li>注解写在父类抽象方法上</li>
 </ul>
 <h3 id="隐患"><a href="#隐患" class="headerlink" title="隐患"></a>隐患</h3><p>上面也提到过这个方案比较轻量，也是针对一些对数据一致性要求不高的场景，因为会存在数据不一致的可能。</p>
