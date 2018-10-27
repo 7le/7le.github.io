@@ -137,7 +137,7 @@ time sysbench oltp.lua --db-driver=mysql --oltp-table-size=10000000  --mysql-hos
 
 其他人不同的配置下的[测评](https://zhuanlan.zhihu.com/p/30572262)
 
-最后选择的方案是TiDB，关于TiDB后续还有什么值得分享还会继续更新。本人才疏学浅，希望大家可以多多指教~
+最后选择的方案是TiDB，关于TiDB后续还有什么值得分享还会继续更新。
 
 ---
 [Github](https://github.com/7le) 不要吝啬你的star ^.^
