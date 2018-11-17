@@ -102,13 +102,13 @@
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-runtime.png">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/jvm-runtime.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/space-allocation-guarantee.png">
-<meta property="og:updated_time" content="2018-11-17T12:04:18.218Z">
+<meta property="og:updated_time" content="2018-11-17T12:21:04.936Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
-<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/jvm-runtime.png">
+<meta name="twitter:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/jvm-runtime.png">
 
 
 
@@ -371,7 +371,7 @@
 <h3 id="Part-2"><a href="#Part-2" class="headerlink" title="Part 2"></a>Part 2</h3><blockquote>
 <p>第二部分，<strong>自动内存管理机制</strong></p>
 </blockquote>
-<h4 id="运行时数据区域"><a href="#运行时数据区域" class="headerlink" title="运行时数据区域"></a>运行时数据区域</h4><p><img src="http://oqipguzbl.bkt.clouddn.com/jvm-runtime.png" alt="Java虚拟机运行时数据区"></p>
+<h4 id="运行时数据区域"><a href="#运行时数据区域" class="headerlink" title="运行时数据区域"></a>运行时数据区域</h4><p><img src="https://github.com/7le/7le.github.io/raw/master/image/jvm/jvm-runtime.png" alt="Java虚拟机运行时数据区"></p>
 <h5 id="Program-Counter-Register（程序计数器）"><a href="#Program-Counter-Register（程序计数器）" class="headerlink" title="Program Counter Register（程序计数器）"></a>Program Counter Register（程序计数器）</h5><ul>
 <li>较小的内存空间，可以看做是当前线程所执行的字节码的行号指示器，字节码解释器工作时就是通过改变计数器的值来选择下一条的指令，分支、循环、跳转、异常处理、线程恢复也依赖计数器。</li>
 <li>每条线程独立拥有，且互不影响，独立存储（线程私有）</li>

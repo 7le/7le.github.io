@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/order.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/ads.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-architecture.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-mysql.png">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-mysql.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/inventory.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/data.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/billion-test.png">
@@ -122,7 +122,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/insert.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/update.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/mixed.png">
-<meta property="og:updated_time" content="2018-11-17T12:04:18.214Z">
+<meta property="og:updated_time" content="2018-11-17T12:21:04.932Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="TiDB，日均千万级数据存储方案选型">
 <meta name="twitter:description" content="SQL -&amp;gt; NoSQL -&amp;gt; NewSql">
@@ -408,7 +408,7 @@
 <li>1 目前刚刚GA，文档除了官方的之外毕竟匮乏，容易踩坑，不过github社区活跃，可以去提issues。</li>
 <li>2 对于服务器要求相对较高，磁盘需要SSD才能保证性能的卓越。</li>
 </ul>
-<p>官网文档中mysql 和 tidb 的对比图。<br><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-mysql.png" alt="tidb-mysql"></p>
+<p>官网文档中mysql 和 tidb 的对比图。<br><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-mysql.jpg" alt="tidb-mysql"></p>
 <h3 id="集群部署-—-ansible方式部署"><a href="#集群部署-—-ansible方式部署" class="headerlink" title="集群部署 — ansible方式部署"></a>集群部署 — ansible方式部署</h3><p>具体可以看<a href="https://pingcap.com/docs-cn/op-guide/ansible-deployment/" target="_blank" rel="noopener">官方部署文档</a><br>按照流程便可以完成, 文档中有服务器要求， 需要注意的是 保证机器<code>entos7.3</code>以上， 且<code>文件系统推荐 ext4</code>，且服务器之间要配置<code>ssh免密登录</code>。当前是部署的最新版本是ga版本的1.0.1，ansile支持滚动升级，详见官方文档。</p>
 <p>如果在执行 <code>ansible-playbook bootstrap.yml</code> 命令的时候出现校准机器配置之类的error，<br>例如磁盘告警 <code>dd: the write speed of tikv deploy_dir disk is too slow: MB/s &lt; 15 MB/s</code><br>可以修改 <code>inventory.ini</code> 中的参数为<code>false</code>。<br><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/inventory.png" alt="inventory.ini"></p>
 <p>如果需要配置数据data目录，可以在如下文件中配置<br><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/data.png" alt="data目录"></p>
