@@ -28,7 +28,7 @@ tags: [tidb]
 
 #### ADS  （分析型数据库）
 
-![ADS](https://github.com/7le/7le.github.io/raw/master/image/tidb/ads.png)
+![ADS](https://raw.githubusercontent.com/7le/7le.github.io/master/image/tidb/ads.png)
 
 同样属于阿里云的服务，官方自己的评价，毫秒级别的查询速度，具体没有测试，因为考虑到成本过高，就放弃了。
           
