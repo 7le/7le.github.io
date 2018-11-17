@@ -52,7 +52,7 @@ tidb的分布式的架构，且根据PD 之间的调度和tikv之间raft算法�
 * 2 对于服务器要求相对较高，磁盘需要SSD才能保证性能的卓越。
                               
 官网文档中mysql 和 tidb 的对比图。
-![tidb-mysql](https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-mysql.png)
+![tidb-mysql](https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-mysql.jpg)
    
      
 ### 集群部署 — ansible方式部署

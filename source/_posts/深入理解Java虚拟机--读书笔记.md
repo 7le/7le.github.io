@@ -24,7 +24,7 @@ tags: [jvm]
 
 #### 运行时数据区域
 
-![Java虚拟机运行时数据区](http://oqipguzbl.bkt.clouddn.com/jvm-runtime.png)
+![Java虚拟机运行时数据区](https://github.com/7le/7le.github.io/raw/master/image/jvm/jvm-runtime.png)
 
 ##### Program Counter Register（程序计数器）
 
