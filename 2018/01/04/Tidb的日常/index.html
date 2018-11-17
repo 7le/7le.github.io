@@ -102,17 +102,17 @@
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="TiDB也使用了一段时间，持续记录一些日常，防止大家也踩到同样的坑~">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-1.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-4.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-2.jpg">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-3.png">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb_select.jpg">
-<meta property="og:image" content="http://oqipguzbl.bkt.clouddn.com/tidb_coprocessor_select.jpg">
-<meta property="og:updated_time" content="2018-11-17T10:33:40.196Z">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-daily-1-1.png">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-daily-1-4.png">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-daily-1-2.jpg">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-daily-1-3.png">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb_select.jpg">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb_coprocessor_select.jpg">
+<meta property="og:updated_time" content="2018-11-17T12:04:18.214Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tidb的日常">
 <meta name="twitter:description" content="TiDB也使用了一段时间，持续记录一些日常，防止大家也踩到同样的坑~">
-<meta name="twitter:image" content="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-1.png">
+<meta name="twitter:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-daily-1-1.png">
 
 
 
@@ -369,14 +369,14 @@
 </blockquote>
 <a id="more"></a>
 <h3 id="raft-sync-log"><a href="#raft-sync-log" class="headerlink" title="raft sync-log"></a>raft sync-log</h3><p>目前,公司使用的Tidb分别部署在生产环境和测试环境，生产环境的是在阿里云，而测试环境是在公司的机房。周末的时候，机房不知道为啥断过电，什么都不知道的我，周一来到公司发现测试环境的Tidb挂了（这是肯定的，因为停过电嘛~），然后就是怎么都启动不了，相当崩溃。一查日志发现：</p>
-<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-1.png" alt="tidb-daily-1-1"></p>
+<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-daily-1-1.png" alt="tidb-daily-1-1"></p>
 <p>下面是raft的介绍:</p>
-<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-4.png" alt="tidb-daily-1-4"></p>
+<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-daily-1-4.png" alt="tidb-daily-1-4"></p>
 <p>经过分析，得出原因应该是raft在做副本的时候出了问题。测试环境是3个kv示例，那每条数据将会有2个node去持有。node1已经将raft-log写入磁盘，而node2在写入时，发生了断电，导致node1，node2的服务和磁盘都挂掉，造成了raft日志出错。</p>
 <p>避免这样的问题，可以设置参数（类似mysql的<code>innodb_flush_log_at_trx_commit</code>），保证每个数据的提交都能落地。不过这样就会降低性能。</p>
-<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-2.jpg" alt="tidb-daily-1-2"></p>
+<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-daily-1-2.jpg" alt="tidb-daily-1-2"></p>
 <p>联系了Tidb的开发人员，处理该情况的工具还没有完善（该问题已有<a href="https://github.com/pingcap/tidb/issues/4731" target="_blank" rel="noopener">issues</a>），没办法删掉出错的数据，因为测试环境的数据量比较大，迁移出来太费时，还好数据不是很重要，清理了数据就可以启动了。当时Tidb的版本如下：</p>
-<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb-daily-1-3.png" alt="tidb-daily-1-3"></p>
+<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-daily-1-3.png" alt="tidb-daily-1-3"></p>
 <p>所以小伙伴们在部署Tidb的时候要考量是否可能出现同时挂掉的可能（虽然概率不大），尤其是对于一些关键的业务，需要更多的考虑，比如更多的副本，或者异地机房，毕竟将<code>sync-log</code>设为true会带来相当大的性能损耗。</p>
 <h3 id="惊魂三小时"><a href="#惊魂三小时" class="headerlink" title="惊魂三小时"></a>惊魂三小时</h3><p>本来今天是要升级下Tikv的配置，后来得知还需要升级下版本，然后运维喊上了我，一起弄下。</p>
 <p>然后，就犯了几个重大的错误。记录一下，以此谨记。</p>
@@ -388,7 +388,7 @@
 <p>这个版本的binlog是基于kafak的，如果要local的话，有个<code>release-1.0-binlog-local</code>版本</p>
 <h4 id="阿里云ECS设置自动挂载磁盘"><a href="#阿里云ECS设置自动挂载磁盘" class="headerlink" title="阿里云ECS设置自动挂载磁盘"></a>阿里云ECS设置自动挂载磁盘</h4><p>因为Tikv的需要较大的磁盘，当时是直接挂载了阿里云的SSD磁盘，不过当时没有将挂载磁盘设置为开机自动挂载。导致这次升级配置的时候（阿里云ECS升级配置的时候需要重启生效），重启后，磁盘没有挂上，只升级了Tidb（Servers），Pd，而Tikv仍然是原来版本。简直吐血···</p>
 <h4 id="Thanks-to-Tidb-Group"><a href="#Thanks-to-Tidb-Group" class="headerlink" title="Thanks to Tidb Group"></a>Thanks to Tidb Group</h4><p>最后联系了Tidb团队，Tidb的大佬远程协助了我们，一堆操作猛如虎，最后升级了版本，也保证了数据。吸取教训，防止以后再跌跟头~</p>
-<h3 id="Tidb-查询流程"><a href="#Tidb-查询流程" class="headerlink" title="Tidb 查询流程"></a>Tidb 查询流程</h3><p><img src="http://oqipguzbl.bkt.clouddn.com/tidb_select.jpg" alt="tidb_select"></p>
+<h3 id="Tidb-查询流程"><a href="#Tidb-查询流程" class="headerlink" title="Tidb 查询流程"></a>Tidb 查询流程</h3><p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb_select.jpg" alt="tidb_select"></p>
 <p>流程如下：</p>
 <ul>
 <li>tidb 收到来自客户端的 select 请求。</li>
@@ -404,7 +404,7 @@
 </ul>
 <p>简单的说，就是 TiDB 在收到客户端的查询请求后，切分成一个个以 Range 为单位的子任务， 并行下发到所在的 TIKV 上。</p>
 <p>具体的查询如：<code>select count(*) from t where a+b&gt;5</code></p>
-<p><img src="http://oqipguzbl.bkt.clouddn.com/tidb_coprocessor_select.jpg" alt="tidb_coprocessor_select"></p>
+<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb_coprocessor_select.jpg" alt="tidb_coprocessor_select"></p>
 <p>假设表 t 的数据落在三个 region 上，各个 region 所包含的主键 (handle) 范围如下：</p>
 <ul>
 <li>region1 包含了 t 的 [0,100)</li>
