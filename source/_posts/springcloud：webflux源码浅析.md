@@ -56,7 +56,7 @@ public class VideoVerticle {
 
 两者大概的思路都是一致的，通过一个eventloop线程来不断循环接收event，并将event（一些耗时的业务逻辑和网络IO等）分配给相应的handler（worker线程）来处理。
 
-![event-loop](http://oqipguzbl.bkt.clouddn.com/event-loop.png)
+![event-loop](https://github.com/7le/7le.github.io/raw/master/image/springcloud/event-loop.png)
 
 在**vert.x**中两者称为**EventLoop线程**和**Worker线程**，而**webflux**对应的是**NIO线程**和**elastic（single、parallel 看业务需要选择）线程**。
 
@@ -255,7 +255,7 @@ public class AsyncContextImpl implements AsyncContext {
 
 前面唠叨了一堆，无非就是源码的运行过程，整理了一下线程的流程，如下图：
 
-![thread-process](http://oqipguzbl.bkt.clouddn.com/thread-process.png)
+![thread-process](https://github.com/7le/7le.github.io/raw/master/image/springcloud/thread-process.png)
 
 不过这图只是画出了一种理想的状态，因为**NIO**线程和**elastic**线程两者的时序是无法保证的，所以并不能保证**setResultHandler**是在**setResultInternal**之前执行，就我们上面源码中标识了重要的方法，没有注意到的可以翻回去看看。
 

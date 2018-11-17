@@ -13,7 +13,7 @@ tags: [maven]
 
 首先需要在[sonatype](https://issues.sonatype.org/secure/Dashboard.jspa)中创建issues，没有帐号的需要注册一下（帐号密码后续会有用到）。
 
-类似如图：![issues](http://oqipguzbl.bkt.clouddn.com/maven-issus.png)
+类似如图：![issues](https://github.com/7le/7le.github.io/raw/master/image/maven/maven-issus.png)
 
 这里有个注意的点，这个group Id需要自己有个域名或者使用github的，类似io.github.7le or com.github.7le。这里我自己买了个域名，价格动人。当issue的Status变为RESOLVED，就代表已经通过了，如果有什么问题，会有留言告诉你如何修改。
 
@@ -22,7 +22,7 @@ tags: [maven]
 Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win。Linux可以通过yum install gpg命令安装gpg。
 
 我们可以通过``gpg --version``,来查看安装的gpg
-![gpg-version](http://oqipguzbl.bkt.clouddn.com/maven-gpg-version.png)
+![gpg-version](https://github.com/7le/7le.github.io/raw/master/image/maven/maven-gpg-version.png)
 
 执行``gpg --gen-key`` 按照如下的命令设置好你的名字，邮箱。不过输入Passphrase的值需要记住，这个相当于密钥的密码
 
@@ -181,12 +181,12 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
 
 一切就绪后，在命令行输入
 ``mvn clean deploy``
-![operation](http://oqipguzbl.bkt.clouddn.com/maven-operation.jpg)
+![operation](https://github.com/7le/7le.github.io/raw/master/image/maven/maven-operation.jpg)
 
 成功之后可以到[Neuxs](https://oss.sonatype.org/index.html#stagingRepositories)查看发布好的jar包：
-![manager](http://oqipguzbl.bkt.clouddn.com/maven-manager.jpg)
+![manager](https://github.com/7le/7le.github.io/raw/master/image/maven/maven-manager.jpg)
 
-按着步骤，先close 再release。![manager2](http://oqipguzbl.bkt.clouddn.com/maven-manager2.png)
+按着步骤，先close 再release。![manager2](https://github.com/7le/7le.github.io/raw/master/image/maven/maven-manager2.png)
 
 这里在close的会报一个错误，错误如下
 ```
@@ -200,7 +200,7 @@ failureMessage	No public key: Key with id: (66921d7322339e1) was not able to be 
 
 先获取``用户id``，再上传到第三方的key验证库
 
-![gpg-key](http://oqipguzbl.bkt.clouddn.com/gpg-key.png)
+![gpg-key](https://github.com/7le/7le.github.io/raw/master/image/maven/gpg-key.png)
 
 如果不行可以试试
 ```
@@ -210,7 +210,7 @@ gpg --keyserver hkp://keyserver.ubuntu.com/ --send-keys 322339E1
 
 然后再等一段时间，就可以在[Maven中央仓库](http://search.maven.org)搜到了。正式版本和SNAPSHOT大家可以自己选择~
 
-![search](http://oqipguzbl.bkt.clouddn.com/maven-search.png)
+![search](https://github.com/7le/7le.github.io/raw/master/image/maven/maven-search.png)
 
 如果你也需要，可以戳[vertx-shine-web](https://github.com/7le/vertx-shine)
 

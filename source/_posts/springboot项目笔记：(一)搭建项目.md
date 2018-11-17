@@ -12,19 +12,19 @@ tags: [springboot]
 既然说要完整的一个项目，那肯定不是说笑的拉。准备做一个视频点播的项目，比较简单没有特别大的难度，感觉唯一的难度就是截视频的图和转码了把，那些到时候一点点记录下来。不废话了，现在开始第一步~
 
 ### idea 创建项目
-![idea-1](http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-1.png)
+![idea-1](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-idea-1-1.png)
 
 点击箭头的按钮，然后就是next。
 
-![idea-2](http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-2.png)
+![idea-2](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-idea-1-2.png)
 
 这里面可以自己选择下name，和一些配置。
 
-![idea-3](http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-3.png)
+![idea-3](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-idea-1-3.png)
 
 这个直接next，点点过去，后面可以自己配置的。next后有个选择路径自己选择下。
 
-![idea-4](http://oqipguzbl.bkt.clouddn.com/springboot-idea-1-4.png)
+![idea-4](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-idea-1-4.png)
 
 最后就是等待之后的springboot项目拉~~~
 

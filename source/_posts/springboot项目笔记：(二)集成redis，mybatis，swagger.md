@@ -10,7 +10,7 @@ tags: [springboot]
 <!--more-->
 
 先看下项目结构
-![path](http://oqipguzbl.bkt.clouddn.com/springboot-2-1.png)
+![path](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-2-1.png)
 
 ### 集成redis
 
@@ -220,7 +220,7 @@ public class RedisUtil {
 
 #### 添加mybatis相关配置
 根据项目路径配置：
-![path](http://oqipguzbl.bkt.clouddn.com/springboot-2-2.png)
+![path](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-2-2.png)
 在application.properties中添加：
 ```
 #mybatis
@@ -409,8 +409,8 @@ public class SwaggerConfig {
 配置后，然后像收藏列表展示接口,那样加上注释就行了，重复的代码就不写了。
 最后呈现的效果不要太美~！
 
-![swagger1](http://oqipguzbl.bkt.clouddn.com/springboot-2-3.png)
-![swagger2](http://oqipguzbl.bkt.clouddn.com/springboot-2-4.png)
+![swagger1](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-2-3.png)
+![swagger2](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-2-4.png)
 
 最后在加上代码的地址，大家可以互相交流学习[springboot](https://github.com/7le/video) 
 

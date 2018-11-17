@@ -68,10 +68,10 @@ $ tar -xzvf linux_amd64.tar.gz
 
 进入到刚刚解压后的目录执行命令``./gogs web``
 然后在浏览器输入``http://ip:3000``
-会出现如下图片：![Gogs配置图片](http://oqipguzbl.bkt.clouddn.com/Devops-1.jpg)
+会出现如下图片：![Gogs配置图片](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-1.jpg)
 根据实际情况配置即可。配置后就可以使用了，可以注册自己的帐号，操作跟Github如出一辙。
 
-经过一番折腾后，![silk's Gogs](http://oqipguzbl.bkt.clouddn.com/Devops-2.png)
+经过一番折腾后，![silk's Gogs](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-2.png)
 
 这样就完成了第一步，搭建Git+Gogs。
 PS：后台运行命令 
@@ -99,7 +99,7 @@ service jenkins start
 
 进入的界面如下，表示启动成功
 
-![jenkis成功登录](http://oqipguzbl.bkt.clouddn.com/Devops-3.png)
+![jenkis成功登录](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-3.png)
 
 PS:首次登录，是没有右边的任务，那是我已经添加了的。
 
@@ -109,7 +109,7 @@ PS:首次登录，是没有右边的任务，那是我已经添加了的。
 
 因为我们是通过git去拉取代码，需要安装，一般是自带了，如果没有就安装一下，非常简便。
 
-![jenkis插件](http://oqipguzbl.bkt.clouddn.com/Devops-4.png)
+![jenkis插件](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-4.png)
 
 其中``Gogs plugin``也需要安装，后续的hook会用到。还要安装``Pipeline``，这个是持续交付的重头戏，以及``Publish Over SSH`` 这个是用来远程部署的。
 
@@ -119,15 +119,15 @@ PS:首次登录，是没有右边的任务，那是我已经添加了的。
 
 ##### Jdk
 
-![jdk](http://oqipguzbl.bkt.clouddn.com/Devops-5.png)
+![jdk](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-5.png)
 
 ##### Git
 
-![git](http://oqipguzbl.bkt.clouddn.com/Devops-6.png)
+![git](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-6.png)
 
 ##### Maven
 
-![maven](http://oqipguzbl.bkt.clouddn.com/Devops-7.png)
+![maven](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-7.png)
 
 如果还没安装maven，就下载放到服务器。我用的是``apache-maven-3.3.9-bin.tar.gz``
 
@@ -140,13 +140,13 @@ export PATH=$PATH:$JAVA_HOME/bin:$M2_HOME/bin
 基本配置就差不多了，建议注册帐号，提高安全性也方便后续操作。
 
 我的Configure Global Security是这样配置的，这个按照自己的需要，如果像我这样配置，就需要登录帐号。
-![Configure Global Security](http://oqipguzbl.bkt.clouddn.com/Devops-8.png)
+![Configure Global Security](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-8.png)
 
 #### 创建Job
 
 前面的操作都完成之后，点击``My views`` --> ``新建``
 
-![新建job](http://oqipguzbl.bkt.clouddn.com/Devops-9.png)
+![新建job](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-9.png)
 
 ##### Maven project
 
@@ -154,18 +154,18 @@ export PATH=$PATH:$JAVA_HOME/bin:$M2_HOME/bin
 
 源码管理选择git，填写自己gogs的URL。例如我的video项目。
 
-![gogs-video](http://oqipguzbl.bkt.clouddn.com/Devops-10.png)
+![gogs-video](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-10.png)
 
 对应填写相关参数：
-![maven-project1](http://oqipguzbl.bkt.clouddn.com/Devops-11.png)
+![maven-project1](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-11.png)
 
 构建触发器，就是什么时候执行jenkins的自动化部署，选择第一个，其他的基本是定时执行什么的，有兴趣都可以去尝试一下
 
-![maven-project2](http://oqipguzbl.bkt.clouddn.com/Devops-12.png)
+![maven-project2](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-12.png)
 
 Build和Post Steps设置:
 
-![maven-project3](http://oqipguzbl.bkt.clouddn.com/Devops-13.png)
+![maven-project3](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-13.png)
 
 Execute shell 脚本(带了注解，放入配置的时候可以把注释去掉)
 ```
@@ -199,24 +199,24 @@ java -jar ${project} &
 
 邮件设置：
 
-![maven-project4](http://oqipguzbl.bkt.clouddn.com/Devops-14.png)
+![maven-project4](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-14.png)
 
 设置完成后，点击保存。跳转到新的页面，点击页面上的``立即构造``就会开始运行了。
 
-![maven-project5](http://oqipguzbl.bkt.clouddn.com/Devops-15.png)
+![maven-project5](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-15.png)
 
 运行的时候可以点击``console Output``查看日志。
 
 等到小太阳出现，查看下自己的项目，已经启动了，那就大功搞成拉~ 如果很悲剧的出现问题了，那可以看看下面的踩坑记录中的东西能不能帮到你了~
 
-![maven-project6](http://oqipguzbl.bkt.clouddn.com/Devops-16.png)
+![maven-project6](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-16.png)
 
 ##### pipeline
 
 pipeline是jenkins2.0的一大亮点，在新建任务的时候选择Pipeline。
 
 pipeline设置：
-![pipeline](http://oqipguzbl.bkt.clouddn.com/Devops-17.png)
+![pipeline](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-17.png)
 
 ```
 node {  
@@ -271,7 +271,7 @@ echo "end ^.^"
 ```
 
 点击``立即构造``：
-![pipeline](http://oqipguzbl.bkt.clouddn.com/Devops-18.png)
+![pipeline](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-18.png)
 
 跟maven project不同的是多了许多的Stage块，非常直观，而且支持复杂的CD(Continuous Delivery)需求,还有许多有趣的点等有时间再去玩耍。
 
@@ -279,11 +279,11 @@ echo "end ^.^"
 
 之前在安装插件的时候，特意安装了Gogs plugin，这个插件是干嘛的呢？我们之前的操作都是通过手动触发的，这个插件可以帮我们实现代码的push操作触发（还有其他的hook事件），点击这个插件进去可以看到
 
-![Gogs plugin](http://oqipguzbl.bkt.clouddn.com/Devops-19.png)
+![Gogs plugin](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-19.png)
 
 很明显的告诉我们，只需要在gogs的项目中配置webhook
 
-![Gogs hook](http://oqipguzbl.bkt.clouddn.com/Devops-20.png)
+![Gogs hook](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-20.png)
 
 这样就可以实现代码``push``就触发整个流程了。
 
@@ -316,7 +316,7 @@ swapon /swapfile  #启动swapfile
 ```
 
 最后输入``free -m ``，查看内存及swap情况
-![free -m](http://oqipguzbl.bkt.clouddn.com/Devops-21.png)
+![free -m](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-21.png)
 
 
 这样一顿操作，八九不离十就能解决137的问题了，因为也很难找到比我服务器更差的机器了...
@@ -341,7 +341,7 @@ chown -R root:root /var/log/jenkins
 我们在项目中的日志报错，出现XXX command not found，但是服务器中明明已经是有相应的软件。这时候我们需要，在服务器中输入``echo $PATH``
 
 将一长段环境变量复制到配置中，就OK了
-![环境变量配置](http://oqipguzbl.bkt.clouddn.com/Devops-22.png)
+![环境变量配置](https://github.com/7le/7le.github.io/raw/master/image/devops/Devops-22.png)
 
 #### 项目无法后台运行
 

@@ -170,7 +170,7 @@ public void loadProperties(String restClientName){
 
 通过**loadDefaultValues**方法调``ConcurrentCompositeConfiguration``的**getProperty**方法，再调``PropertySourcesPropertyResolver``的**getProperty**方法。这样就从**archauus-core**包调到了**spring-core**包了。在**propertySources**中就包含了我们在yml的设置的参数。然后再通过``DefaultClientConfigImpl``类的**setPropertyInternal**方法完成一系列对**dynamicProperties**和**ALL_PROPS**的数据填充。
 
-![propertySources](http://oqipguzbl.bkt.clouddn.com/propertySources.PNG)
+![propertySources](https://github.com/7le/7le.github.io/raw/master/image/springcloud/propertySources.PNG)
 
 ### zuul 源码解读
 

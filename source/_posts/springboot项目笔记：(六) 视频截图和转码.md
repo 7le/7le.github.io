@@ -90,7 +90,7 @@ make && make install
        使修改生效：ldconfig -v
 
 成功的话 就会有如下的显示
-![成功](http://oqipguzbl.bkt.clouddn.com/springboot-6-1.png)
+![成功](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-6-1.png)
 
 安装完毕后，就可以直接上代码了
 ```

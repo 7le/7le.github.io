@@ -24,7 +24,7 @@ tags: [jvm]
 
 #### 运行时数据区域
 
-![Java虚拟机运行时数据区](http://oqipguzbl.bkt.clouddn.com/jvm-java%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E6%95%B0%E6%8D%AE%E5%8C%BA.png)
+![Java虚拟机运行时数据区](http://oqipguzbl.bkt.clouddn.com/jvm-runtime.png)
 
 ##### Program Counter Register（程序计数器）
 
@@ -201,7 +201,7 @@ CMS 收集器主要优点是并发收集、低停顿，但也有一些明显的�
 
 ##### 空间分配担保
 
-![空间分配担保](http://oqipguzbl.bkt.clouddn.com/%E7%A9%BA%E9%97%B4%E5%88%86%E9%85%8D%E6%8B%85%E4%BF%9D.png)
+![空间分配担保](https://github.com/7le/7le.github.io/raw/master/image/jvm/space-allocation-guarantee.png)
 
 图中提到了是否允许担保失败，当新生代使用复制收集算法，但是为了内存利用率，只使用其中一个``Survivor``空间来作为轮换备份，因此当出现大量对象在``Minor GC``后依然存活（最极端就是内存回收后新生代中所有对象都存活），就需要老年代进行分配担保，把``Survivor``无法容纳的对象直接进入老年代。但是多少会晋升到老年代在实际内存回收前是无法明确知道的，所以只好取之前每一次回收晋升到老年代对象容量的平均值作为经验值，与老年代剩余空间比较，决定是否进行``Full GC``来让老年代腾出更多空间。
 
