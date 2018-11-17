@@ -45,7 +45,7 @@ REST这个词，是Roy Thomas Fielding在他2000年的博士论文中提出的�
 
 **有状态和无状态与请求本身没有多大关联，重要的是状态信息是由请求方还是响应方负责保存。**
 
-![有状态与无状态](http://oqipguzbl.bkt.clouddn.com/rest-1.png)
+![有状态与无状态](../image/rest/rest-1.png)
 
 #### 认证机制
 
