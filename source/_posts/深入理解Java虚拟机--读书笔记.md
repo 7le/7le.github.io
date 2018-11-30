@@ -171,7 +171,7 @@ demo戳 [Reference demo](https://github.com/7le/shine-learning/tree/master/java/
 
 ![标记-整理算法](https://github.com/7le/7le.github.io/raw/master/image/jvm/Mark-Compact.png)
 
-#### 分代收集算法
+##### 分代收集算法
 
 > 该算法是根据对象的存活周期的不同将内存划分为几块，一般是把Java堆分为新生代和老年代,在新生代中，每次垃圾收集时都发现有大批对象死去，只有少量存活，那就选用复制算法，
 只需要付出少量存活对象的复制成本就可以完成收集。而老年代中因为对象存活率高、没有额外空间对它进行分配担保，就必须使用“标记-清理”或“标记-整理”算法来进行回收。
