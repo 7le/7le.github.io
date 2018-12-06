@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other1.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other2.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other3.jpg">
-<meta property="og:updated_time" content="2018-12-06T16:09:21.384Z">
+<meta property="og:updated_time" content="2018-12-06T16:27:32.085Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式事务：基于可靠消息服务">
 <meta name="twitter:description" content="微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。">
@@ -375,7 +375,7 @@
 <li>基于可靠消息服务的分布式事务</li>
 </ul>
 <h3 id="基于可靠消息服务的分布式事务"><a href="#基于可靠消息服务的分布式事务" class="headerlink" title="基于可靠消息服务的分布式事务"></a>基于可靠消息服务的分布式事务</h3><p>基于这个方案，我自己实现了一个基于rabbitmq的分布式事务组件，<a href="https://github.com/7le/shine-mq" target="_blank" rel="noopener">shine-mq</a></p>
-<p>一开始本来是想用来封装mq的操作方便使用，后续迭代增加了分布式事务的功能。下面就来介绍下这个组件的实现思路。</p>
+<p>一开始本来是想用来封装mq的操作方便使用，后续迭代增加了分布式事务的功能。下面就来介绍下这个组件：</p>
 <p><img src="https://github.com/7le/7le.github.io/raw/master/image/dis/shine-mq.jpg" alt="shine-mq"></p>
 <ul>
 <li>在服务A处理任务A前，首先向Coordinator发送一条prepare记录，表示要开始这个分布式任务</li>
@@ -386,14 +386,12 @@
 <li>服务B消费了该消息，并成功处理了任务B，服务B再向消息中间件返回一个确认应答，告诉消息中间件该消息已经成功消费，此时，这个分布式事务完成。</li>
 </ul>
 <p>上述是整个流程，服务A完成任务A后，到任务B执行完成之间，会存在一定的时间差。在这个时间差内，整个系统处于数据不一致的状态，但这短暂的不一致性是可以接受的，因为经过短暂的时间后，系统又可以保持数据一致性，满足BASE理论。</p>
-<blockquote>
 <p>BASE理论:</p>
 <ul>
 <li>BA：Basic Available 基本可用</li>
 <li>S：Soft State：柔性状态 同一数据的不同副本的状态，可以不需要实时一致。</li>
 <li>E：Eventual Consisstency：最终一致性 同一数据的不同副本的状态，可以不需要实时一致，但一定要保证经过一定时间后仍然是一致的。</li>
 </ul>
-</blockquote>
 <blockquote>
 <p>上面的是一个比较理想的流程，但是真正的环境会有很多突发情况，比如任务A处理失败，那么需要进入回滚流程</p>
 </blockquote>
@@ -411,14 +409,14 @@
 <p>当消息成功发布到消息中间件之后，服务A就可以做自己的事情去了，消息中间件会保证消息能成功投递到服务B。这个就是消息中间件在消息投递情况下的可靠性保证，具体流程是消息中间件向下游系统投递完消息后便进入阻塞等待状态，下游系统便立即进行任务的处理，任务处理完成后便向消息中间件返回应答。消息中间件收到确认应答后便认为该事务处理完毕！如果消息在投递过程中丢失，或消息的确认应答在返回途中丢失，那么消息中间件在等待确认应答超时之后就会重新投递，直到下游消费者返回消费成功响应为止。</p>
 <p>这之间可以设置消息重试的次数和时间间隔，如果一直失败这时候就会用到死信队列。具体看下图：</p>
 <p><img src="https://github.com/7le/7le.github.io/raw/master/image/dis/other3.jpg" alt="other3"></p>
-<p>当消息一直无法被正常消费，超过设置的重试阈值就会投递到死信队列，死信队列是exchange和routeKey默认是<code>@DistributedTrans</code>中设置的值。</p>
-<p>通过消费死信队列来处理这种异常情况（可以设置短信或邮箱提醒，人工介入），这里暂时不实现服务A的回滚，因为让服务A事先提供回滚接口，这无疑增加了额外的开发成本，业务系统的复杂度也将提高。对于一个业务系统的设计目标是，在保证性能的前提下，最大限度地降低系统复杂度，从而能够降低系统的运维成本。</p>
+<p>当消息一直无法被正常消费，超过设置的重试阈值就会投递到死信队列，死信队列的exchange和routeKey默认是<code>@DistributedTrans</code>中设置的值。</p>
+<p>通过消费死信队列的消息来处理这种异常情况（可以设置短信或邮箱提醒，人工介入），这里暂时不实现服务A的回滚，因为让服务A事先提供回滚接口，这无疑增加了额外的开发成本，业务系统的复杂度也将提高。对于一个业务系统的设计目标是，在保证性能的前提下，最大限度地降低系统复杂度，从而能够降低系统的运维成本。</p>
 <blockquote>
 <p>最后整理一下整个组件的设计思路</p>
 </blockquote>
 <p>上面已经分析了下游服务和消息中间，我们可以通过消息中间件投递的可靠性来保证。 那么我们要实现分布式事务，剩下的就是要保证上游服务执行的任务和向消息中间件投递消息这2个操作的原子性。</p>
 <p>这时候一般就会有两种方案，同步和异步通信。通过之前的时序图，很显然上游系统和消息中间件之间采用的是异步通信，这主要是为了提高系统并发度，另外业务系统直接和用户打交道，用户体验尤为重要，因此这种异步通信方式能够极大程度地降低用户等待时间。</p>
-<p>而异步通信的方式，rabbitmq也其实有提供事务机制，使用txSelect(), txCommit()以及txRollback()来实现，通过测试抓包发现，Tx.Commit与Tx.Commit-Ok之间的时间间隔会比较长，简单的测试能到300ms，这是很耗时的。所以我没有用这种方式，而是引入一个Coordinator（协调者）来实现，另外还有一个比较关键的daemon（守护线程），这主要是处理在Coordinator一些错误超时的记录。</p>
+<p>而异步通信的方式，rabbitmq也其实有提供事务机制，使用txSelect(), txCommit()以及txRollback()来实现，通过测试抓包发现，Tx.Commit与Tx.Commit-Ok之间的时间间隔会比较长，简单的测试能到300ms，这是很耗时的。所以我没有用这种方式，而是引入一个Coordinator（协调者）来实现，另外还有一个比较关键的daemon（守护线程），这主要是处理在Coordinator一些错误超时的记录。这主要是来替代消息中间件在执行事务遇到超时情况下的超时询问机制。</p>
 <hr>
 <p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
 
