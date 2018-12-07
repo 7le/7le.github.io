@@ -103,7 +103,7 @@
 <meta property="og:description" content="在今天的NBA颁奖礼上，圣安东尼奥篮球运营部副主席蒙蒂-威廉姆斯成为了首届“赛格坚强奖”得主。蒙蒂-威廉姆斯，一个拥有真正力量的男人。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/man.jpeg">
-<meta property="og:updated_time" content="2018-12-06T16:27:32.085Z">
+<meta property="og:updated_time" content="2018-12-07T15:36:24.640Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="致敬蒙蒂-威廉姆斯">
 <meta name="twitter:description" content="在今天的NBA颁奖礼上，圣安东尼奥篮球运营部副主席蒙蒂-威廉姆斯成为了首届“赛格坚强奖”得主。蒙蒂-威廉姆斯，一个拥有真正力量的男人。">
@@ -326,6 +326,16 @@
 
           
             
+                <span class="post-comments-count">
+                  <span class="post-meta-divider">|</span>
+                  <span class="post-meta-item-icon">
+                    <i class="fa fa-comment-o"></i>
+                  </span>
+                  <a href="/2017/06/27/致敬蒙蒂-威廉姆斯/#comments" itemprop="discussionUrl">
+                    <span class="post-comments-count gitment-comments-count" data-xid="/2017/06/27/致敬蒙蒂-威廉姆斯/" itemprop="commentsCount"></span>
+                  </a>
+                </span>
+            
           
 
           
@@ -465,7 +475,11 @@
           
   <div class="comments" id="comments">
     
-      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+        <div class="comments" id="comments">
+          
+            <div id="gitment-container"></div>
+          
+        </div>
     
   </div>
 
@@ -717,20 +731,48 @@
 
 
   
-    <script type="text/javascript">
-      (function(d, s) {
-        var j, e = d.getElementsByTagName(s)[0];
-        if (typeof LivereTower === 'function') { return; }
-        j = d.createElement(s);
-        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-        j.async = true;
-        e.parentNode.insertBefore(j, e);
-      })(document, 'script');
-    </script>
-  
 
 
 
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: '7le',
+            repo: '7le.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'c53d2248f8cd0c5003b8c92b5a9e27299cf96e99',
+            
+                client_id: '36f5a95fff3d8ff6cadd'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
 
 
 

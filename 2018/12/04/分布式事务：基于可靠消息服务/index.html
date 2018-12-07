@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other1.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other2.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other3.jpg">
-<meta property="og:updated_time" content="2018-12-06T16:27:32.085Z">
+<meta property="og:updated_time" content="2018-12-07T15:36:24.640Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式事务：基于可靠消息服务">
 <meta name="twitter:description" content="微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。">
@@ -329,6 +329,16 @@
 
           
             
+                <span class="post-comments-count">
+                  <span class="post-meta-divider">|</span>
+                  <span class="post-meta-item-icon">
+                    <i class="fa fa-comment-o"></i>
+                  </span>
+                  <a href="/2018/12/04/分布式事务：基于可靠消息服务/#comments" itemprop="discussionUrl">
+                    <span class="post-comments-count gitment-comments-count" data-xid="/2018/12/04/分布式事务：基于可靠消息服务/" itemprop="commentsCount"></span>
+                  </a>
+                </span>
+            
           
 
           
@@ -495,7 +505,11 @@
           
   <div class="comments" id="comments">
     
-      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+        <div class="comments" id="comments">
+          
+            <div id="gitment-container"></div>
+          
+        </div>
     
   </div>
 
@@ -772,20 +786,48 @@
 
 
   
-    <script type="text/javascript">
-      (function(d, s) {
-        var j, e = d.getElementsByTagName(s)[0];
-        if (typeof LivereTower === 'function') { return; }
-        j = d.createElement(s);
-        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-        j.async = true;
-        e.parentNode.insertBefore(j, e);
-      })(document, 'script');
-    </script>
-  
 
 
 
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: '7le',
+            repo: '7le.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'c53d2248f8cd0c5003b8c92b5a9e27299cf96e99',
+            
+                client_id: '36f5a95fff3d8ff6cadd'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
 
 
 

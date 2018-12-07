@@ -103,7 +103,7 @@
 <meta property="og:description" content="项目是一个简单的视频点播系统，涉及到了视频的截图和转码，所用到的工具是ffmpeg，遇到了些坑，做一个完整的记录，利人利己 ^.^">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-6-1.png">
-<meta property="og:updated_time" content="2018-12-06T16:27:32.085Z">
+<meta property="og:updated_time" content="2018-12-07T15:36:24.640Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springboot项目笔记：(六) 视频截图和转码">
 <meta name="twitter:description" content="项目是一个简单的视频点播系统，涉及到了视频的截图和转码，所用到的工具是ffmpeg，遇到了些坑，做一个完整的记录，利人利己 ^.^">
@@ -326,6 +326,16 @@
 
           
             
+                <span class="post-comments-count">
+                  <span class="post-meta-divider">|</span>
+                  <span class="post-meta-item-icon">
+                    <i class="fa fa-comment-o"></i>
+                  </span>
+                  <a href="/2017/06/21/springboot项目笔记：(六) 视频截图和转码/#comments" itemprop="discussionUrl">
+                    <span class="post-comments-count gitment-comments-count" data-xid="/2017/06/21/springboot项目笔记：(六) 视频截图和转码/" itemprop="commentsCount"></span>
+                  </a>
+                </span>
+            
           
 
           
@@ -478,7 +488,11 @@
           
   <div class="comments" id="comments">
     
-      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+        <div class="comments" id="comments">
+          
+            <div id="gitment-container"></div>
+          
+        </div>
     
   </div>
 
@@ -755,20 +769,48 @@
 
 
   
-    <script type="text/javascript">
-      (function(d, s) {
-        var j, e = d.getElementsByTagName(s)[0];
-        if (typeof LivereTower === 'function') { return; }
-        j = d.createElement(s);
-        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-        j.async = true;
-        e.parentNode.insertBefore(j, e);
-      })(document, 'script');
-    </script>
-  
 
 
 
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: '7le',
+            repo: '7le.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'c53d2248f8cd0c5003b8c92b5a9e27299cf96e99',
+            
+                client_id: '36f5a95fff3d8ff6cadd'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
 
 
 
