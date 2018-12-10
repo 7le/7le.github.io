@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other1.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other2.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other3.jpg">
-<meta property="og:updated_time" content="2018-12-07T16:25:44.952Z">
+<meta property="og:updated_time" content="2018-12-10T14:14:36.056Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式事务：基于可靠消息服务">
 <meta name="twitter:description" content="微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。">
@@ -426,7 +426,7 @@
 </blockquote>
 <p>上面已经分析了下游服务和消息中间，我们可以通过消息中间件投递的可靠性来保证。 那么我们要实现分布式事务，剩下的就是要保证上游服务执行的任务和向消息中间件投递消息这2个操作的原子性。</p>
 <p>这时候一般就会有两种方案，同步和异步通信。通过之前的时序图，很显然上游系统和消息中间件之间采用的是异步通信，这主要是为了提高系统并发度，另外业务系统直接和用户打交道，用户体验尤为重要，因此这种异步通信方式能够极大程度地降低用户等待时间。</p>
-<p>而异步通信的方式，rabbitmq也其实有提供事务机制，使用txSelect(), txCommit()以及txRollback()来实现，通过测试抓包发现，Tx.Commit与Tx.Commit-Ok之间的时间间隔会比较长，简单的测试能到300ms，这是很耗时的。所以我没有用这种方式，而是引入一个Coordinator（协调者）来实现，另外还有一个比较关键的daemon（守护线程），这主要是处理在Coordinator一些错误超时的记录。这主要是来替代消息中间件在执行事务遇到超时情况下的超时询问机制。</p>
+<p>而异步通信的方式，rabbitmq也其实有提供事务机制，使用txSelect(), txCommit()以及txRollback()来实现，通过测试抓包发现，Tx.Commit与Tx.Commit-Ok之间的时间间隔会比较长，简单的测试能到300ms，这是很耗时的。所以我没有用这种方式，而是引入一个Coordinator（协调者）来实现，另外还有一个比较关键的daemon（守护线程），是处理在Coordinator一些错误超时的记录。通过这样的组合来替代消息中间件在执行事务遇到超时情况下的超时询问机制。</p>
 <hr>
 <p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
 
