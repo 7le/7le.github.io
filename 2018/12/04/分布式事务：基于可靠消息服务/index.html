@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other1.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other2.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other3.jpg">
-<meta property="og:updated_time" content="2018-12-10T14:14:36.056Z">
+<meta property="og:updated_time" content="2018-12-12T15:24:05.668Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式事务：基于可靠消息服务">
 <meta name="twitter:description" content="微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。">
@@ -384,8 +384,8 @@
 <li>TCC</li>
 <li>基于可靠消息服务的分布式事务</li>
 </ul>
-<h3 id="基于可靠消息服务的分布式事务"><a href="#基于可靠消息服务的分布式事务" class="headerlink" title="基于可靠消息服务的分布式事务"></a>基于可靠消息服务的分布式事务</h3><p>基于这个方案，我自己实现了一个基于rabbitmq的分布式事务组件，<a href="https://github.com/7le/shine-mq" target="_blank" rel="noopener">shine-mq</a></p>
-<p>一开始本来是想用来封装mq的操作方便使用，后续迭代增加了分布式事务的功能。下面就来介绍下这个组件：</p>
+<h3 id="基于可靠消息服务的分布式事务"><a href="#基于可靠消息服务的分布式事务" class="headerlink" title="基于可靠消息服务的分布式事务"></a>基于可靠消息服务的分布式事务</h3><p>基于这个方案，我自己实现了一个基于rabbitmq的分布式事务中间件，<a href="https://github.com/7le/shine-mq" target="_blank" rel="noopener">shine-mq</a></p>
+<p>一开始本来是想用来封装mq的操作方便使用，后续迭代增加了分布式事务的功能。下面就来介绍下这个中间件：</p>
 <p><img src="https://github.com/7le/7le.github.io/raw/master/image/dis/shine-mq.jpg" alt="shine-mq"></p>
 <ul>
 <li>在服务A处理任务A前，首先向Coordinator发送一条prepare记录，表示要开始这个分布式任务</li>
@@ -422,7 +422,7 @@
 <p>当消息一直无法被正常消费，超过设置的重试阈值就会投递到死信队列，死信队列的exchange和routeKey默认是<code>@DistributedTrans</code>中设置的值。</p>
 <p>通过消费死信队列的消息来处理这种异常情况（可以设置短信或邮箱提醒，人工介入），这里暂时不实现服务A的回滚，因为让服务A事先提供回滚接口，这无疑增加了额外的开发成本，业务系统的复杂度也将提高。对于一个业务系统的设计目标是，在保证性能的前提下，最大限度地降低系统复杂度，从而能够降低系统的运维成本。</p>
 <blockquote>
-<p>最后整理一下整个组件的设计思路</p>
+<p>最后整理一下整个中间件的设计思路</p>
 </blockquote>
 <p>上面已经分析了下游服务和消息中间，我们可以通过消息中间件投递的可靠性来保证。 那么我们要实现分布式事务，剩下的就是要保证上游服务执行的任务和向消息中间件投递消息这2个操作的原子性。</p>
 <p>这时候一般就会有两种方案，同步和异步通信。通过之前的时序图，很显然上游系统和消息中间件之间采用的是异步通信，这主要是为了提高系统并发度，另外业务系统直接和用户打交道，用户体验尤为重要，因此这种异步通信方式能够极大程度地降低用户等待时间。</p>
