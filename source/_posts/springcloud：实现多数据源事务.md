@@ -139,7 +139,7 @@ commit2
 
 ### 分布式事务实现
 
-抽了点时间，自己实现了一个分布式事务组件，在一些对数据一致性要求高的场景可以使用。[shine-mq](https://github.com/7le/shine-mq) 
+抽了点时间，自己实现了一个分布式事务的中间件，在一些对数据一致性要求高的场景可以使用。[shine-mq](https://github.com/7le/shine-mq) 
 相应的设计思路在 [分布式事务：基于可靠消息服务](https://7le.top/2018/12/04/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%EF%BC%9A%E5%9F%BA%E4%BA%8E%E5%8F%AF%E9%9D%A0%E6%B6%88%E6%81%AF%E6%9C%8D%E5%8A%A1/#more)
 
 ### 参考文献
