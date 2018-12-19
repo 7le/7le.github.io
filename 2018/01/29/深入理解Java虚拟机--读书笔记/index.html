@@ -107,7 +107,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/Copying.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/Mark-Compact.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/space-allocation-guarantee.png">
-<meta property="og:updated_time" content="2018-12-16T10:27:10.331Z">
+<meta property="og:updated_time" content="2018-12-19T15:32:09.067Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -473,9 +473,8 @@
 <p>它的主要缺点有两个：</p>
 <ul>
 <li>一个是效率问题，标记和清除过程的效率都不高；</li>
-<li>另外一个是空间问题，标记清除之后会产生大量不连续的内存碎片，</li>
+<li>另外一个是空间问题，标记清除之后会产生大量不连续的内存碎片，空间碎片太多可能会导致，当程序在以后的运行过程中需要分配较大对象时无法找到足够的连续内存而不得不提前触发另一次垃圾收集动作。</li>
 </ul>
-<p>空间碎片太多可能会导致，当程序在以后的运行过程中需要分配较大对象时无法找到足够的连续内存而不得不提前触发另一次垃圾收集动作。</p>
 <p><img src="https://github.com/7le/7le.github.io/raw/master/image/jvm/Mark-Sweep.png" alt="标记-清除算法"></p>
 <h5 id="复制算法（Copying）"><a href="#复制算法（Copying）" class="headerlink" title="复制算法（Copying）"></a>复制算法（Copying）</h5><blockquote>
 <p>为了解决效率问题，一种称为“复制”（Copying）的收集算法出现了，它将可用内存按容量划分为大小相等的两块，每次只使用其中的一块。<br>当这一块的内存用完了，就将还存活着的对象复制到另外一块上面，然后再把已使用过的内存空间一次清理掉。</p>
@@ -524,9 +523,10 @@
 <li>空间整合（G1收集器是基于<strong>标记-整理</strong>算法实现的收集器，也就是说它不会产生空间碎片，这对于长时间运行的应用系统来说非常重要。）</li>
 <li>可预测的停顿 （它可以非常精确地控制停顿，既能让使用者明确指定在一个长度为M毫秒的时间片段内，消耗在垃圾收集上的时间不得超过N毫秒，这几乎已经是实时Java（RTSJ）的垃圾收集器的特征了。） </li>
 </ul>
-<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><blockquote>
-<p>总的来说，除了G1目前都可分为新生代和老年代算法。这些算法有两个性能侧重点：1. 回收停顿时间；2. 吞吐量。<br>偏向前者的有 CMS 和 G1，CMS 属于老年代收集器，常与 CMS 搭配使用的是 ParNew 收集器。<br>偏重吞吐量的算法是 Parallel Scavenge（赋值算法），这是个新生代收集器，常与之搭配的老生代算法是 Parallel Old（多线程、标记-整理算法）。</p>
-</blockquote>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>总的来说，除了G1目前都可分为新生代和老年代算法。这些算法有两个性能侧重点：1. 回收停顿时间；2. 吞吐量。<br>偏向前者的有 CMS 和 G1，CMS 属于老年代收集器，常与 CMS 搭配使用的是 ParNew 收集器。<br>偏重吞吐量的算法是 Parallel Scavenge（赋值算法），这是个新生代收集器，常与之搭配的老生代算法是 Parallel Old（多线程、标记-整理算法）。</p>
+<p>那CMS为何采用<strong>标记-清除</strong>算法？</p>
+<p>CMS主要关注低延迟，因而采用并发方式，清理垃圾时，应用程序还在运行，如果采用整理算法，则涉及到要移动应用程序的存活对象，此时不停顿，是很难处理的，一般需要停顿下，移动存活对象，再让应用程序继续运行，但这样停顿时间变长，延迟变大</p>
+<p>而新的G1（Garbage-First）把整个GC堆划分为许多小区域（region），通过每次GC只选择收集很少量region来控制移动对象带来的暂停时间。这样既能实现低延迟也不会受碎片化的影响。 </p>
 <h4 id="理解gc日志"><a href="#理解gc日志" class="headerlink" title="理解gc日志"></a>理解gc日志</h4><p>阅读GC日志是处理jvm的基础技能，可以配置上<code>-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/logs/gc.log</code>，jvm就能为我们将日志输出到指定的路径下。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">4.533: [GC (Allocation Failure) 4.533: [ParNew: 1041729K-&gt;77803K(1061696K), 0.0825433 secs] 1041729K-&gt;87450K(3027776K), 0.0826023 secs] [Times: user=0.16 sys=0.03, real=0.08 secs]</span><br><span class="line">99.631: [Full GC (System.gc()) 99.631: [CMS: 9646K-&gt;53928K(1966080K), 0.2198137 secs] 883651K-&gt;53928K(3027776K), [Metaspace: 45355K-&gt;45355K(1089536K)], 0.2201145 secs] [Times: user=0.24 sys=0.00, real=0.22 secs]</span><br></pre></td></tr></table></figure>
 <p>最前的数字，<strong>4.533</strong>和<strong>99.631</strong>代表GC发生的时间，是从jvm启动以来经过的秒数。</p>
