@@ -175,15 +175,56 @@ demo戳 [Reference demo](https://github.com/7le/shine-learning/tree/master/java/
 
 #### 垃圾收集器
 
+#### Serial收集器
+
+> Serial收集器是最基本、历史最悠久的收集器，曾经（在JDK 1.3.1之前）是虚拟机新生代收集的唯一选择。
+
+就像它的名字，这个收集器是一个单线程的收集器，但它的“单线程”的意义并不仅仅是说明它只会使用一个CPU或一条收集线程去完成垃圾收集工作，更重要的是在它进行垃圾收集时，必须暂停其他所有的工作线程（Sun将这件事情称之为“Stop The World”），直到它收集结束。Serial收集器的运行过程如下图:
+
+![Serial](https://github.com/7le/7le.github.io/raw/master/image/jvm/serial.png)
+
+#### ParNew收集器
+
+> ParNew收集器其实就是Serial收集器的多线程版本，除了使用多条线程进行垃圾收集之外，其余行为包括Serial收集器可用的所有控制参数（例如：-XX:SurvivorRatio、 -XX:PretenureSizeThreshold、-XX:HandlePromotionFailure等）、收集算法、Stop The World、对象分配规则、回收策略等都与Serial收集器完全一样，实现上这两种收集器也共用了相当多的代码。
+
+ParNew收集器的运行过程如下图:
+
+![ParNew](https://github.com/7le/7le.github.io/raw/master/image/jvm/parNew.png)
+
+#### Parallel Scavenge收集器
+
+>  Parallel Scavenge收集器也是一个新生代收集器，它也是使用复制算法的收集器，又是并行的多线程收集器
+
+Parallel Scavenge收集器的特点是它的关注点与其他收集器不同，CMS等收集器的关注点尽可能地缩短垃圾收集时用户线程的停顿时间，而Parallel Scavenge收集器的目标则是达到一个可控制的吞吐量（Throughput）。所谓吞吐量就是CPU用于运行用户代码的时间与CPU总消耗时间的比值，即吞吐量 = 运行用户代码时间 /（运行用户代码时间 + 垃圾收集时间），虚拟机总共运行了100分钟，其中垃圾收集花掉1分钟，那吞吐量就是99%。停顿时间越短就越适合需要与用户交互的程序，良好的响应速度能提升用户的体验；而高吞吐量则可以最高效率地利用CPU时间，尽快地完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。 
+
+#### Serial Old收集器
+
+> Serial Old是Serial收集器的老年代版本，它同样是一个单线程收集器，使用“标记-整理”算法。
+
+这个收集器的主要意义也是被Client模式下的虚拟机使用。如果在Server模式下，它主要还有两大用途：一个是在JDK 1.5及之前的版本中与Parallel Scavenge收集器搭配使用②，另外一个就是作为CMS收集器的后备预案，在并发收集发生Concurrent Mode Failure的时候使用。Serial Old收集器的工作过程如下图：
+
+![Serial Old](https://github.com/7le/7le.github.io/raw/master/image/jvm/serial-old.png)
+
+#### Parallel Old收集器
+
+>  Parallel Old是Parallel Scavenge收集器的老年代版本，使用多线程和“标记－整理”算法。
+
+Parallel Old的出现让”吞吐量优先”收集器终于有了比较名副其实的应用组合，在注重吞吐量及CPU资源敏感的场合，都可以优先考虑Parallel Scavenge加Parallel Old收集器。Parallel Old收集器的工作过程如下图：
+
+![Parallel Old](https://github.com/7le/7le.github.io/raw/master/image/jvm/parallel-old.png)
+
 ##### CMS 收集器 （Concurrent Mark Sweep）
 
 > CMS收集器是一种以获取最短回收停顿时间为目标的收集器，基于**标记-清除**算法实现，作用于老年代。
 
 对于CMS 收集器，整个过程可以分为：
-* 初始标记（CMS initial mark）
-* 并发标记（CMS concurrent mark）
-* 重新标记（CMS remark）
-* 并发清除（CMS concurrent sweep）。
+
+![cms](https://github.com/7le/7le.github.io/raw/master/image/jvm/cms.png)
+
+* 初始标记（CMS initial mark）:STW，单线程，由于是从GCRoot寻找直达的对象，速度快。
+* 并发标记（CMS concurrent mark）:与应用线程一起运行，是CMS最主要的工作阶段，通过直达对象，扫描全部的对象，进行标记。
+* 重新标记（CMS remark）:STW，修正并发标记时由于应用程序还在并发运行产生的对象的修改，多线程，速度快，需要全局停顿。
+* 并发清除（CMS concurrent sweep）:与应用程序一起运行。
 
 CMS 收集器主要优点是并发收集、低停顿。
 其中初始标记和重新标记是需要**Stop The World**，初始标记仅仅只是标记一下GC Roots能直接关联到的对象，速度很快，并发标记阶段就是进行GC Roots Tracing的过程，而重新标记阶段则是为了修正并发标记期间，因用户程序继续运作而导致标记产生变动的那一部分对象的标记记录，这个阶段的停顿时间一般会比初始标记阶段稍长一些，但远比并发标记的时间短。 
@@ -193,6 +234,12 @@ CMS 收集器主要优点是并发收集、低停顿。
 * CMS收集器对CPU资源非常敏感。(并发阶段，它虽然不会导致用户线程停顿，但是会因为占用了一部分线程或者说CPU资源而导致应用程序变慢，总吞吐量会降低。)
 * CMS收集器无法处理浮动垃圾（Floating Garbage） （由于CMS并发清理阶段用户线程还在运行着，伴随程序的运行自然还会有新的垃圾不断产生，这一部分垃圾出现在标记过程之后，CMS无法在本次收集中处理掉它们，只好留待下一次GC时再将其清理掉，这一部分垃圾就称为“浮动垃圾”。）
 * 产生大量空间碎片 （这是**标记-清除**算法所造成的）
+
+那CMS为何要采用**标记-清除**算法？
+
+CMS主要关注低延迟，因而采用并发方式，清理垃圾时，应用程序还在运行，如果采用整理算法，则涉及到要移动应用程序的存活对象，此时不停顿，是很难处理的，一般需要停顿下，移动存活对象，再让应用程序继续运行，但这样停顿时间变长，延迟变大
+
+而新的G1（Garbage-First）把整个GC堆划分为许多小区域（region），通过每次GC只选择收集很少量region来控制移动对象带来的暂停时间。这样既能实现低延迟也不会受碎片化的影响。 
 
 ##### G1 收集器 （Garbage-First）
 
@@ -218,13 +265,6 @@ G1收集器是垃圾收集器理论进一步发展的产物，它具备以下的
 总的来说，除了G1目前都可分为新生代和老年代算法。这些算法有两个性能侧重点：1. 回收停顿时间；2. 吞吐量。
 偏向前者的有 CMS 和 G1，CMS 属于老年代收集器，常与 CMS 搭配使用的是 ParNew 收集器。
 偏重吞吐量的算法是 Parallel Scavenge（赋值算法），这是个新生代收集器，常与之搭配的老生代算法是 Parallel Old（多线程、标记-整理算法）。
-
-那CMS为何采用**标记-清除**算法？
-
-CMS主要关注低延迟，因而采用并发方式，清理垃圾时，应用程序还在运行，如果采用整理算法，则涉及到要移动应用程序的存活对象，此时不停顿，是很难处理的，一般需要停顿下，移动存活对象，再让应用程序继续运行，但这样停顿时间变长，延迟变大
-
-而新的G1（Garbage-First）把整个GC堆划分为许多小区域（region），通过每次GC只选择收集很少量region来控制移动对象带来的暂停时间。这样既能实现低延迟也不会受碎片化的影响。 
-
 
 #### 理解gc日志
 
