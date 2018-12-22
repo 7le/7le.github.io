@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other1.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other2.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other3.jpg">
-<meta property="og:updated_time" content="2018-12-20T15:11:53.480Z">
+<meta property="og:updated_time" content="2018-12-22T15:55:06.434Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式事务：基于可靠消息服务">
 <meta name="twitter:description" content="微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。">
@@ -376,7 +376,7 @@
 <p>微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。</p>
 </blockquote>
 <a id="more"></a>
-<p>众所周知，数据库能实现本地事务，也就是说在同一个数据库中，可以保证事务的原子性，就是全部成功或者失败，上篇文章也写过简单的<a href="https://7le.top/2018/07/28/springcloud%EF%BC%9A%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90%E4%BA%8B%E5%8A%A1/#more" target="_blank" rel="noopener">多数据源事务的解决方案</a>（类似3PC）</p>
+<p>众所周知，数据库能实现本地事务，也就是说在同一个数据库中，可以保证事务的原子性，就是全部成功或者失败，上篇文章也写过简单的<a href="https://7le.top/2018/07/28/springcloud%EF%BC%9A%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90%E4%BA%8B%E5%8A%A1/#more" target="_blank" rel="noopener">多数据源事务的解决方案</a>（类似2PC）</p>
 <p>但现在的系统往往采用微服务架构，业务系统拥有独立的数据库，因此就出现了跨多个数据库的事务需求，这种事务即为“分布式事务”。</p>
 <p>针对这样的问题一般常用的实现方案有：</p>
 <ul>
