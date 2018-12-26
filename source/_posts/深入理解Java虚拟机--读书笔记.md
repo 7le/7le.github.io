@@ -175,7 +175,7 @@ demo戳 [Reference demo](https://github.com/7le/shine-learning/tree/master/java/
 
 #### 垃圾收集器
 
-#### Serial 收集器
+##### Serial 收集器
 
 > Serial收集器是最基本、历史最悠久的收集器，曾经（在JDK 1.3.1之前）是虚拟机新生代收集的唯一选择。
 
@@ -183,7 +183,7 @@ demo戳 [Reference demo](https://github.com/7le/shine-learning/tree/master/java/
 
 ![Serial](https://github.com/7le/7le.github.io/raw/master/image/jvm/serial.png)
 
-#### ParNew 收集器
+##### ParNew 收集器
 
 > ParNew收集器其实就是Serial收集器的多线程版本，除了使用多条线程进行垃圾收集之外，其余行为包括Serial收集器可用的所有控制参数（例如：-XX:SurvivorRatio、 -XX:PretenureSizeThreshold、-XX:HandlePromotionFailure等）、收集算法、Stop The World、对象分配规则、回收策略等都与Serial收集器完全一样，实现上这两种收集器也共用了相当多的代码。
 
@@ -191,13 +191,13 @@ ParNew收集器的运行过程如下图:
 
 ![ParNew](https://github.com/7le/7le.github.io/raw/master/image/jvm/parNew.png)
 
-#### Parallel Scavenge 收集器
+##### Parallel Scavenge 收集器
 
 >  Parallel Scavenge收集器也是一个新生代收集器，它也是使用复制算法的收集器，又是并行的多线程收集器
 
 Parallel Scavenge收集器的特点是它的关注点与其他收集器不同，CMS等收集器的关注点尽可能地缩短垃圾收集时用户线程的停顿时间，而Parallel Scavenge收集器的目标则是达到一个可控制的吞吐量（Throughput）。所谓吞吐量就是CPU用于运行用户代码的时间与CPU总消耗时间的比值，即吞吐量 = 运行用户代码时间 /（运行用户代码时间 + 垃圾收集时间），虚拟机总共运行了100分钟，其中垃圾收集花掉1分钟，那吞吐量就是99%。停顿时间越短就越适合需要与用户交互的程序，良好的响应速度能提升用户的体验；而高吞吐量则可以最高效率地利用CPU时间，尽快地完成程序的运算任务，主要适合在后台运算而不需要太多交互的任务。 
 
-#### Serial Old 收集器
+##### Serial Old 收集器
 
 > Serial Old是Serial收集器的老年代版本，它同样是一个单线程收集器，使用“标记-整理”算法。
 
@@ -205,7 +205,7 @@ Parallel Scavenge收集器的特点是它的关注点与其他收集器不同，
 
 ![Serial Old](https://github.com/7le/7le.github.io/raw/master/image/jvm/serial-old.png)
 
-#### Parallel Old 收集器
+##### Parallel Old 收集器
 
 >  Parallel Old是Parallel Scavenge收集器的老年代版本，使用多线程和“标记－整理”算法。
 
