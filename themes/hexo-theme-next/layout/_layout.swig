@@ -84,7 +84,7 @@
   {% include '_third-party/mathjax.swig' %}
   {% include '_third-party/scroll-cookie.swig' %}
   {% include '_third-party/exturl.swig' %}
-  <a class="github-fork-ribbon left-bottom fixed" href="https://github.com/7le/7le.github.io" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+  <a class="github-fork-ribbon left-bottom fixed" href="https://github.com/7le" data-ribbon="Follow me on GitHub" title="Follow me on GitHub">Follow me on GitHub</a>
 </body>
 </html>
 
