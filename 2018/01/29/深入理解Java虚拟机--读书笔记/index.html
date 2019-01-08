@@ -112,7 +112,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/parallel-old.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/cms.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/space-allocation-guarantee.png">
-<meta property="og:updated_time" content="2019-01-04T03:55:33.596Z">
+<meta property="og:updated_time" content="2019-01-08T14:49:20.128Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -556,7 +556,7 @@
 <li>空间整合（G1收集器是基于<strong>标记-整理</strong>算法实现的收集器，也就是说它不会产生空间碎片，这对于长时间运行的应用系统来说非常重要。）</li>
 <li>可预测的停顿 （它可以非常精确地控制停顿，既能让使用者明确指定在一个长度为M毫秒的时间片段内，消耗在垃圾收集上的时间不得超过N毫秒，这几乎已经是实时Java（RTSJ）的垃圾收集器的特征了。） </li>
 </ul>
-<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>总的来说，除了G1目前都可分为新生代和老年代算法。这些算法有两个性能侧重点：1. 回收停顿时间；2. 吞吐量。<br>偏向前者的有 CMS 和 G1，CMS 属于老年代收集器，常与 CMS 搭配使用的是 ParNew 收集器。<br>偏重吞吐量的算法是 Parallel Scavenge（赋值算法），这是个新生代收集器，常与之搭配的老生代算法是 Parallel Old（多线程、标记-整理算法）。</p>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>总的来说，除了G1目前都可分为新生代和老年代算法。这些算法有两个性能侧重点：1. 回收停顿时间；2. 吞吐量。<br>偏向前者的有 CMS 和 G1，CMS 属于老年代收集器，常与 CMS 搭配使用的是 ParNew 收集器。<br>偏重吞吐量的算法是 Parallel Scavenge（复制算法），这是个新生代收集器，常与之搭配的老生代算法是 Parallel Old（多线程、标记-整理算法）。</p>
 <h4 id="理解gc日志"><a href="#理解gc日志" class="headerlink" title="理解gc日志"></a>理解gc日志</h4><p>阅读GC日志是处理jvm的基础技能，可以配置上<code>-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/logs/gc.log</code>，jvm就能为我们将日志输出到指定的路径下。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">4.533: [GC (Allocation Failure) 4.533: [ParNew: 1041729K-&gt;77803K(1061696K), 0.0825433 secs] 1041729K-&gt;87450K(3027776K), 0.0826023 secs] [Times: user=0.16 sys=0.03, real=0.08 secs]</span><br><span class="line">99.631: [Full GC (System.gc()) 99.631: [CMS: 9646K-&gt;53928K(1966080K), 0.2198137 secs] 883651K-&gt;53928K(3027776K), [Metaspace: 45355K-&gt;45355K(1089536K)], 0.2201145 secs] [Times: user=0.24 sys=0.00, real=0.22 secs]</span><br></pre></td></tr></table></figure>
 <p>最前的数字，<strong>4.533</strong>和<strong>99.631</strong>代表GC发生的时间，是从jvm启动以来经过的秒数。</p>
@@ -1118,7 +1118,7 @@
 
   
 
-  <a class="github-fork-ribbon left-bottom fixed" href="https://github.com/7le/7le.github.io" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
+  <a class="github-fork-ribbon left-bottom fixed" href="https://github.com/7le" data-ribbon="Follow me on GitHub" title="Follow me on GitHub">Follow me on GitHub</a>
 </body>
 </html>
 
