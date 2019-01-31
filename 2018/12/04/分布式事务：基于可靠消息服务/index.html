@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other1.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other2.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other3.jpg">
-<meta property="og:updated_time" content="2019-01-25T15:42:56.634Z">
+<meta property="og:updated_time" content="2019-01-31T06:19:41.708Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式事务：基于可靠消息服务">
 <meta name="twitter:description" content="微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。">
@@ -388,8 +388,8 @@
 <p>一开始本来是想用来封装mq的操作方便使用，后续迭代增加了分布式事务的功能。下面就来介绍下这个中间件：</p>
 <p><img src="https://github.com/7le/7le.github.io/raw/master/image/dis/shine-mq.jpg" alt="shine-mq"></p>
 <ul>
-<li>在服务A处理任务A前，首先向Coordinator发送一条prepare记录，表示要开始这个分布式任务</li>
-<li>Coordinator持久化prepare记录后相应服务A</li>
+<li>在服务A处理任务A前，首先向Coordinator发送一条prepare（<strong>携带回查id</strong>）记录，表示要开始这个分布式任务</li>
+<li>Coordinator持久化prepare记录后响应服务A</li>
 <li>服务A收到确认应答后，服务A处理任务A，成功后发送一条ready记录，Coordinator将删除之前对应的prepare记录，并持久化ready记录和完整的消息</li>
 <li>服务A在收到ready记录和消息持久化的应答后，就可以提交消息到消息中间件了，针对rabbitmq可以设置<code>setPublisherConfirms(true)</code>以及实现<code>setConfirmCallback</code>的回调来实现消息中间件持久化应答服务A。这之后对于服务A来说就可以删除之前的ready记录和去处理其他任务了。</li>
 <li>消息中间件（rabbitmq可以通过镜像队列来实现高可用）在确定将消息落盘之后就可以向服务B投递消息</li>
@@ -427,12 +427,13 @@
 <p>上面已经分析了下游服务和消息中间件，我们可以通过消息中间件投递的可靠性来保证。 那么我们要实现分布式事务，剩下的就是要保证上游服务执行的任务和向消息中间件投递消息这2个操作的原子性。</p>
 <p>这时候一般就会有两种方案，同步和异步通信。通过之前的时序图，很显然上游系统和消息中间件之间采用的是异步通信，这主要是为了提高系统并发度，另外业务系统直接和用户打交道，用户体验尤为重要，因此这种异步通信方式能够极大程度地降低用户等待时间。</p>
 <p>而异步通信的方式，rabbitmq也其实有提供事务机制，使用txSelect(), txCommit()以及txRollback()来实现，通过测试抓包发现，Tx.Commit与Tx.Commit-Ok之间的时间间隔会比较长，简单的测试能到300ms，这是很耗时的。所以我没有用这种方式，而是引入一个Coordinator（协调者）来实现。</p>
-<p>另外还有一个比较关键的daemon（守护线程），是处理在Coordinator一些错误超时的记录（类似Rocketmq的超时询问机制）。所以服务A除了实现正常的业务流程外，还需提供一个事务询问的接口，供Coordinator调用。当有ready超时就会触发访问这个回查接口，该接口会返回三种结果：                                                                                                              </p>
+<p>另外还有一个比较关键的daemon（守护线程），是处理在Coordinator一些错误超时的记录（类似Rocketmq的超时询问机制）。所以服务A除了实现正常的业务流程外，还需提供一个事务询问的接口，供Coordinator调用，来保障服务A在执行任务出现宕机的情况。当有prepare超时就会触发访问这个回查接口，该接口会返回三种结果：                                                                                                              </p>
 <ul>
 <li>提交 将该消息投递</li>
 <li>回滚 直接将条消息丢弃</li>
 <li>处理中 继续等待，重置时间。</li>
 </ul>
+<p>而超时的ready的消息，就直接捞起发送到消息中间件，因为只要是ready消息持久化到协调者，那就说明服务A的任务已经完成。</p>
 <p>这样就能保证上游服务和消息中间件的原子性了，再通过消息中间件可靠的投递结合下游服务，就完成了分布式事务。</p>
 <hr>
 <p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
