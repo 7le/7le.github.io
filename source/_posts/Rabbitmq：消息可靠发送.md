@@ -9,7 +9,7 @@ tags: [mq]
 
 <!--more-->
 
-在上文提到了如何将消息进行可靠发布，因为[shine-mq](https://github.com/7le/shine-mq)是无缝集成``spring-boot-starter``的，所以rabbitmq的操作是基于``rabbitTemplate``来完成的。
+在上文简单提到了如何将消息进行可靠发送，因为[shine-mq](https://github.com/7le/shine-mq)是无缝集成``spring-boot-starter``的，所以rabbitmq的操作也是基于spring的``rabbitTemplate``来完成的。
 
 ``rabbitTemplate``提供了``setConfirmCallback``方法，可以在消息发送到RabbitMQ交换器后，进行ack的回调。
 
