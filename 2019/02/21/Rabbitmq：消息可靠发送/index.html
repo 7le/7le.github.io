@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="tidb,">
+  <meta name="keywords" content="mq,">
 
 
 
@@ -94,39 +94,18 @@
 
 
 
-<meta name="description" content="SQL -&amp;gt; NoSQL -&amp;gt; NewSql">
-<meta name="keywords" content="tidb">
+<meta name="description" content="接上文分布式事务：基于可靠消息服务介绍了整体中间件的设计思路，有些内容没有展开。故此，本文详细讲解下如何将消息可靠发送到Rabbitmq。">
+<meta name="keywords" content="mq">
 <meta property="og:type" content="article">
-<meta property="og:title" content="TiDB，日均千万级数据存储方案选型">
-<meta property="og:url" content="http://yoursite.com/2017/11/08/TiDB，日均千万级数据存储方案选型/index.html">
+<meta property="og:title" content="Rabbitmq：消息可靠发送">
+<meta property="og:url" content="http://yoursite.com/2019/02/21/Rabbitmq：消息可靠发送/index.html">
 <meta property="og:site_name" content="Shine">
-<meta property="og:description" content="SQL -&amp;gt; NoSQL -&amp;gt; NewSql">
+<meta property="og:description" content="接上文分布式事务：基于可靠消息服务介绍了整体中间件的设计思路，有些内容没有展开。故此，本文详细讲解下如何将消息可靠发送到Rabbitmq。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/maxcompute.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/order.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/7le/7le.github.io/master/image/tidb/ads.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-architecture.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-mysql.jpg">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/inventory.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/data.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/billion-test.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/add-field.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/delete-field.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/delete-index.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/storage.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/cpu.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/disk.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/prepare.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/db-data.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/select.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/insert.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/update.png">
-<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/mixed.png">
 <meta property="og:updated_time" content="2019-02-21T17:34:23.263Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="TiDB，日均千万级数据存储方案选型">
-<meta name="twitter:description" content="SQL -&amp;gt; NoSQL -&amp;gt; NewSql">
-<meta name="twitter:image" content="https://github.com/7le/7le.github.io/raw/master/image/tidb/maxcompute.png">
+<meta name="twitter:title" content="Rabbitmq：消息可靠发送">
+<meta name="twitter:description" content="接上文分布式事务：基于可靠消息服务介绍了整体中间件的设计思路，有些内容没有展开。故此，本文详细讲解下如何将消息可靠发送到Rabbitmq。">
 
 
 
@@ -154,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/11/08/TiDB，日均千万级数据存储方案选型/">
+  <link rel="canonical" href="http://yoursite.com/2019/02/21/Rabbitmq：消息可靠发送/">
 
 
 
 
 
-  <title> TiDB，日均千万级数据存储方案选型 | Shine </title>
+  <title> Rabbitmq：消息可靠发送 | Shine </title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css">
   <script type="text/javascript">
     var host = "7le.top";
@@ -295,7 +274,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/08/TiDB，日均千万级数据存储方案选型/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/21/Rabbitmq：消息可靠发送/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -316,7 +295,7 @@
             
             
               
-                TiDB，日均千万级数据存储方案选型
+                Rabbitmq：消息可靠发送
               
             
           </h1>
@@ -331,8 +310,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-08T23:05:50+08:00">
-                2017-11-08
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-02-21T22:30:08+08:00">
+                2019-02-21
               </time>
             
 
@@ -350,8 +329,8 @@
                   <span class="post-meta-item-icon">
                     <i class="fa fa-comment-o"></i>
                   </span>
-                  <a href="/2017/11/08/TiDB，日均千万级数据存储方案选型/#comments" itemprop="discussionUrl">
-                    <span class="post-comments-count gitment-comments-count" data-xid="/2017/11/08/TiDB，日均千万级数据存储方案选型/" itemprop="commentsCount"></span>
+                  <a href="/2019/02/21/Rabbitmq：消息可靠发送/#comments" itemprop="discussionUrl">
+                    <span class="post-comments-count gitment-comments-count" data-xid="/2019/02/21/Rabbitmq：消息可靠发送/" itemprop="commentsCount"></span>
                   </a>
                 </span>
             
@@ -359,7 +338,7 @@
 
           
           
-             <span id="/2017/11/08/TiDB，日均千万级数据存储方案选型/" class="leancloud_visitors" data-flag-title="TiDB，日均千万级数据存储方案选型">
+             <span id="/2019/02/21/Rabbitmq：消息可靠发送/" class="leancloud_visitors" data-flag-title="Rabbitmq：消息可靠发送">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -389,71 +368,40 @@
 
       
         <blockquote>
-<p>SQL -&gt; NoSQL -&gt; NewSql</p>
+<p>接上文<a href="https://7le.top/2018/12/04/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%EF%BC%9A%E5%9F%BA%E4%BA%8E%E5%8F%AF%E9%9D%A0%E6%B6%88%E6%81%AF%E6%9C%8D%E5%8A%A1/#more" target="_blank" rel="noopener">分布式事务：基于可靠消息服务</a>介绍了整体中间件的设计思路，有些内容没有展开。故此，本文详细讲解下如何将消息可靠发送到Rabbitmq。</p>
 </blockquote>
 <a id="more"></a>
-<p>原先的统计系统是基于mongodb存储和计算的，在考虑到之后接入新的广告系统，数据量预估会达到日均千万级别，以及更多纬度的统计和分析，和后续更多系统的接入，而且最好需要兼顾OLAP+OLTP，故此调整储存方案已经势在必行。</p>
-<h3 id="方案对比"><a href="#方案对比" class="headerlink" title="方案对比"></a>方案对比</h3><h4 id="MaxCompute（原opds）"><a href="#MaxCompute（原opds）" class="headerlink" title="MaxCompute（原opds）"></a>MaxCompute（原opds）</h4><p>一开始是想要依托阿里的服务，这样可以减少大量的运维成本，阿里云上对此的描述为：大数据计算服务(MaxCompute,原名ODPS)是一种快速、完全托管的TB/PB级数据仓库解决方案。<br>经过测试发现，此产品适用于离线分析，对于做实时的操作速度是不能接受的。操作100W的数据，做简单的聚合操作，需要30S。</p>
-<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/maxcompute.png" alt="maxcompute"></p>
-<p>且对于用户来说没有索引的概念，用户不能自己选择创建索引，都由阿里云自己实现。提工单的时候回馈，可以得到对此产品的定位。</p>
-<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/order.png" alt="工单"></p>
-<p>很明显MaxCompute 能实现OLAP的需求，但是确不能满足OLTP的需求。</p>
-<h4 id="ADS-（分析型数据库）"><a href="#ADS-（分析型数据库）" class="headerlink" title="ADS  （分析型数据库）"></a>ADS  （分析型数据库）</h4><p><img src="https://raw.githubusercontent.com/7le/7le.github.io/master/image/tidb/ads.png" alt="ADS"></p>
-<p>同样属于阿里云的服务，官方自己的评价，毫秒级别的查询速度，具体没有测试，因为考虑到成本过高，就放弃了。</p>
-<h4 id="TIDB-（NewSql-分布式数据库）："><a href="#TIDB-（NewSql-分布式数据库）：" class="headerlink" title="TIDB （NewSql 分布式数据库）："></a>TIDB （NewSql 分布式数据库）：</h4><blockquote>
-<p>主要优势:  </p>
-</blockquote>
+<p>在上文提到了如何将消息进行可靠发布，因为<a href="https://github.com/7le/shine-mq" target="_blank" rel="noopener">shine-mq</a>是无缝集成<code>spring-boot-starter</code>的，所以rabbitmq的操作是基于<code>rabbitTemplate</code>来完成的。</p>
+<p><code>rabbitTemplate</code>提供了<code>setConfirmCallback</code>方法，可以在消息发送到RabbitMQ交换器后，进行ack的回调。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -&gt; &#123;</span><br><span class="line">    ...</span><br><span class="line">    //消息能投入正确的消息队列，并持久化，返回的ack为true</span><br><span class="line">    if (ack) &#123;</span><br><span class="line">        log.info(&quot;The message has been successfully delivered to the queue, correlationData:&#123;&#125;&quot;, correlationData);</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>在此之前还需要设置<code>CachingConnectionFactory</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//设置生成者确认机制</span><br><span class="line">rabbitConnectionFactory.setPublisherConfirms(true);</span><br></pre></td></tr></table></figure>
+<p>如果还需要设置<code>setReturnCallback</code>(消息发送到RabbitMQ交换器，但无相应Exchange时的回调)，那就还需要设置<code>rabbitTemplate</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//使用return-callback时必须设置mandatory为true</span><br><span class="line">rabbitTemplate.setMandatory(true);</span><br></pre></td></tr></table></figure></p>
+<p>熟悉Rabbitmq的同学可能知道，Rabbitmq有两种机制来实现消息的可靠发布。</p>
 <ul>
-<li>1  支持OLAP + OLTP 满足统计系统的大方向要求，可以实现联机事务处理和联机分析处理。</li>
-<li>2  高可用:<br><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-architecture.png" alt="TiDB架构"><br>tidb的分布式的架构，且根据PD 之间的调度和tikv之间raft算法，实现容灾。<br>具体文章：<a href="https://pingcap.com/tidb/blog-tidb-internal-3-zh" target="_blank" rel="noopener">技术内幕 - 谈调度</a>  <a href="https://pingcap.com/tikv/blog-tidb-internal-1-zh" target="_blank" rel="noopener">技术内幕 - 说存储</a>    </li>
-<li>3  对Mysql的兼容：基本语法跟mysql无差别，几乎无缝衔接，学习成本可以大大减少。</li>
-<li>4  支持水平扩容缩容：tidb支持自动扩容缩容，这个自动到底有多重要，用过mycat的就知道了。业务层不需要再去关心数据库的容量，不用去考虑分库分表，，扩容只需简单加机器就好，存储节点故障对业务透明，而且数据库本身具有自我修复的能力，保证数据不会丢失。</li>
-<li>5  TIDB完美兼容mysql的binlog</li>
-<li>6  目前已经可以集成spark，做复杂分析计算，后续还可以与Kubernetes整合，云服务也是大势的趋向。</li>
+<li>通过事务机制，这个上篇文章分析过，在这个模式下，rabbitmq的效率很低，不适合。</li>
+<li>Confirm模式，这个模式下会有三种方式，分别是：<ul>
+<li>普通confirm模式：每发送一条消息后，调用waitForConfirms()方法，等待服务器端confirm。实际上是一种串行confirm了。</li>
+<li>批量confirm模式：每发送一批消息后，调用waitForConfirms()方法，等待服务器端confirm</li>
+<li>异步confirm模式：提供一个回调方法，服务端confirm了一条或者多条消息后Client端会回调这个方法。（<code>rabbitTemplate</code>设置回调就是这个模式）</li>
+</ul>
+</li>
 </ul>
 <blockquote>
-<p>一些不足：</p>
+<p>所以我们知道了<code>rabbitTemplate</code>提供的确认机制是一种异步机制，并不能同步的发现问题，也就是说在极端的网络条件下是会出现消息丢失的。</p>
 </blockquote>
-<ul>
-<li>1 目前刚刚GA，文档除了官方的之外毕竟匮乏，容易踩坑，不过github社区活跃，可以去提issues。</li>
-<li>2 对于服务器要求相对较高，磁盘需要SSD才能保证性能的卓越。</li>
-</ul>
-<p>官网文档中mysql 和 tidb 的对比图。<br><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/tidb-mysql.jpg" alt="tidb-mysql"></p>
-<h3 id="集群部署-—-ansible方式部署"><a href="#集群部署-—-ansible方式部署" class="headerlink" title="集群部署 — ansible方式部署"></a>集群部署 — ansible方式部署</h3><p>具体可以看<a href="https://pingcap.com/docs-cn/op-guide/ansible-deployment/" target="_blank" rel="noopener">官方部署文档</a><br>按照流程便可以完成, 文档中有服务器要求， 需要注意的是 保证机器<code>entos7.3</code>以上， 且<code>文件系统推荐 ext4</code>，且服务器之间要配置<code>ssh免密登录</code>。当前是部署的最新版本是ga版本的1.0.1，ansile支持滚动升级，详见官方文档。</p>
-<p>如果在执行 <code>ansible-playbook bootstrap.yml</code> 命令的时候出现校准机器配置之类的error，<br>例如磁盘告警 <code>dd: the write speed of tikv deploy_dir disk is too slow: MB/s &lt; 15 MB/s</code><br>可以修改 <code>inventory.ini</code> 中的参数为<code>false</code>。<br><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/inventory.png" alt="inventory.ini"></p>
-<p>如果需要配置数据data目录，可以在如下文件中配置<br><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/data.png" alt="data目录"></p>
-<h3 id="TiDB-测评"><a href="#TiDB-测评" class="headerlink" title="TiDB 测评"></a>TiDB 测评</h3><blockquote>
-<p>TIDB 集群情况：<br>TIDB+PD    同一台服务器  4核16G  disk:SSD<br>TIKV*3     3台           4核16G  disk:SSD </p>
-</blockquote>
-<p>在亿级别数据量的单表（100多G）下一些简单测评：<br>group by + 简单聚合查询：<br>          <img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/billion-test.png" alt="简单聚合查询"><br>添加字段：<br>          <img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/add-field.png" alt="添加字段"><br>删除字段：<br>          <img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/delete-field.png" alt="删除字段"><br>删除索引：<br>          <img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/delete-index.png" alt="删除索引"></p>
-<p>添加索引: 比较慢，亿级别单边需要大概1.5小时左右。</p>
-<p>注意：TiDB 为了保证DDL能实现Online<br>DDL（在执行的时候不会锁表，仍能执行DML），DDL的任务为串行，当时遇到的一个问题:<a href="https://github.com/pingcap/tidb/issues/4986" target="_blank" rel="noopener">github-issues</a> 一些问题可以直接去提issues。</p>
-<p>性能监控tidb提供了garafan， 路径为Your_IP:3000   帐号 admin  密码 admin。<br>         <img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/storage.png" alt="storage"><br>CPU的监控：<br>         <img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/cpu.png" alt="CPU"><br>磁盘的一些参数：经测试tidb性能跟磁盘读写能力关系很大，一开始比较差的服务器中，磁盘IO成为主要瓶颈。<br>         <img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/disk.png" alt="disk"></p>
-<p>使用sysbeanch压测的结果:  prepare 1000W的数据量进行测试。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time sysbench oltp.lua --db-driver=mysql --oltp-table-size=10000000 --mysql-host=127.0.0.1 --mysql-port=4000 --mysql-user=root --mysql-password=58945894 --mysql-db=test prepare</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/prepare.png" alt="prepare"></p>
-<p>查看数据库<br><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/db-data.png" alt="查看数据库"></p>
-<p>测试select性能：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time sysbench select.lua --db-driver=mysql --oltp-table-size=10000000 --mysql-host=127.0.0.1 --mysql-port=4000 --mysql-user=root --mysql-password=58945894 --mysql-db=test --events=10000000 --report-interval=5 --threads=16 --time=60 run</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/select.png" alt="select"></p>
+<p>所以<a href="https://github.com/7le/shine-mq" target="_blank" rel="noopener">shine-mq</a>通过增加一个<code>Coordinator</code>（协调者）来实现。<code>Coordinator</code>会保存2个状态，一个是prepare（<strong>携带回查id</strong>），这个状态在前文说过是用来保证上游服务的任务状态的。</p>
+<p>而另一个状态ready，就是来保证消息的可靠投递。</p>
+<p>首先<a href="https://github.com/7le/shine-mq" target="_blank" rel="noopener">shine-mq</a>是使用<code>@DistributedTrans</code>来开启。在这个注解的切面里，先持久化ready状态。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@Around(value = &quot;@annotation(trans)&quot;)</span><br><span class="line">public void around(ProceedingJoinPoint pjp, DistributedTrans trans) throws Throwable &#123;</span><br><span class="line">    ...</span><br><span class="line">    try &#123;</span><br><span class="line">        EventMessage message = new EventMessage(exchange, routeKey, SendTypeEnum.DISTRIBUTED.toString(), checkBackId,</span><br><span class="line">                coordinatorName, msgId);</span><br><span class="line">        //将消息持久化</span><br><span class="line">        coordinator.setReady(msgId, checkBackId.toString(), message);</span><br><span class="line">        rabbitmqFactory.setCorrelationData(msgId, coordinatorName, message, null);</span><br><span class="line">        rabbitmqFactory.addDLX(exchange, exchange, routeKey, null, null);</span><br><span class="line">        if (flag) &#123;</span><br><span class="line">            rabbitmqFactory.add(MqConstant.DEAD_LETTER_QUEUE, MqConstant.DEAD_LETTER_EXCHANGE,</span><br><span class="line">                    MqConstant.DEAD_LETTER_ROUTEKEY, null, null);</span><br><span class="line">            flag = false;</span><br><span class="line">        &#125;</span><br><span class="line">        rabbitmqFactory.getTemplate().send(message, 0, 0, SendTypeEnum.DISTRIBUTED);</span><br><span class="line">    &#125; catch (Exception e) &#123;</span><br><span class="line">        log.error(&quot;Message failed to be sent : &quot;, e);</span><br><span class="line">        throw e;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后在回调中删除该状态：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">//消息发送到RabbitMQ交换器后接收ack回调</span><br><span class="line">rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -&gt; &#123;</span><br><span class="line">    if (correlationData != null) &#123;</span><br><span class="line">        log.info(&quot;ConfirmCallback ack: &#123;&#125; correlationData: &#123;&#125; cause: &#123;&#125;&quot;, ack, correlationData, cause);</span><br><span class="line">        String msgId = correlationData.getId();</span><br><span class="line">        CorrelationDataExt ext = (CorrelationDataExt) correlationData;</span><br><span class="line">        Coordinator coordinator = (Coordinator) applicationContext.getBean(ext.getCoordinator());</span><br><span class="line">        //可以自定义实现的回调</span><br><span class="line">        coordinator.confirmCallback(correlationData, ack);</span><br><span class="line">        //消息能投入正确的消息队列，并持久化，返回的ack为true</span><br><span class="line">        if (ack) &#123;</span><br><span class="line">            log.info(&quot;The message has been successfully delivered to the queue, correlationData:&#123;&#125;&quot;, correlationData);</span><br><span class="line">            //删除ready状态</span><br><span class="line">            coordinator.delStatus(msgId);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>因为存储ready是在上游服务任务执行之后的，所以只要有超时的ready记录未被清理掉，<code>daemon（守护线程）</code>只管捞起来进行重发就行，因为Mq的可靠性投递就已经要求下游服务是需要保证幂等性了。</p>
+<p>最后还有个极端的情况，就是ready消息存储的时候因为网络抖动该消息丢失了，这时候也没有关系，因为有prepare状态会进行回查，该状态只有在ready存储后才会触发删除。</p>
+<p>如果对你有帮助，那就帮忙点个星星把 ^.^</p>
 <blockquote>
-<p>16线程，select QPS 1.7万  </p>
+<p>github地址：<strong><a href="https://github.com/7le/shine-mq" target="_blank" rel="noopener">https://github.com/7le/shine-mq</a></strong></p>
 </blockquote>
-<p>测试insert性能：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time sysbench insert.lua --db-driver=mysql --oltp-table-size=10000000 --mysql-host=127.0.0.1 --mysql-port=4000 --mysql-user=root --mysql-password=58945894 --mysql-db=test --events=10000000 --report-interval=5 --threads=16 --time=60 run</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/insert.png" alt="insert"></p>
-<blockquote>
-<p>16线程，insert QPS 0.5万    </p>
-</blockquote>
-<p>测试update性能:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time sysbench  update_index.lua --db-driver=mysql --oltp-table-size=10000000 --mysql-host=127.0.0.1 --mysql-port=4000 --mysql-user=root --mysql-password=58945894 --mysql-db=test--events=10000000 --report-interval=5 --threads=16 --time=60 run</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/update.png" alt="update"></p>
-<blockquote>
-<p>16线程，update QPS 0.4万   </p>
-</blockquote>
-<p>测试混合性能:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">time sysbench oltp.lua --db-driver=mysql --oltp-table-size=10000000  --mysql-host=127.0.0.1 --mysql-port=4000 --mysql-user=root --mysql-password=58945894  --mysql-db=test --events=10000000 --report-interval=5 --threads=16 --time=60 run</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://github.com/7le/7le.github.io/raw/master/image/tidb/mixed.png" alt="混合读写"></p>
-<blockquote>
-<p>16线程，混合读写 QPS 0.8万</p>
-</blockquote>
-<p>其他人不同的配置下的<a href="https://zhuanlan.zhihu.com/p/30572262" target="_blank" rel="noopener">测评</a></p>
-<p>最后选择的方案是TiDB，关于TiDB后续还有什么值得分享还会继续更新。</p>
 <hr>
 <p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
 
@@ -485,7 +433,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/tidb/" rel="tag"># tidb</a>
+            <a href="/tags/mq/" rel="tag"># mq</a>
           
         </div>
       
@@ -498,8 +446,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/09/玩耍Devops Git+Gogs+Jenkins+Docker/" rel="next" title="玩耍Devops Git+Gogs+Jenkins+Docker">
-                <i class="fa fa-chevron-left"></i> 玩耍Devops Git+Gogs+Jenkins+Docker
+              <a href="/2018/12/04/分布式事务：基于可靠消息服务/" rel="next" title="分布式事务：基于可靠消息服务">
+                <i class="fa fa-chevron-left"></i> 分布式事务：基于可靠消息服务
               </a>
             
           </div>
@@ -507,10 +455,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/12/17/发布jar包到Maven中央库--小记/" rel="prev" title="发布jar包到Maven中央库--小记">
-                发布jar包到Maven中央库--小记 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -559,17 +503,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image" src="/image/ly.jpg" alt="7le">
           <p class="site-author-name" itemprop="name">7le</p>
@@ -645,22 +580,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案对比"><span class="nav-number">1.</span> <span class="nav-text">方案对比</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MaxCompute（原opds）"><span class="nav-number">1.1.</span> <span class="nav-text">MaxCompute（原opds）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ADS-（分析型数据库）"><span class="nav-number">1.2.</span> <span class="nav-text">ADS  （分析型数据库）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TIDB-（NewSql-分布式数据库）："><span class="nav-number">1.3.</span> <span class="nav-text">TIDB （NewSql 分布式数据库）：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#集群部署-—-ansible方式部署"><span class="nav-number">2.</span> <span class="nav-text">集群部署 — ansible方式部署</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TiDB-测评"><span class="nav-number">3.</span> <span class="nav-text">TiDB 测评</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
