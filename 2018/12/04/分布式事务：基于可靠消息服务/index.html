@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other1.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other2.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other3.jpg">
-<meta property="og:updated_time" content="2019-02-22T02:38:01.174Z">
+<meta property="og:updated_time" content="2019-02-22T16:36:42.548Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式事务：基于可靠消息服务">
 <meta name="twitter:description" content="微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。">
@@ -434,7 +434,7 @@
 <li>处理中 继续等待，重置时间。</li>
 </ul>
 <p>而超时的ready的消息，就直接捞起发送到消息中间件，因为只要是ready消息持久化到协调者，那就说明服务A的任务已经完成。</p>
-<p>这样就能保证上游服务和消息中间件的原子性了（具体可以看<a href="https://7le.top/2019/02/21/Rabbitmq%EF%BC%9A%E6%B6%88%E6%81%AF%E5%8F%AF%E9%9D%A0%E5%8F%91%E9%80%81/#more" target="_blank" rel="noopener">Rabbitmq：消息可靠发送</a>），再通过消息中间件可靠的投递结合下游服务，就完成了分布式事务。</p>
+<p>这样就能保证上游服务和消息中间件的原子性了（具体可以看<a href="https://7le.top/2019/02/21/分布式事务：消息可靠发送/#more" target="_blank" rel="noopener">分布式事务：消息可靠发送</a>），再通过消息中间件可靠的投递结合下游服务，就完成了分布式事务。</p>
 <p>如果对你有帮助，那就帮忙点个星星把 ^.^</p>
 <blockquote>
 <p>github地址：<strong><a href="https://github.com/7le/shine-mq" target="_blank" rel="noopener">https://github.com/7le/shine-mq</a></strong></p>
@@ -493,8 +493,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/02/21/Rabbitmq：消息可靠发送/" rel="prev" title="Rabbitmq：消息可靠发送">
-                Rabbitmq：消息可靠发送 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/02/21/分布式事务：消息可靠发送/" rel="prev" title="分布式事务：消息可靠发送">
+                分布式事务：消息可靠发送 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -580,7 +580,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-count">16</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
