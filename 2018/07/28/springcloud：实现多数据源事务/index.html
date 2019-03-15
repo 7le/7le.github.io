@@ -98,11 +98,11 @@
 <meta name="keywords" content="springcloud,分布式事务">
 <meta property="og:type" content="article">
 <meta property="og:title" content="springcloud：实现多数据源事务">
-<meta property="og:url" content="http://yoursite.com/2018/07/28/springcloud：实现多数据源事务/index.html">
+<meta property="og:url" content="https://7le.top/2018/07/28/springcloud：实现多数据源事务/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-13T08:42:06.043Z">
+<meta property="og:updated_time" content="2019-03-15T13:01:35.605Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springcloud：实现多数据源事务">
 <meta name="twitter:description" content="最近在重构项目中，需要兼容多数据源，故此实现下多数据源事务。">
@@ -133,7 +133,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/07/28/springcloud：实现多数据源事务/">
+  <link rel="canonical" href="https://7le.top/2018/07/28/springcloud：实现多数据源事务/">
 
 
 
@@ -245,6 +245,26 @@
           </a>
         </li>
       
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-search">
+          <a href="/search" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-search"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
 
       
     </ul>
@@ -274,7 +294,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/07/28/springcloud：实现多数据源事务/">
+    <link itemprop="mainEntityOfPage" href="https://7le.top/2018/07/28/springcloud：实现多数据源事务/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -394,10 +414,10 @@
 <p>这个实现很类似于<strong>2PC</strong>，都会有在一个参与者执行任务提交后，另一个参与者出现异常而导致数据不一致的问题。</p>
 <p>其实一般情况下，系统的需求只是要达到<strong>最终一致性</strong>，那就可以考虑使用<strong>TCC</strong>，对每个事物进行Try，如果执行没有问题，再执行Confirm，如果执行过程中出了问题，则执行操作的逆操Cancel（自动化补偿手段）。</p>
 <p>但是<strong>TCC</strong>对每个事务都需要Try，再执行Confirm，略微显得臃肿，根据不同的业务场景可以有更好的方案（比如补偿模式，定期校对模式之类），具体的可以看<a href="https://www.jianshu.com/p/1156151e20c8" target="_blank" rel="noopener">分布式服务化系统一致性的“最佳实干”</a></p>
-<h3 id="分布式事务实现"><a href="#分布式事务实现" class="headerlink" title="分布式事务实现"></a>分布式事务实现</h3><p>抽了点时间，自己实现了一个分布式事务的中间件，在一些对数据一致性要求高的场景可以使用。<a href="https://github.com/7le/shine-mq" target="_blank" rel="noopener">shine-mq</a><br>相应的设计思路在 <a href="https://7le.top/2018/12/04/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%EF%BC%9A%E5%9F%BA%E4%BA%8E%E5%8F%AF%E9%9D%A0%E6%B6%88%E6%81%AF%E6%9C%8D%E5%8A%A1/#more" target="_blank" rel="noopener">分布式事务：基于可靠消息服务</a></p>
+<h3 id="分布式事务实现"><a href="#分布式事务实现" class="headerlink" title="分布式事务实现"></a>分布式事务实现</h3><p>抽了点时间，自己实现了一个分布式事务的中间件，在一些对数据一致性要求高的场景可以使用。<a href="https://github.com/7le/shine-mq" target="_blank" rel="noopener">shine-mq</a><br>相应的设计思路在 <a href="https://7le.top/2018/12/04/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%EF%BC%9A%E5%9F%BA%E4%BA%8E%E5%8F%AF%E9%9D%A0%E6%B6%88%E6%81%AF%E6%9C%8D%E5%8A%A1/#more">分布式事务：基于可靠消息服务</a></p>
 <h3 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h3><p>李艳鹏. 著. 分布式服务架构：原理、设计与实战[M].</p>
 <hr>
-<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top">更多精彩 戳我</a></p>
 
       
     </div>

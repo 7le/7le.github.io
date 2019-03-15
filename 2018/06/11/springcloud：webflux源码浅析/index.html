@@ -98,13 +98,13 @@
 <meta name="keywords" content="springcloud">
 <meta property="og:type" content="article">
 <meta property="og:title" content="springcloud：webflux源码浅析">
-<meta property="og:url" content="http://yoursite.com/2018/06/11/springcloud：webflux源码浅析/index.html">
+<meta property="og:url" content="https://7le.top/2018/06/11/springcloud：webflux源码浅析/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="spring-webflux采用了事件驱动异步非阻塞模式，借助EventLoop以少量线程应对高并发的访问，这样的改变使spring也变得像vert.x一样有趣~">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/springcloud/event-loop.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/springcloud/thread-process.png">
-<meta property="og:updated_time" content="2019-03-13T08:42:06.043Z">
+<meta property="og:updated_time" content="2019-03-15T13:01:35.605Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springcloud：webflux源码浅析">
 <meta name="twitter:description" content="spring-webflux采用了事件驱动异步非阻塞模式，借助EventLoop以少量线程应对高并发的访问，这样的改变使spring也变得像vert.x一样有趣~">
@@ -136,7 +136,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/06/11/springcloud：webflux源码浅析/">
+  <link rel="canonical" href="https://7le.top/2018/06/11/springcloud：webflux源码浅析/">
 
 
 
@@ -248,6 +248,26 @@
           </a>
         </li>
       
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-search">
+          <a href="/search" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-search"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
 
       
     </ul>
@@ -277,7 +297,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/11/springcloud：webflux源码浅析/">
+    <link itemprop="mainEntityOfPage" href="https://7le.top/2018/06/11/springcloud：webflux源码浅析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -405,7 +425,7 @@
 <p>这里就很有意思了，spring的设计是不管这2个线程的时序，而是通过<strong>synchronized</strong>的互斥，来保证同一时刻内只有一个线程能获得<code>DeferredResult</code>这个锁的对象。</p>
 <p>若是先执行<strong>setResultHandler</strong>，会判断被<strong>volatile</strong>修饰的<strong>result</strong>，若没有被重新赋值，那就说明还未执行<strong>setResultInternal</strong>，那就设置<strong>handler</strong>等待<strong>setResultInternal</strong>运行来处理。相对的，如果先执行了<strong>setResultInternal</strong>，会将<strong>result</strong>赋值，有<strong>handler</strong>就让<strong>elastic</strong>执行回调，如果没有则让<strong>NIO</strong>线程自己执行回调。</p>
 <hr>
-<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top">更多精彩 戳我</a></p>
 
       
     </div>

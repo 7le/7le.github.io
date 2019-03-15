@@ -98,7 +98,7 @@
 <meta name="keywords" content="分布式事务，mq">
 <meta property="og:type" content="article">
 <meta property="og:title" content="分布式事务：基于可靠消息服务">
-<meta property="og:url" content="http://yoursite.com/2018/12/04/分布式事务：基于可靠消息服务/index.html">
+<meta property="og:url" content="https://7le.top/2018/12/04/分布式事务：基于可靠消息服务/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。">
 <meta property="og:locale" content="zh-Hans">
@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other1.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other2.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other3.jpg">
-<meta property="og:updated_time" content="2019-03-13T08:42:06.043Z">
+<meta property="og:updated_time" content="2019-03-15T13:01:35.605Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式事务：基于可靠消息服务">
 <meta name="twitter:description" content="微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。">
@@ -138,7 +138,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/12/04/分布式事务：基于可靠消息服务/">
+  <link rel="canonical" href="https://7le.top/2018/12/04/分布式事务：基于可靠消息服务/">
 
 
 
@@ -250,6 +250,26 @@
           </a>
         </li>
       
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-search">
+          <a href="/search" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-search"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
 
       
     </ul>
@@ -279,7 +299,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/04/分布式事务：基于可靠消息服务/">
+    <link itemprop="mainEntityOfPage" href="https://7le.top/2018/12/04/分布式事务：基于可靠消息服务/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -376,7 +396,7 @@
 <p>微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。</p>
 </blockquote>
 <a id="more"></a>
-<p>众所周知，数据库能实现本地事务，也就是说在同一个数据库中，可以保证事务的原子性，就是全部成功或者失败，上篇文章也写过简单的<a href="https://7le.top/2018/07/28/springcloud%EF%BC%9A%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90%E4%BA%8B%E5%8A%A1/#more" target="_blank" rel="noopener">多数据源事务的解决方案</a>（类似2PC）</p>
+<p>众所周知，数据库能实现本地事务，也就是说在同一个数据库中，可以保证事务的原子性，就是全部成功或者失败，上篇文章也写过简单的<a href="https://7le.top/2018/07/28/springcloud%EF%BC%9A%E5%AE%9E%E7%8E%B0%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90%E4%BA%8B%E5%8A%A1/#more">多数据源事务的解决方案</a>（类似2PC）</p>
 <p>但现在的系统往往采用微服务架构，业务系统拥有独立的数据库，因此就出现了跨多个数据库的事务需求，这种事务即为“分布式事务”。</p>
 <p>针对这样的问题一般常用的方案有：</p>
 <ul>
@@ -434,13 +454,13 @@
 <li>处理中 继续等待，重置时间。</li>
 </ul>
 <p>而超时的ready的消息，就直接捞起发送到消息中间件，因为只要是ready消息持久化到协调者，那就说明服务A的任务已经完成。</p>
-<p>这样就能保证上游服务和消息中间件的原子性了（具体可以看<a href="https://7le.top/2019/02/21/分布式事务：消息可靠发送/#more" target="_blank" rel="noopener">分布式事务：消息可靠发送</a>），再通过消息中间件可靠的投递结合下游服务，就完成了分布式事务。</p>
+<p>这样就能保证上游服务和消息中间件的原子性了（具体可以看<a href="https://7le.top/2019/02/21/分布式事务：消息可靠发送/#more">分布式事务：消息可靠发送</a>），再通过消息中间件可靠的投递结合下游服务，就完成了分布式事务。</p>
 <p>如果对你有帮助，那就帮忙点个星星把 ^.^</p>
 <blockquote>
 <p>github地址：<strong><a href="https://github.com/7le/shine-mq" target="_blank" rel="noopener">https://github.com/7le/shine-mq</a></strong></p>
 </blockquote>
 <hr>
-<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top">更多精彩 戳我</a></p>
 
       
     </div>

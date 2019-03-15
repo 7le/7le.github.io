@@ -98,14 +98,14 @@
 <meta name="keywords" content="springboot">
 <meta property="og:type" content="article">
 <meta property="og:title" content="springboot项目笔记：(五) 部署和远程调试">
-<meta property="og:url" content="http://yoursite.com/2017/06/19/springboot项目笔记：(五) 部署和远程调试/index.html">
+<meta property="og:url" content="https://7le.top/2017/06/19/springboot项目笔记：(五) 部署和远程调试/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-5-1.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-5-2.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-5-4.png">
-<meta property="og:updated_time" content="2019-03-13T08:42:06.043Z">
+<meta property="og:updated_time" content="2019-03-15T13:01:35.605Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springboot项目笔记：(五) 部署和远程调试">
 <meta name="twitter:description" content="springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。">
@@ -137,7 +137,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/06/19/springboot项目笔记：(五) 部署和远程调试/">
+  <link rel="canonical" href="https://7le.top/2017/06/19/springboot项目笔记：(五) 部署和远程调试/">
 
 
 
@@ -249,6 +249,26 @@
           </a>
         </li>
       
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-search">
+          <a href="/search" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-search"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
 
       
     </ul>
@@ -278,7 +298,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/06/19/springboot项目笔记：(五) 部署和远程调试/">
+    <link itemprop="mainEntityOfPage" href="https://7le.top/2017/06/19/springboot项目笔记：(五) 部署和远程调试/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -386,7 +406,7 @@
 <p>补充一下，如果是用tomcat来部署的话，修改如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// bin\startup.bat（.sh）文件，在里面添加</span><br><span class="line"> </span><br><span class="line">// windows</span><br><span class="line">set CATALINA_OPTS=&quot;-agentlib:jdwp=transport=dt_socket,address=8888（自定义调试端口）,server=y,suspend=n %CATALINA_OPTS%&quot;</span><br><span class="line"> </span><br><span class="line">// linux</span><br><span class="line">export CATALINA_OPTS=&quot;-agentlib:jdwp=transport=dt_socket,address=8888（自定义调试端口）,server=y,suspend=n $CATALINA_OPTS&quot;</span><br></pre></td></tr></table></figure></p>
 <p>这里还有个注意的点，就是别加在最末尾，嵌套在指令里面，不然会失效。</p>
 <hr>
-<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top">更多精彩 戳我</a></p>
 
       
     </div>

@@ -98,7 +98,7 @@
 <meta name="keywords" content="jvm">
 <meta property="og:type" content="article">
 <meta property="og:title" content="深入理解Java虚拟机--读书笔记">
-<meta property="og:url" content="http://yoursite.com/2018/01/29/深入理解Java虚拟机--读书笔记/index.html">
+<meta property="og:url" content="https://7le.top/2018/01/29/深入理解Java虚拟机--读书笔记/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
 <meta property="og:locale" content="zh-Hans">
@@ -113,7 +113,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/cms.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/垃圾收集相关的常用参数.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/space-allocation-guarantee.png">
-<meta property="og:updated_time" content="2019-03-13T08:42:06.043Z">
+<meta property="og:updated_time" content="2019-03-15T13:01:35.605Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解Java虚拟机--读书笔记">
 <meta name="twitter:description" content="最近认识到自己的薄弱点，需要狠狠补一下！">
@@ -145,7 +145,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/29/深入理解Java虚拟机--读书笔记/">
+  <link rel="canonical" href="https://7le.top/2018/01/29/深入理解Java虚拟机--读书笔记/">
 
 
 
@@ -257,6 +257,26 @@
           </a>
         </li>
       
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br>
+            
+            站点地图
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-search">
+          <a href="/search" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-search"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
 
       
     </ul>
@@ -286,7 +306,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/29/深入理解Java虚拟机--读书笔记/">
+    <link itemprop="mainEntityOfPage" href="https://7le.top/2018/01/29/深入理解Java虚拟机--读书笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -583,7 +603,7 @@
 <p>图中提到了是否允许担保失败，当新生代使用复制收集算法，但是为了内存利用率，只使用其中一个<code>Survivor</code>空间来作为轮换备份，因此当出现大量对象在<code>Minor GC</code>后依然存活（最极端就是内存回收后新生代中所有对象都存活），就需要老年代进行分配担保，把<code>Survivor</code>无法容纳的对象直接进入老年代。但是多少会晋升到老年代在实际内存回收前是无法明确知道的，所以只好取之前每一次回收晋升到老年代对象容量的平均值作为经验值，与老年代剩余空间比较，决定是否进行<code>Full GC</code>来让老年代腾出更多空间。</p>
 <p>取平均值任然是一种动态概率的手段，依然会出现担保失败，那时绕的圈子是最大的，但大部分情况下还是会将<code>HandlePromotionFailure</code>打开，避免<code>Full GC</code>过于频繁。</p>
 <hr>
-<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top" target="_blank" rel="noopener">更多精彩 戳我</a></p>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top">更多精彩 戳我</a></p>
 
       
     </div>
