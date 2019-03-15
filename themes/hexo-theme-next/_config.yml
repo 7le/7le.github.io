@@ -42,8 +42,8 @@ menu:
   #about: /about
   archives: /archives
   tags: /tags
-  sitemap: /sitemap.xml
-  search: /search
+  #sitemap: /sitemap.xml
+  #search: /search
   #commonweal: /404.html
 
 
