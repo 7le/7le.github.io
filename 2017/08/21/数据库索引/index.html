@@ -106,7 +106,7 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/db/db2.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/db/b+tree.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/db/b-tree.png">
-<meta property="og:updated_time" content="2019-04-09T13:48:11.663Z">
+<meta property="og:updated_time" content="2019-04-16T14:56:36.418Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库索引整理">
 <meta name="twitter:description" content="整理一下近段时间学习的数据库知识点~">
@@ -383,20 +383,20 @@
 <h4 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h4><p>InnoDB是我们最常用的存储引擎，他的优点提供了提供了事务处理、回滚、崩溃修复能力和多版本并发控制的事务安全，以及支持外键和自增列。显而易见，保证了以上的功能的同时，它的缺点就是读写效率较差，占用的数据空间相对较大。后续讲的索引，都是基于InnoDB引擎的。</p>
 <h4 id="Memory"><a href="#Memory" class="headerlink" title="Memory"></a>Memory</h4><p>MEMORY是MySQL中一类特殊的存储引擎。它使用存储在内存中的内容来创建表，而且数据全部放在内存中。有点类似Mc,之所以说像Mc而不是redis呢。因为它不能做到持久化，重启或关闭服务器的时候，会失去数据。Memory默认使用hash索引，后面会整理hash索引和btree索引的区别。</p>
 <h4 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h4><p>MyISAM是MySQL是MySQL比较早版本的默认存储引擎。MyISAM是MySQL中常见的存储引擎，曾经是MySQL的默认存储引擎。<br>需要注意的一点是MyISAM的B+Tree的叶子节点上的data，并不是数据本身，而是数据存放的地址。</p>
-<h3 id="聚集索引"><a href="#聚集索引" class="headerlink" title="聚集索引"></a>聚集索引</h3><blockquote>
+<h3 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h3><blockquote>
 <p>注意：下面讨论的都为innodb引擎。</p>
 </blockquote>
 <p>比较规范的数据库表设计都会有一条不成文的规定，那就是给每张表一个自增主键。我们就算不按着规范，也会习惯性的加上主键。这是为什么呢?</p>
-<p>这里我们需要知道一个概念，那就是聚集索引。聚集索引并不是一种单独的索引类型，而是一种数据存储方式（不是数据结构，而是存储结构）。其实当没有聚集索引的时候，表的数据很像我们所认知的表，一行一行的排列的很整齐。但是，当表有了聚集索引，表并不能被称之为”表”了。那么表在磁盘上的存储结构就由整齐排列的结构转变成了树状结构，也就是btree结构，换句话说，就是整个表就变成了一个索引。</p>
+<p>这里我们需要知道一个概念，那就是聚簇索引。聚簇索引并不是一种单独的索引类型，而是一种数据存储方式（不是数据结构，而是存储结构）。其实当没有聚簇索引的时候，表的数据很像我们所认知的表，一行一行的排列的很整齐。但是，当表有了聚簇索引，表并不能被称之为”表”了。那么表在磁盘上的存储结构就由整齐排列的结构转变成了树状结构，也就是btree结构，换句话说，就是整个表就变成了一个索引。</p>
 <p><img src="https://github.com/7le/7le.github.io/raw/master/image/db/db1.png" alt="数据库表的存储结构"></p>
-<p>这也是为什么我们会需要给每张表设计一个主键。这里很容易会造成一个错误的观点，那就是主键=聚集索引。这是错误的！<br>对于Innodb，主键毫无疑问是一个聚集索引。但是当一个表没有主键，或者没有一个索引的时候呢？</p>
+<p>这也是为什么我们会需要给每张表设计一个主键。这里很容易会造成一个错误的观点，那就是主键=聚簇索引。这是错误的！<br>对于Innodb，主键毫无疑问是一个聚簇索引。但是当一个表没有主键，或者没有一个索引的时候呢？</p>
 <ul>
-<li>1 如果一个主键被定义了，那么这个主键就是作为聚集索引</li>
-<li>2 如果没有主键被定义，那么该表的第一个唯一非空索引被作为聚集索引</li>
-<li>3 如果没有主键也没有合适的唯一索引，那么innodb内部会生成一个隐藏的主键作为聚集索引，这个隐藏的主键是一个6个字节的列，改列的值会随着数据的插入自增。</li>
+<li>1 如果一个主键被定义了，那么这个主键就是作为聚簇索引</li>
+<li>2 如果没有主键被定义，那么该表的第一个唯一非空索引被作为聚簇索引</li>
+<li>3 如果没有主键也没有合适的唯一索引，那么innodb内部会生成一个隐藏的主键作为聚簇索引，这个隐藏的主键是一个6个字节的列，改列的值会随着数据的插入自增。</li>
 </ul>
-<p>另外我们会将主键设为<strong>自增</strong>，考究起来也是很有学问的。Innodb中的每张表都会有一个聚集索引，而聚集索引又是以物理磁盘顺序来存储的，<strong>自增</strong>主键会把数据自动向后插入，避免了插入过程中的聚集索引排序问题。因为聚集索引的排序，必然会带来大范围的数据的物理移动，这里面带来的磁盘IO性能损耗是非常大的。 </p>
-<p>所以有时候我们采用UUID作为聚集索引是很不可取的。因为它使得聚集索引的插入变得完全随机，使得数据没有任何聚集特性。当UUID作为主键插入行不仅花费的时间更长，而且索引也更大，这一方面是因为主键字段变长了，另外一方面是由于页分裂导致时间变长和碎片导致的索引变大。因为主键的值是顺序的，所以Innodb把每一条记录都存储在上一条记录的后面，当达到页的最大填充因子时（innodb默认的最大填充因子是页大小的十六分之十五，留出部分空间用于以后修改），下一条记录就会写入新的页中，一旦数据按照这种顺序的方式加载，主键页就会近似被顺序的记录填满，这也正是所期望的结果。</p>
+<p>另外我们会将主键设为<strong>自增</strong>，考究起来也是很有学问的。Innodb中的每张表都会有一个聚簇索引，而聚簇索引又是以物理磁盘顺序来存储的，<strong>自增</strong>主键会把数据自动向后插入，避免了插入过程中的聚簇索引排序问题。因为聚簇索引的排序，必然会带来大范围的数据的物理移动，这里面带来的磁盘IO性能损耗是非常大的。 </p>
+<p>所以有时候我们采用UUID作为聚簇索引是很不可取的。因为它使得聚簇索引的插入变得完全随机，使得数据没有任何聚簇特性。当UUID作为主键插入行不仅花费的时间更长，而且索引也更大，这一方面是因为主键字段变长了，另外一方面是由于页分裂导致时间变长和碎片导致的索引变大。因为主键的值是顺序的，所以Innodb把每一条记录都存储在上一条记录的后面，当达到页的最大填充因子时（innodb默认的最大填充因子是页大小的十六分之十五，留出部分空间用于以后修改），下一条记录就会写入新的页中，一旦数据按照这种顺序的方式加载，主键页就会近似被顺序的记录填满，这也正是所期望的结果。</p>
 <p>上面提到的碎片，做一下解释。每当MySQL从列表中删除了一行内容，该段空间就会被留空，就会行成碎片。而在一段时间内的大量删除操作，会使这种留空的空间变得比存储列表内容所使用的空间更大。当MySQL对数据进行扫描时，它扫描的对象实际是列表的容量需求上限，也就是数据被写入的区域中处于峰值位置的部分。如果进行新的插入操作，MySQL将尝试利用这些留空的区域，但仍然无法将其彻底占用，所以我们有时候需要对表进行”瘦身”。具体操作如下：</p>
 <blockquote>
 <p>1.先查看某个表所占空间，以及碎片大小。<br>    SELECT table_name,ENGINE,table_rows,data_length + index_length length,DATA_FREE<br>    FROM information_schema. TABLES WHERE TABLE_SCHEMA = ‘db_name’;<br>  2.如果有大量碎片，可以进行清理，清理的频率一般每周或者每月整理一次即可。<br>    OPTIMIZE table table_name;<br>    ALTER TABLE table_name ENGINE=’InnoDB’; //亲测两种方式都是可以的，版本试过5.6+的和5.7+的<br>  3.这里有个注意的点，我自己测试的时候，发现在InnoDB下碎片清理不干净。表的体积比较大的时候，DATA_FREE的值会在2M，4M，5M左右。我猜测可能是mysql为表的预留空间，或者是InnoDB下，设计表字段类型大小或者索引影响的。不过对于一些碎片体积大的，清理一下还是有很显著的效果。</p>
@@ -412,15 +412,15 @@
 <li><p>3 interleaved(innodb_autoinc_lock_mode=2) 模式：取消了auto_inc锁，所以这个模式下的性能是最好的；但是它也有一个问题，就是对于同一个语句来说它所得到的auto_incremant值可能不是连续的。</p>
 </li>
 </ul>
-<h3 id="非聚集索引"><a href="#非聚集索引" class="headerlink" title="非聚集索引"></a>非聚集索引</h3><p>拉回正题，讲完聚集索引，接下来就是非聚集索引，也就是我们平时使用的常规索引。</p>
-<p>非聚集索引和聚集索引一样，同样是采用btree作为索引的数据结构。索引树结构中各节点的值来自于表中的索引字段，假如给user表的name字段加上索引，那么索引就是由name字段中的值构成，如果给表中多个字段加上索引，那么就会出现多个独立的索引结构，每个索引互相之间不存在关联。 如下图：</p>
-<p><img src="https://github.com/7le/7le.github.io/raw/master/image/db/db2.png" alt="非聚集索引"></p>
+<h3 id="非聚簇索引"><a href="#非聚簇索引" class="headerlink" title="非聚簇索引"></a>非聚簇索引</h3><p>拉回正题，讲完聚簇索引，接下来就是非聚簇索引，也就是我们平时使用的常规索引。</p>
+<p>非聚簇索引和聚簇索引一样，同样是采用btree作为索引的数据结构。索引树结构中各节点的值来自于表中的索引字段，假如给user表的name字段加上索引，那么索引就是由name字段中的值构成，如果给表中多个字段加上索引，那么就会出现多个独立的索引结构，每个索引互相之间不存在关联。 如下图：</p>
+<p><img src="https://github.com/7le/7le.github.io/raw/master/image/db/db2.png" alt="非聚簇索引"></p>
 <p>这里先给大家安利一波chrome的插件Gliffy Diagrams，绘图相当好用，主要格调不错。^.^</p>
-<p>看图，可以发现每次给字段建一个新索引，字段中的数据就会被复制一份出来，用于生成索引。因此，给表添加索引的同时会增加表的体积，占用磁盘存储空间。非聚集索引和聚集索引的区别在于，通过聚集索引可以查到需要查找的数据，而通过非聚集索引可以查到记录对应的主键值，再使用主键的值通过聚集索引查找到需要的数据。所以当我们能利用聚焦索引的时候，就尽量使用聚焦索引。因为查询表的操作最终都会利用主键通过聚集索引来定位到数据，聚集索引中的数据指针是通往数据的<em>唯一</em>路径。</p>
+<p>看图，可以发现每次给字段建一个新索引，字段中的数据就会被复制一份出来，用于生成索引。因此，给表添加索引的同时会增加表的体积，占用磁盘存储空间。非聚簇索引和聚簇索引的区别在于，通过聚簇索引可以查到需要查找的数据，而通过非聚簇索引可以查到记录对应的主键值，再使用主键的值通过聚簇索引查找到需要的数据。所以当我们能利用聚焦索引的时候，就尽量使用聚焦索引。因为查询表的操作最终都会利用主键通过聚簇索引来定位到数据，聚簇索引中的数据指针是通往数据的<em>唯一</em>路径。</p>
 <p>一般用了唯一的时候一定要注意，因为一不小心就会啪啪啪的打脸。虽然正常的逻辑下，我们的查询拿到数据最终是要通过聚焦索引。但是也是有特例的，被称为覆盖索引，也就是平时所说的联合索引或复合索引。当我们为字段建立索引以后，字段中的内容会被同步到索引之中，那我们指定两个字段，这个两个字段的内容都会被同步到索引。</p>
 <p>百言不如一例:</p>
 <blockquote>
-<p>create index index_score_and_name on user_info(score, name);//建立索引 姓名，分数<br>  select name from student where score = 100;//查询分数为100分的学生名字<br>上面通过非聚集索引index_score_and_name查找分数为100的叶节点的内容，因为叶节点中保存了聚集索引的key值还有name的内容，所以不需要省去通过聚集索引去查找数据行的步骤，直接返回name，大大的提高了查询性能。</p>
+<p>create index index_score_and_name on user_info(score, name);//建立索引 姓名，分数<br>  select name from student where score = 100;//查询分数为100分的学生名字<br>上面通过非聚簇索引index_score_and_name查找分数为100的叶节点的内容，因为叶节点中保存了聚簇索引的key值还有name的内容，所以不需要省去通过聚簇索引去查找数据行的步骤，直接返回name，大大的提高了查询性能。</p>
 </blockquote>
 <h3 id="btree"><a href="#btree" class="headerlink" title="btree"></a>btree</h3><p>大家在建普通索引（非聚焦索引）的时候，在Innodb下往往会有两种索引方法，一种是btree，一种是hash。这里的btree是指b+tree。这里就会有个容易混淆的东西，那就是b+tree和b-tree。</p>
 <p>b+tree 如图：<br><img src="https://github.com/7le/7le.github.io/raw/master/image/db/b+tree.png" alt="b+tree"></p>
@@ -639,7 +639,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#存储引擎"><span class="nav-number">1.</span> <span class="nav-text">存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#InnoDB"><span class="nav-number">1.1.</span> <span class="nav-text">InnoDB</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Memory"><span class="nav-number">1.2.</span> <span class="nav-text">Memory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MyISAM"><span class="nav-number">1.3.</span> <span class="nav-text">MyISAM</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚集索引"><span class="nav-number">2.</span> <span class="nav-text">聚集索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非聚集索引"><span class="nav-number">3.</span> <span class="nav-text">非聚集索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#btree"><span class="nav-number">4.</span> <span class="nav-text">btree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hash"><span class="nav-number">5.</span> <span class="nav-text">hash</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#存储引擎"><span class="nav-number">1.</span> <span class="nav-text">存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#InnoDB"><span class="nav-number">1.1.</span> <span class="nav-text">InnoDB</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Memory"><span class="nav-number">1.2.</span> <span class="nav-text">Memory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MyISAM"><span class="nav-number">1.3.</span> <span class="nav-text">MyISAM</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚簇索引"><span class="nav-number">2.</span> <span class="nav-text">聚簇索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非聚簇索引"><span class="nav-number">3.</span> <span class="nav-text">非聚簇索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#btree"><span class="nav-number">4.</span> <span class="nav-text">btree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hash"><span class="nav-number">5.</span> <span class="nav-text">hash</span></a></li></ol></div>
             
 
           </div>
