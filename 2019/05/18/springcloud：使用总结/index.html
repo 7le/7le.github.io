@@ -1,0 +1,959 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="google-site-verification" content="TOzgkVPl_tllvkMlt51RjNeTAmmf13oTLBbxTqhSO5E">
+<meta name="baidu-site-verification" content="e8tBkAplgA">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="springcloud,总结,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="springcloud使用了也有快1年了，整理总结下springcloud的一些使用方法，持续更新。 🥕">
+<meta name="keywords" content="springcloud,总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="springcloud：使用总结">
+<meta property="og:url" content="https://7le.top/2019/05/18/springcloud：使用总结/index.html">
+<meta property="og:site_name" content="Shine">
+<meta property="og:description" content="springcloud使用了也有快1年了，整理总结下springcloud的一些使用方法，持续更新。 🥕">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/springcloud/zipkin.PNG">
+<meta property="og:updated_time" content="2019-05-22T16:20:46.061Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="springcloud：使用总结">
+<meta name="twitter:description" content="springcloud使用了也有快1年了，整理总结下springcloud的一些使用方法，持续更新。 🥕">
+<meta name="twitter:image" content="https://github.com/7le/7le.github.io/raw/master/image/springcloud/zipkin.PNG">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://7le.top/2019/05/18/springcloud：使用总结/">
+
+
+
+
+
+  <title> springcloud：使用总结 | Shine </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css">
+  <script type="text/javascript">
+    var host = "7le.top";
+    if ((host == window.location.host) && (window.location.protocol != "https:"))
+        window.location.protocol = "https";
+  </script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?467d29ed3a4fecd3a1dca094a8c5a369";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shine</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耶和华是我的牧者，我必不致缺乏。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://7le.top/2019/05/18/springcloud：使用总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="7le">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/image/ly.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shine">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                springcloud：使用总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-18T18:32:08+08:00">
+                2019-05-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+                <span class="post-comments-count">
+                  <span class="post-meta-divider">|</span>
+                  <span class="post-meta-item-icon">
+                    <i class="fa fa-comment-o"></i>
+                  </span>
+                  <a href="/2019/05/18/springcloud：使用总结/#comments" itemprop="discussionUrl">
+                    <span class="post-comments-count gitment-comments-count" data-xid="/2019/05/18/springcloud：使用总结/" itemprop="commentsCount"></span>
+                  </a>
+                </span>
+            
+          
+
+          
+          
+             <span id="/2019/05/18/springcloud：使用总结/" class="leancloud_visitors" data-flag-title="springcloud：使用总结">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>springcloud使用了也有快1年了，整理总结下springcloud的一些使用方法，持续更新。 🥕</p>
+</blockquote>
+<a id="more"></a>
+<p>该文章记录总结使用的<strong>springboot</strong>版本为<strong>2.0.8.RELEASE</strong>，对应的<strong>springcloud</strong>版本为<strong>Finchley.RELEASE</strong>。</p>
+<h2 id="分布式链路跟踪-zipkin-sleuth"><a href="#分布式链路跟踪-zipkin-sleuth" class="headerlink" title="分布式链路跟踪(zipkin+sleuth)"></a>分布式链路跟踪(zipkin+sleuth)</h2><blockquote>
+<p>微服务架构是一个分布式架构，它按业务划分服务单元，一个分布式系统往往有很多个服务单元。由于服务单元数量众多，业务的复杂性，如果出现了错误和异常，很难去定位。主要体现在，一个请求可能需要调用很多个服务，而内部服务的调用复杂性，决定了问题难以定位。所以微服务架构中，必须实现分布式链路追踪，去跟进一个请求到底有哪些服务参与，参与的顺序又是怎样的，从而达到每个请求的步骤清晰可见，出了问题，很快定位。</p>
+</blockquote>
+<h3 id="安装zipkin"><a href="#安装zipkin" class="headerlink" title="安装zipkin"></a>安装zipkin</h3><blockquote>
+<p>直接采用<strong>消息总线rabbitmq</strong>方式，使服务和zipkin解耦。</p>
+</blockquote>
+<p>下载最新版的zipkin.jar，然后就可以根据以下命令启动：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget -O zipkin.jar &apos;https://search.maven.org/remote_content?g=io.zipkin.java&amp;a=zipkin-server&amp;v=LATEST&amp;c=exec&apos;</span><br><span class="line">RABBIT_ADDRESSES=127.0.0.1:5672 RABBIT_USER=admin RABBIT_PASSWORD=admin nohup java -jar zipkin.jar &amp;</span><br></pre></td></tr></table></figure>
+<p>如果用Docker的话，直接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 9411:9411 openzipkin/zipkin</span><br></pre></td></tr></table></figure></p>
+<p>可以配置的参数如下：<br>| 属性 | 环境变量 | 描述 |<br>| —— | —— | —— |<br>| zipkin.collector.rabbitmq.concurrency | RABBIT_CONCURRENCY | 并发消费者数量，默认为1 |<br>| zipkin.collector.rabbitmq.connection-timeout | RABBIT_CONNECTION_TIMEOUT | 建立连接时的超时时间，默认为 60000毫秒，即 1 分钟 |<br>| zipkin.collector.rabbitmq.queue | RABBIT_QUEUE | 从中获取 span 信息的队列，默认为 zipkin |<br>| zipkin.collector.rabbitmq.uri | RABBIT_URI | 符合 RabbitMQ URI 规范 的 URI，例如amqp://user:pass@host:10000/vhost |</p>
+<p>如果设置了 URI，则以下属性将被忽略。<br>| 属性 | 环境变量 | 描述 |<br>| —— | —— | —— |<br>| zipkin.collector.rabbitmq.addresses | RABBIT_ADDRESSES | 用逗号分隔的 RabbitMQ 地址列表，例如localhost:5672,localhost:5673 |<br>| zipkin.collector.rabbitmq.password | RABBIT_PASSWORD | 连接到 RabbitMQ 时使用的密码，默认为 guest |<br>| zipkin.collector.rabbitmq.username | RABBIT_USER | 连接到 RabbitMQ 时使用的用户名，默认为guest |<br>| zipkin.collector.rabbitmq.virtual-host | RABBIT_VIRTUAL_HOST | 使用的 RabbitMQ virtual host，默认为 / |<br>| zipkin.collector.rabbitmq.use-ssl | RABBIT_USE_SSL | 设置为true则用 SSL 的方式与 RabbitMQ 建立链接 |</p>
+<h3 id="服务接入"><a href="#服务接入" class="headerlink" title="服务接入"></a>服务接入</h3><blockquote>
+<p>因为采用的<strong>消息总线rabbitmq</strong>方式，zipkin也可以后装，在服务启动前的链路数据都会在mq的队列中。</p>
+</blockquote>
+<p>在对应微服务的pom增加依赖：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-cloud-starter-zipkin&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-cloud-starter-sleuth&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-bus-amqp&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>然后增加对应的配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: login</span><br><span class="line">  cloud:</span><br><span class="line">    bus:</span><br><span class="line">      trace:</span><br><span class="line">        enabled: true</span><br><span class="line">    stream:</span><br><span class="line">      default-binder: rabbit</span><br><span class="line">  zipkin:</span><br><span class="line">    #base-url: http://localhost:9411</span><br><span class="line">    sender:</span><br><span class="line">      type: rabbit</span><br><span class="line">  sleuth:</span><br><span class="line">    web:</span><br><span class="line">      client:</span><br><span class="line">        enabled: true</span><br><span class="line">    sampler:</span><br><span class="line">      probability: 1.0 # 采样比例设置为1.0也就是全部都需要。</span><br><span class="line">  rabbitmq:</span><br><span class="line">    host: 127.0.0.1</span><br><span class="line">    username: admin</span><br><span class="line">    password: admin</span><br></pre></td></tr></table></figure></p>
+<p>这样就配置完成了，触发请求，可以得到服务间调用的链路，耗时等信息。</p>
+<p><img src="https://github.com/7le/7le.github.io/raw/master/image/springcloud/zipkin.PNG" alt="zipkin"></p>
+<h2 id="服务重试机制"><a href="#服务重试机制" class="headerlink" title="服务重试机制"></a>服务重试机制</h2><blockquote>
+<p>微服务架构下会衍生出非常多的服务调用，而在一些极端网络情况下，会出现服务调用超时或者失败等，这时候我们就需要加入服务重试机制，来保证好的用户体验。</p>
+</blockquote>
+<p>需要引入的依赖:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-netflix-hystrix&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-netflix-hystrix-dashboard&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>然后对应的配置文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">  hystrix:</span><br><span class="line">    enabled: true</span><br><span class="line">hystrix:</span><br><span class="line">  command:</span><br><span class="line">    default:</span><br><span class="line">      execution:</span><br><span class="line">        timeout:</span><br><span class="line">          enabled: true</span><br><span class="line">        isolation:</span><br><span class="line">          thread:</span><br><span class="line">            timeoutInMilliseconds: 7000</span><br><span class="line">ribbon:</span><br><span class="line">  ConnectTimeout: 5000                # 请求连接的超时时间</span><br><span class="line">  ReadTimeout:  5000                  # 请求处理的超时时间</span><br><span class="line">  MaxAutoRetries: 1                   # 对当前实例的重试次数</span><br><span class="line">  MaxAutoRetriesNextServer: 2         # 切换实例的重试次数</span><br><span class="line">  OkToRetryOnAllOperations: true      # 对所有操作请求都进行重试</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>需要注意点是：Hystrix的超时时间大于Ribbon的超时时间，否则Hystrix命令超时后，该命令直接熔断，重试机制就没有任何意义了。</p>
+</blockquote>
+<p>另外MaxAutoRetries和MaxAutoRetriesNextServer这样的设置，最多请求次数会是 2*3=6次，根据业务特性，自行优化设置。</p>
+<p>对于网关（zuul）来说，需要额外增加依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.retry&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-retry&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<p>配置稍微有些不同：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">zuul:</span><br><span class="line">  retryable: true</span><br><span class="line">  sensitive-headers:          # 传递原始的header信息到最终的微服务</span><br><span class="line">ribbon:</span><br><span class="line">  ConnectTimeout: 500                 # 请求连接的超时时间</span><br><span class="line">  ReadTimeout:  1000                  # 请求处理的超时时间</span><br><span class="line">  MaxAutoRetries: 2                   # 对当前实例的重试次数</span><br><span class="line">  MaxAutoRetriesNextServer: 1         # 切换实例的重试次数</span><br><span class="line">  OkToRetryOnAllOperations: true      # 对所有操作请求都进行重试</span><br></pre></td></tr></table></figure></p>
+<p>需要加上<code>retryable: true</code></p>
+<h2 id="JPA打印sql优化"><a href="#JPA打印sql优化" class="headerlink" title="JPA打印sql优化"></a>JPA打印sql优化</h2><blockquote>
+<p>因为平台使用的是jpa，而jpa不支持输出完整的sql，下面的方式通过依赖log4jdbc的方式可以实现。</p>
+</blockquote>
+<p>需要引入的依赖:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.googlecode.log4jdbc&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;log4jdbc&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.2&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure></p>
+<p>修改配置文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  datasource:</span><br><span class="line">    url: jdbc:log4jdbc:postgresql://127.0.0.1:5432/shine</span><br><span class="line">    username: $&#123;ymsg.datasource.username&#125;</span><br><span class="line">    password: $&#123;ymsg.datasource.password&#125;</span><br><span class="line">    driver-class-name: net.sf.log4jdbc.DriverSpy</span><br></pre></td></tr></table></figure></p>
+<p>这样就可以实现输出完整的sql（包括占位符也能替换），因为输出的日志较多，通过logback进行过滤，具体的配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;logger name=&quot;jdbc.sqlonly&quot; level=&quot;OFF&quot; /&gt;</span><br><span class="line">&lt;logger name=&quot;jdbc.audit&quot; level=&quot;OFF&quot; /&gt;</span><br><span class="line">&lt;logger name=&quot;jdbc.resultset&quot; level=&quot;OFF&quot; /&gt;</span><br><span class="line">&lt;logger name=&quot;jdbc.connection&quot; level=&quot;INFO&quot; /&gt;</span><br><span class="line">&lt;logger name=&quot;jdbc.sqltiming&quot; level=&quot;INFO&quot; /&gt;</span><br></pre></td></tr></table></figure></p>
+<p>最后得到的效果就是：</p>
+<pre><code>2019-05-22 20:22:22.129 INFO shine [elastic-2] [jdbc.sqltiming] - select * from shine m where m.type = 1 order by m.create_time limit 5 
+ {executed in 11 msec} 
+</code></pre><p>其中executed就是执行的时间，可以用来排查慢查询。</p>
+<hr>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top">更多精彩 戳我</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/springcloud/" rel="tag"># springcloud</a>
+          
+            <a href="/tags/总结/" rel="tag"># 总结</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/21/分布式事务：消息可靠发送/" rel="next" title="分布式事务：消息可靠发送">
+                <i class="fa fa-chevron-left"></i> 分布式事务：消息可靠发送
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/image/ly.jpg" alt="7le">
+          <p class="site-author-name" itemprop="name">7le</p>
+           
+              <p class="site-description motion-element" itemprop="description">我只有一件事，就是忘记背后，努力面前的</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">26</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/7le" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://palmer.arkstack.cn" title="palmerye" target="_blank">palmerye</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式链路跟踪-zipkin-sleuth"><span class="nav-number">1.</span> <span class="nav-text">分布式链路跟踪(zipkin+sleuth)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装zipkin"><span class="nav-number">1.1.</span> <span class="nav-text">安装zipkin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#服务接入"><span class="nav-number">1.2.</span> <span class="nav-text">服务接入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务重试机制"><span class="nav-number">2.</span> <span class="nav-text">服务重试机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JPA打印sql优化"><span class="nav-number">3.</span> <span class="nav-text">JPA打印sql优化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+<div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <a class="theme-link" href="https://github.com/7le" target="view_window" style="cursor: pointer" rel="external nofollow">
+    7le
+  </a>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io" rel="external nofollow">Hexo</a>
+</div>
+
+<span id="busuanzi_container_site_pv">
+  PV <span id="busuanzi_value_site_pv"></span>
+</span>
+<span id="busuanzi_container_site_uv">
+  &nbsp&nbsp | &nbsp&nbsp UV <span id="busuanzi_value_site_uv"></span>
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: '7le',
+            repo: '7le.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'c53d2248f8cd0c5003b8c92b5a9e27299cf96e99',
+            
+                client_id: '36f5a95fff3d8ff6cadd'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tNiTejf4rdhMUUhMzh7SEzUI-gzGzoHsz", "qhTCrCTlLqVQcfs3eAwwuqqB");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  <a class="github-fork-ribbon left-bottom fixed" href="https://github.com/7le" data-ribbon="Follow me on GitHub" title="Follow me on GitHub">Follow me on GitHub</a>
+</body>
+</html>
+
+
+
