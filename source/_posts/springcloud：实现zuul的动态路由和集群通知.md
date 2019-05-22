@@ -5,7 +5,7 @@ type: "tags"
 tags: [springcloud]
 ---
 
-> springboot2.x出来也有一小段时间了，之前一直钟情于vert.x的响应式编程，随着springboot2.x和spring-webflux的整合，那就结合springcloud全家桶玩起来~
+> springboot2.x出来也有一小段时间了，之前一直钟情于vert.x的响应式编程，随着springboot2.x和spring-webflux的整合，那就结合springcloud全家桶玩起来~ 🥕
 
 <!--more-->
 

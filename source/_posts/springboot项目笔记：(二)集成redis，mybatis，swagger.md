@@ -5,7 +5,7 @@ type: "tags"
 tags: [springboot]
 ---
 
->在搭建完springboot项目后，接下来就是要集成一些好东西。接下来本文中会集成redis，mybatis，swagger，pagehelper。
+>在搭建完springboot项目后，接下来就是要集成一些好东西。接下来本文中会集成redis，mybatis，swagger，pagehelper。 🥕
 
 <!--more-->
 

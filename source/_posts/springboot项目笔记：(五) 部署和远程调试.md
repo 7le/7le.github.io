@@ -5,7 +5,7 @@ type: "tags"
 tags: [springboot]
 ---
 
-> springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。
+> springboot部署的方式非常简单好用，接下来介绍下如何在Linux下部署项目，以及如何进行远程调式。 🥕
 
 <!--more-->
 ### 部署

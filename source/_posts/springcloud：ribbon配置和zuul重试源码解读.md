@@ -5,7 +5,7 @@ type: "tags"
 tags: [springcloud]
 ---
 
-> 最近刚刚把springcloud的版本升级到**Finchley.RC1**，就遇到些小麻烦，分享一下解决的过程和收获。
+> 最近刚刚把springcloud的版本升级到**Finchley.RC1**，就遇到些小麻烦，分享一下解决的过程和收获。 🥕
 
 <!--more-->
 

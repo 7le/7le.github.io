@@ -5,7 +5,7 @@ type: "tags"
 tags: [tidb]
 ---
 
-> SQL -> NoSQL -> NewSql
+> SQL -> NoSQL -> NewSql 🥕
 
 <!--more-->
 

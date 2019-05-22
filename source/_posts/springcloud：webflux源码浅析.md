@@ -5,7 +5,7 @@ type: "tags"
 tags: [springcloud]
 ---
 
-> spring-webflux采用了事件驱动异步非阻塞模式，借助EventLoop以少量线程应对高并发的访问，这样的改变使spring也变得像vert.x一样有趣~
+> spring-webflux采用了事件驱动异步非阻塞模式，借助EventLoop以少量线程应对高并发的访问，这样的改变使spring也变得像vert.x一样有趣~ 🥕
 
 <!--more-->
 

@@ -5,7 +5,7 @@ type: "tags"
 tags: [springboot]
 ---
 
-> springboot的评价一直很高，那就用它来做一次完整的项目，现在就一点点记录下来，可以以后自己翻看，也可以帮助各位第一次使用springboot的小伙伴们
+> springboot的评价一直很高，那就用它来做一次完整的项目，现在就一点点记录下来，可以以后自己翻看，也可以帮助各位第一次使用springboot的小伙伴们。 🥕
 
 <!--more-->
 
