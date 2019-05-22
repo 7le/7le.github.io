@@ -32,6 +32,7 @@ docker run -d -p 9411:9411 openzipkin/zipkin
 ```
 
 可以配置的参数如下：
+
 | 属性 | 环境变量 | 描述 |
 | ------ | ------ | ------ |
 | zipkin.collector.rabbitmq.concurrency | RABBIT_CONCURRENCY | 并发消费者数量，默认为1 |
@@ -40,6 +41,7 @@ docker run -d -p 9411:9411 openzipkin/zipkin
 | zipkin.collector.rabbitmq.uri | RABBIT_URI | 符合 RabbitMQ URI 规范 的 URI，例如amqp://user:pass@host:10000/vhost |
 
 如果设置了 URI，则以下属性将被忽略。
+
 | 属性 | 环境变量 | 描述 |
 | ------ | ------ | ------ |
 | zipkin.collector.rabbitmq.addresses | RABBIT_ADDRESSES | 用逗号分隔的 RabbitMQ 地址列表，例如localhost:5672,localhost:5673 |
