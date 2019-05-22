@@ -103,7 +103,7 @@
 <meta property="og:description" content="springcloud使用了也有快1年了，整理总结下springcloud的一些使用方法，持续更新。 🥕">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/springcloud/zipkin.PNG">
-<meta property="og:updated_time" content="2019-05-22T16:20:46.061Z">
+<meta property="og:updated_time" content="2019-05-22T18:40:45.180Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springcloud：使用总结">
 <meta name="twitter:description" content="springcloud使用了也有快1年了，整理总结下springcloud的一些使用方法，持续更新。 🥕">
@@ -383,8 +383,75 @@
 <p>下载最新版的zipkin.jar，然后就可以根据以下命令启动：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget -O zipkin.jar &apos;https://search.maven.org/remote_content?g=io.zipkin.java&amp;a=zipkin-server&amp;v=LATEST&amp;c=exec&apos;</span><br><span class="line">RABBIT_ADDRESSES=127.0.0.1:5672 RABBIT_USER=admin RABBIT_PASSWORD=admin nohup java -jar zipkin.jar &amp;</span><br></pre></td></tr></table></figure>
 <p>如果用Docker的话，直接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 9411:9411 openzipkin/zipkin</span><br></pre></td></tr></table></figure></p>
-<p>可以配置的参数如下：<br>| 属性 | 环境变量 | 描述 |<br>| —— | —— | —— |<br>| zipkin.collector.rabbitmq.concurrency | RABBIT_CONCURRENCY | 并发消费者数量，默认为1 |<br>| zipkin.collector.rabbitmq.connection-timeout | RABBIT_CONNECTION_TIMEOUT | 建立连接时的超时时间，默认为 60000毫秒，即 1 分钟 |<br>| zipkin.collector.rabbitmq.queue | RABBIT_QUEUE | 从中获取 span 信息的队列，默认为 zipkin |<br>| zipkin.collector.rabbitmq.uri | RABBIT_URI | 符合 RabbitMQ URI 规范 的 URI，例如amqp://user:pass@host:10000/vhost |</p>
-<p>如果设置了 URI，则以下属性将被忽略。<br>| 属性 | 环境变量 | 描述 |<br>| —— | —— | —— |<br>| zipkin.collector.rabbitmq.addresses | RABBIT_ADDRESSES | 用逗号分隔的 RabbitMQ 地址列表，例如localhost:5672,localhost:5673 |<br>| zipkin.collector.rabbitmq.password | RABBIT_PASSWORD | 连接到 RabbitMQ 时使用的密码，默认为 guest |<br>| zipkin.collector.rabbitmq.username | RABBIT_USER | 连接到 RabbitMQ 时使用的用户名，默认为guest |<br>| zipkin.collector.rabbitmq.virtual-host | RABBIT_VIRTUAL_HOST | 使用的 RabbitMQ virtual host，默认为 / |<br>| zipkin.collector.rabbitmq.use-ssl | RABBIT_USE_SSL | 设置为true则用 SSL 的方式与 RabbitMQ 建立链接 |</p>
+<p>可以配置的参数如下：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>环境变量</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>zipkin.collector.rabbitmq.concurrency</td>
+<td>RABBIT_CONCURRENCY</td>
+<td>并发消费者数量，默认为1</td>
+</tr>
+<tr>
+<td>zipkin.collector.rabbitmq.connection-timeout</td>
+<td>RABBIT_CONNECTION_TIMEOUT</td>
+<td>建立连接时的超时时间，默认为 60000毫秒，即 1 分钟</td>
+</tr>
+<tr>
+<td>zipkin.collector.rabbitmq.queue</td>
+<td>RABBIT_QUEUE</td>
+<td>从中获取 span 信息的队列，默认为 zipkin</td>
+</tr>
+<tr>
+<td>zipkin.collector.rabbitmq.uri</td>
+<td>RABBIT_URI</td>
+<td>符合 RabbitMQ URI 规范 的 URI，例如amqp://user:pass@host:10000/vhost</td>
+</tr>
+</tbody>
+</table>
+<p>如果设置了 URI，则以下属性将被忽略。</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>环境变量</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>zipkin.collector.rabbitmq.addresses</td>
+<td>RABBIT_ADDRESSES</td>
+<td>用逗号分隔的 RabbitMQ 地址列表，例如localhost:5672,localhost:5673</td>
+</tr>
+<tr>
+<td>zipkin.collector.rabbitmq.password</td>
+<td>RABBIT_PASSWORD</td>
+<td>连接到 RabbitMQ 时使用的密码，默认为 guest</td>
+</tr>
+<tr>
+<td>zipkin.collector.rabbitmq.username</td>
+<td>RABBIT_USER</td>
+<td>连接到 RabbitMQ 时使用的用户名，默认为guest</td>
+</tr>
+<tr>
+<td>zipkin.collector.rabbitmq.virtual-host</td>
+<td>RABBIT_VIRTUAL_HOST</td>
+<td>使用的 RabbitMQ virtual host，默认为 /</td>
+</tr>
+<tr>
+<td>zipkin.collector.rabbitmq.use-ssl</td>
+<td>RABBIT_USE_SSL</td>
+<td>设置为true则用 SSL 的方式与 RabbitMQ 建立链接</td>
+</tr>
+</tbody>
+</table>
 <h3 id="服务接入"><a href="#服务接入" class="headerlink" title="服务接入"></a>服务接入</h3><blockquote>
 <p>因为采用的<strong>消息总线rabbitmq</strong>方式，zipkin也可以后装，在服务启动前的链路数据都会在mq的队列中。</p>
 </blockquote>
