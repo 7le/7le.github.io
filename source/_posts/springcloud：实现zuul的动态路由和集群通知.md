@@ -22,9 +22,9 @@ tags: [springcloud]
 
 两种方案选了第二种去尝试，具体实现有大佬已经写过文章了，就不赘述了 [Zuul动态路由](https://blog.csdn.net/u013815546/article/details/68944039)。看了下相应的源码，是通过事件来刷新路由。为什么要这样实现呢，其实看了源码会发现，**Spring Cloud Zuul**是基于spring的事件驱动模型。（PS. 好多组件都用了这个模式）
 
-源码中实现了ApplicationListener的监听器ZuulRefreshListener：
+源码中比较关键的是实现了ApplicationListener监听器的ZuulRefreshListener：
 ```
-//刷新路由
+//路由刷新监听器
 private static class ZuulRefreshListener
 		implements ApplicationListener<ApplicationEvent> {
 	@Autowired
@@ -35,6 +35,7 @@ private static class ZuulRefreshListener
 		if (event instanceof ContextRefreshedEvent
 				|| event instanceof RefreshScopeRefreshedEvent
 				|| event instanceof RoutesRefreshedEvent) {
+			//设置为脏,下一次匹配到路径时，如果发现为脏，则会去刷新路由信息
 			this.zuulHandlerMapping.setDirty(true);
 		}
 		else if (event instanceof HeartbeatEvent) {
@@ -46,6 +47,9 @@ private static class ZuulRefreshListener
 }
 ```
 那我们只需要通过publish RoutesRefreshedEvent就可以触发。
+
+而具体的路由定位器可以看``DiscoveryClientRouteLocator``，它主要从DiscoveryClient（如Eureka，consul）发现路由信息。
+
 
 ### 集群通知
 
@@ -105,18 +109,35 @@ public class ActuatorExtConfig {
 然后主要是注意源码中的``BusAutoConfiguration``类，下面是接受消息的代码：
 
 ```
+//监听RemoteApplicationEvent事件
 @EventListener(classes = RemoteApplicationEvent.class)
 	public void acceptLocal(RemoteApplicationEvent event) {
 		if (this.serviceMatcher.isFromSelf(event)
 				&& !(event instanceof AckRemoteApplicationEvent)) {
+			//当事件是来自自己的并且不是ack事件，则发送消息
 			this.cloudBusOutboundChannel.send(MessageBuilder.withPayload(event).build());
 		}
 	}
 ```
 
-通过``@EventListener``来注册监听者，简化了以前需要实现``ApplicationListener``(像上面的``ZuulRefreshListener``)。
+通过``@EventListener``来注册监听者，简化了以前需要实现``ApplicationListener``(像上面的``ZuulRefreshListener``)，我们也实现一个自己的监听。
 
-这个注解如何实现注册呢，需要通过``EventListenerFactory``的实现类
+```
+@Configuration
+@RemoteApplicationEventScan({"com.cloud.gateway.event"})
+public class BusConfiguration {
+
+    @Autowired
+    RouteRefreshService routeRefreshService;
+
+    @EventListener(classes = AutoRouteEvent.class)
+    public void routeRefresh() {
+        routeRefreshService.routeRefresh();
+    }
+}
+```
+
+``@EventListener``具体是如何实现注册呢，需要通过``EventListenerFactory``的实现类，然后跟``ApplicationListenerMethodAdapter``就清晰了，这里就不展开了。
 
 ```
 public class DefaultEventListenerFactory implements EventListenerFactory, Ordered {
@@ -144,9 +165,7 @@ public class DefaultEventListenerFactory implements EventListenerFactory, Ordere
 }
 ```
 
-具体大家可以跟下``ApplicationListenerMethodAdapter``就清晰了。
-
-那么我们需要创建一个更新路由的event和一个Listener来接受消息
+有了Listener来接收消息，那么我们还需要一个更新路由的event：
 
 ```
 public class AutoRouteEvent extends RemoteApplicationEvent {
@@ -165,66 +184,59 @@ public class AutoRouteEvent extends RemoteApplicationEvent {
 }
 ```
 
-```
-@Configuration
-@RemoteApplicationEventScan({"com.cloud.gateway.event"})
-public class BusConfiguration {
-
-    @Autowired
-    RouteRefreshService routeRefreshService;
-
-    @EventListener(classes = AutoRouteEvent.class)
-    public void routeRefresh() {
-        routeRefreshService.routeRefresh();
-    }
-}
-
-```
-
 ##### 发送消息
 
 代码同样在``BusAutoConfiguration``类
 
 ```
+//消息的消费，也是事件的发起
 @StreamListener(SpringCloudBusClient.INPUT)
-	public void acceptRemote(RemoteApplicationEvent event) {
-		if (event instanceof AckRemoteApplicationEvent) {
-			if (this.bus.getTrace().isEnabled() && !this.serviceMatcher.isFromSelf(event)
-					&& this.applicationEventPublisher != null) {
-				this.applicationEventPublisher.publishEvent(event);
-			}
-			// If it's an ACK we are finished processing at this point
-			return;
-		}
-		if (this.serviceMatcher.isForSelf(event)
+public void acceptRemote(RemoteApplicationEvent event) {
+	if (event instanceof AckRemoteApplicationEvent) {
+	    //ack事件
+		if (this.bus.getTrace().isEnabled() && !this.serviceMatcher.isFromSelf(event)
 				&& this.applicationEventPublisher != null) {
-			if (!this.serviceMatcher.isFromSelf(event)) {
-				this.applicationEventPublisher.publishEvent(event);
-			}
-			if (this.bus.getAck().isEnabled()) {
-				AckRemoteApplicationEvent ack = new AckRemoteApplicationEvent(this,
-						this.serviceMatcher.getServiceId(),
-						this.bus.getAck().getDestinationService(),
-						event.getDestinationService(), event.getId(), event.getClass());
-				this.cloudBusOutboundChannel
-						.send(MessageBuilder.withPayload(ack).build());
-				this.applicationEventPublisher.publishEvent(ack);
-			}
+			//当开启bus追踪且不是自己的ack事件，则通知所有的注册该事件的监听者，否则直接返回
+			this.applicationEventPublisher.publishEvent(event);
 		}
-		if (this.bus.getTrace().isEnabled() && this.applicationEventPublisher != null) {
-			// We are set to register sent events so publish it for local consumption,
-			// irrespective of the origin
-			this.applicationEventPublisher.publishEvent(new SentApplicationEvent(this,
-					event.getOriginService(), event.getDestinationService(),
-					event.getId(), event.getClass()));
+		// If it's an ACK we are finished processing at this point
+		return;
+	}
+	//消费消息，该消息属于自己
+	if (this.serviceMatcher.isForSelf(event)
+			&& this.applicationEventPublisher != null) {
+		//不是自己发布的事件，正常处理
+		if (!this.serviceMatcher.isFromSelf(event)) {
+			this.applicationEventPublisher.publishEvent(event);
+		}
+		//消费之后，需要发送ack确认事件
+		if (this.bus.getAck().isEnabled()) {
+			AckRemoteApplicationEvent ack = new AckRemoteApplicationEvent(this,
+					this.serviceMatcher.getServiceId(),
+					this.bus.getAck().getDestinationService(),
+					event.getDestinationService(), event.getId(), event.getClass());
+			this.cloudBusOutboundChannel
+					.send(MessageBuilder.withPayload(ack).build());
+			this.applicationEventPublisher.publishEvent(ack);
 		}
 	}
+	//事件追踪相关，若是开启追踪事件则执行
+	if (this.bus.getTrace().isEnabled() && this.applicationEventPublisher != null) {
+		// We are set to register sent events so publish it for local consumption,
+		// irrespective of the origin
+		// 不论其来源，准备发送事件，发布了之后供本地消费
+		this.applicationEventPublisher.publishEvent(new SentApplicationEvent(this,
+				event.getOriginService(), event.getDestinationService(),
+				event.getId(), event.getClass()));
+	}
+}
 ```
 
 一样通过注解来注册，当接收到消息，根据消息的来源，目的地（destination）配置等信息，将数据转化为``RemoteApplicationEvent``对象，再次publish到spring context中。这一块代码可以复用，不需要重写。
 
 自此我们就已经实现了动态路由和集群通知了~
 
+实现的代码在 [springcloud-gateway](https://github.com/7le/springcloud-analysis/tree/master/gateway/src/main/java/com/cloud/gateway)
 
 #### Spring Cloud Actuator
 
@@ -255,9 +267,6 @@ management:
         include: '*'   # 代表全部放开，可以自行选择
       base-path: /application
 ```
-
-实现的代码在 [springcloud-config](https://github.com/7le/springcloud-analysis/tree/master/config)
-
 
 ---
 [Github](https://github.com/7le) 不要吝啬你的star ^.^
