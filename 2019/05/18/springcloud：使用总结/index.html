@@ -103,7 +103,7 @@
 <meta property="og:description" content="springcloud使用了也有快1年了，整理总结下springcloud的一些使用方法，持续更新。 🥕">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/springcloud/zipkin.PNG">
-<meta property="og:updated_time" content="2019-06-29T08:55:20.924Z">
+<meta property="og:updated_time" content="2019-07-01T13:54:23.033Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springcloud：使用总结">
 <meta name="twitter:description" content="springcloud使用了也有快1年了，整理总结下springcloud的一些使用方法，持续更新。 🥕">
@@ -378,7 +378,7 @@
 <p>微服务架构是一个分布式架构，它按业务划分服务单元，一个分布式系统往往有很多个服务单元。由于服务单元数量众多，业务的复杂性，如果出现了错误和异常，很难去定位。主要体现在，一个请求可能需要调用很多个服务，而内部服务的调用复杂性，决定了问题难以定位。所以微服务架构中，必须实现分布式链路追踪，去跟进一个请求到底有哪些服务参与，参与的顺序又是怎样的，从而达到每个请求的步骤清晰可见，出了问题，很快定位。</p>
 </blockquote>
 <h3 id="安装zipkin"><a href="#安装zipkin" class="headerlink" title="安装zipkin"></a>安装zipkin</h3><blockquote>
-<p>直接采用<strong>消息总线rabbitmq</strong>方式，使服务和zipkin解耦。</p>
+<p>直接采用<strong>消息总线rabbitmq</strong>方式，使服务和zipkin解耦。需要注意的是这种方式默认的队列是叫zipkin，而且是由zipkin服务端创建的。</p>
 </blockquote>
 <p>下载最新版的zipkin.jar，然后就可以根据以下命令启动：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget -O zipkin.jar &apos;https://search.maven.org/remote_content?g=io.zipkin.java&amp;a=zipkin-server&amp;v=LATEST&amp;c=exec&apos;</span><br><span class="line">RABBIT_ADDRESSES=127.0.0.1:5672 RABBIT_USER=admin RABBIT_PASSWORD=admin nohup java -jar zipkin.jar &amp;</span><br></pre></td></tr></table></figure>
