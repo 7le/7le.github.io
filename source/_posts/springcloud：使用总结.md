@@ -17,7 +17,7 @@ tags: [springcloud,总结]
 
 ### 安装zipkin
 
-> 直接采用**消息总线rabbitmq**方式，使服务和zipkin解耦。
+> 直接采用**消息总线rabbitmq**方式，使服务和zipkin解耦。需要注意的是这种方式默认的队列是叫zipkin，而且是由zipkin服务端创建的。
 
 下载最新版的zipkin.jar，然后就可以根据以下命令启动：
 
