@@ -91,7 +91,7 @@ public class VideoVerticle {
     app.run();
 ```
 
-> 因为我的项目中有依赖会引入**spring-boot-starter-web**，所以接下来的分析是基于**SERVLET**，等之后整理了再分析基于**REACTIVE**
+> 因为我的项目中有依赖会引入**spring-boot-starter-web**（为了兼容swagger），所以接下来的分析是基于**SERVLET**，等之后整理了再分析基于**REACTIVE**
 
 从``s.success()``方法进入，会经过很多类``MonoCreate``->``MonoSubscribeOn``->``ScopePassingSpanSubscriber``->``StrictSubscriber``->``ReactiveTypeHandler``，最后到``DeferredResult``的**setResultInternal**，这里很关键。
 
