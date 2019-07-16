@@ -1,0 +1,1080 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="google-site-verification" content="TOzgkVPl_tllvkMlt51RjNeTAmmf13oTLBbxTqhSO5E">
+<meta name="baidu-site-verification" content="e8tBkAplgA">
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="jvm,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0">
+
+
+
+
+
+
+<meta name="description" content="从这篇开始写一些jvm调优相关的内容，一起来揭开jvm神秘的面纱吧~  🥕">
+<meta name="keywords" content="jvm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM优化：jvm参数、gc日志经验分享">
+<meta property="og:url" content="https://7le.top/2019/07/09/JVM优化：jvm参数、gc日志解析/index.html">
+<meta property="og:site_name" content="Shine">
+<meta property="og:description" content="从这篇开始写一些jvm调优相关的内容，一起来揭开jvm神秘的面纱吧~  🥕">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/space-allocation-guarantee.png">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/cross-reference.png">
+<meta property="og:updated_time" content="2019-07-16T15:36:48.429Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JVM优化：jvm参数、gc日志经验分享">
+<meta name="twitter:description" content="从这篇开始写一些jvm调优相关的内容，一起来揭开jvm神秘的面纱吧~  🥕">
+<meta name="twitter:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/space-allocation-guarantee.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://7le.top/2019/07/09/JVM优化：jvm参数、gc日志解析/">
+
+
+
+
+
+  <title> JVM优化：jvm参数、gc日志经验分享 | Shine </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css">
+  <script type="text/javascript">
+    var host = "7le.top";
+    if ((host == window.location.host) && (window.location.protocol != "https:"))
+        window.location.protocol = "https";
+  </script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?467d29ed3a4fecd3a1dca094a8c5a369";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Shine</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">耶和华是我的牧者，我必不致缺乏。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://7le.top/2019/07/09/JVM优化：jvm参数、gc日志解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="7le">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/image/ly.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Shine">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                JVM优化：jvm参数、gc日志经验分享
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-09T21:32:12+08:00">
+                2019-07-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+                <span class="post-comments-count">
+                  <span class="post-meta-divider">|</span>
+                  <span class="post-meta-item-icon">
+                    <i class="fa fa-comment-o"></i>
+                  </span>
+                  <a href="/2019/07/09/JVM优化：jvm参数、gc日志解析/#comments" itemprop="discussionUrl">
+                    <span class="post-comments-count gitment-comments-count" data-xid="/2019/07/09/JVM优化：jvm参数、gc日志解析/" itemprop="commentsCount"></span>
+                  </a>
+                </span>
+            
+          
+
+          
+          
+             <span id="/2019/07/09/JVM优化：jvm参数、gc日志解析/" class="leancloud_visitors" data-flag-title="JVM优化：jvm参数、gc日志经验分享">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>从这篇开始写一些jvm调优相关的内容，一起来揭开jvm神秘的面纱吧~  🥕</p>
+</blockquote>
+<a id="more"></a>
+<p>之前的文章<a href="https://7le.top/2018/01/29/深入理解Java虚拟机--读书笔记">深入理解Java虚拟机–读书笔记</a>已经介绍过jvm，包括一些基础知识、GC的算法和垃圾收集器之类。这里就不赘述了，直接进入正题。</p>
+<p><code>文章中主要描述的是ParNew和CMS，且jdk版本&lt;=1.8。</code></p>
+<h3 id="gc日志"><a href="#gc日志" class="headerlink" title="gc日志"></a>gc日志</h3><blockquote>
+<p>俗话说工欲善其事，必先利其器。要做好Jvm的优化，那理解GC日志就是基础。</p>
+</blockquote>
+<p>在jvm参数上增加输出日志的参数<code>-XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution -Xloggc:/logs/gc.log</code>，jvm就能为我们将日志输出到指定的路径下。</p>
+<p>下面开始分析ParNew和CMS，该搭配主要的目标是低延时，比较常用，另外我们线上也是采用这个：</p>
+<ol>
+<li>新生代：采用 stop-the-world mark-copy 算法</li>
+<li>年老代：采用 Mostly Concurrent mark-sweep 算法</li>
+</ol>
+<p>能够达成该目标主要因为以下两个原因：</p>
+<ol>
+<li>它不会花时间整理压缩年老代，而是维护了一个叫做 free-lists 的数据结构，该数据结构用来管理那些回收再利用的内存空间；</li>
+<li>CMS分为四个阶段，只有initial mark和remark会触发STW，其他都是与应用线程一同运行的</li>
+</ol>
+<h4 id="ParNew-Young-GC"><a href="#ParNew-Young-GC" class="headerlink" title="ParNew/Young GC"></a>ParNew/Young GC</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&#123;Heap before GC invocations=<span class="number">74</span> (full <span class="number">0</span>):</span><br><span class="line"> par <span class="keyword">new</span> generation   total <span class="number">341376</span>K, used <span class="number">294492</span>K [<span class="number">0x0000000083000000</span>, <span class="number">0x000000009c000000</span>, <span class="number">0x000000009c000000</span>)</span><br><span class="line">  eden space <span class="number">273152</span>K, <span class="number">100</span>% used [<span class="number">0x0000000083000000</span>, <span class="number">0x0000000093ac0000</span>, <span class="number">0x0000000093ac0000</span>)</span><br><span class="line">  from space <span class="number">68224</span>K,  <span class="number">31</span>% used [<span class="number">0x0000000093ac0000</span>, <span class="number">0x0000000094f970f8</span>, <span class="number">0x0000000097d60000</span>)</span><br><span class="line">  to   space <span class="number">68224</span>K,   <span class="number">0</span>% used [<span class="number">0x0000000097d60000</span>, <span class="number">0x0000000097d60000</span>, <span class="number">0x000000009c000000</span>)</span><br><span class="line"> concurrent mark-sweep generation total <span class="number">1638400</span>K, used <span class="number">96700</span>K [<span class="number">0x000000009c000000</span>, <span class="number">0x0000000100000000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line"> Metaspace       used <span class="number">113286</span>K, capacity <span class="number">119312</span>K, committed <span class="number">119424</span>K, reserved <span class="number">1153024</span>K</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">space</span>    <span class="title">used</span> 14248<span class="title">K</span>, <span class="title">capacity</span> 15218<span class="title">K</span>, <span class="title">committed</span> 15232<span class="title">K</span>, <span class="title">reserved</span> 1048576<span class="title">K</span></span></span><br><span class="line">2019-07-10T18:26:55.933+0800: 5756.871: [GC (Allocation Failure) 2019-07-10T18:26:55.933+0800: 5756.871: [ParNew</span><br><span class="line">Desired survivor size <span class="number">34930688</span> bytes, <span class="keyword">new</span> threshold <span class="number">15</span> (max <span class="number">15</span>)</span><br><span class="line">- age   <span class="number">1</span>:    <span class="number">1688360</span> bytes,    <span class="number">1688360</span> total</span><br><span class="line">- age   <span class="number">2</span>:      <span class="number">51552</span> bytes,    <span class="number">1739912</span> total</span><br><span class="line">- age   <span class="number">3</span>:      <span class="number">59880</span> bytes,    <span class="number">1799792</span> total</span><br><span class="line">- age   <span class="number">4</span>:      <span class="number">51472</span> bytes,    <span class="number">1851264</span> total</span><br><span class="line">- age   <span class="number">5</span>:     <span class="number">100528</span> bytes,    <span class="number">1951792</span> total</span><br><span class="line">- age   <span class="number">6</span>:     <span class="number">136576</span> bytes,    <span class="number">2088368</span> total</span><br><span class="line">- age   <span class="number">7</span>:      <span class="number">45280</span> bytes,    <span class="number">2133648</span> total</span><br><span class="line">- age   <span class="number">8</span>:     <span class="number">251688</span> bytes,    <span class="number">2385336</span> total</span><br><span class="line">- age   <span class="number">9</span>:    <span class="number">4738624</span> bytes,    <span class="number">7123960</span> total</span><br><span class="line">- age  <span class="number">10</span>:     <span class="number">173024</span> bytes,    <span class="number">7296984</span> total</span><br><span class="line">- age  <span class="number">11</span>:      <span class="number">43856</span> bytes,    <span class="number">7340840</span> total</span><br><span class="line">- age  <span class="number">12</span>:     <span class="number">297760</span> bytes,    <span class="number">7638600</span> total</span><br><span class="line">- age  <span class="number">13</span>:    <span class="number">1440080</span> bytes,    <span class="number">9078680</span> total</span><br><span class="line">- age  <span class="number">14</span>:     <span class="number">809944</span> bytes,    <span class="number">9888624</span> total</span><br><span class="line">- age  <span class="number">15</span>:    <span class="number">1862752</span> bytes,   <span class="number">11751376</span> total</span><br><span class="line">: <span class="number">294492</span>K-&gt;<span class="number">17247</span>K(<span class="number">341376</span>K), <span class="number">0.0139261</span> secs] <span class="number">391192</span>K-&gt;<span class="number">114369</span>K(<span class="number">1979776</span>K), <span class="number">0.0141007</span> secs] [Times: user=<span class="number">0.05</span> sys=<span class="number">0.00</span>, real=<span class="number">0.02</span> secs] </span><br><span class="line">Heap after GC invocations=<span class="number">75</span> (full <span class="number">0</span>):</span><br><span class="line"> par <span class="keyword">new</span> generation   total <span class="number">341376</span>K, used <span class="number">17247</span>K [<span class="number">0x0000000083000000</span>, <span class="number">0x000000009c000000</span>, <span class="number">0x000000009c000000</span>)</span><br><span class="line">  eden space <span class="number">273152</span>K,   <span class="number">0</span>% used [<span class="number">0x0000000083000000</span>, <span class="number">0x0000000083000000</span>, <span class="number">0x0000000093ac0000</span>)</span><br><span class="line">  from space <span class="number">68224</span>K,  <span class="number">25</span>% used [<span class="number">0x0000000097d60000</span>, <span class="number">0x0000000098e37ed8</span>, <span class="number">0x000000009c000000</span>)</span><br><span class="line">  to   space <span class="number">68224</span>K,   <span class="number">0</span>% used [<span class="number">0x0000000093ac0000</span>, <span class="number">0x0000000093ac0000</span>, <span class="number">0x0000000097d60000</span>)</span><br><span class="line"> concurrent mark-sweep generation total <span class="number">1638400</span>K, used <span class="number">97121</span>K [<span class="number">0x000000009c000000</span>, <span class="number">0x0000000100000000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line"> Metaspace       used <span class="number">113286</span>K, capacity <span class="number">119312</span>K, committed <span class="number">119424</span>K, reserved <span class="number">1153024</span>K</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">space</span>    <span class="title">used</span> 14248<span class="title">K</span>, <span class="title">capacity</span> 15218<span class="title">K</span>, <span class="title">committed</span> 15232<span class="title">K</span>, <span class="title">reserved</span> 1048576<span class="title">K</span></span></span><br><span class="line"><span class="class">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Heap before GC  - GC前 堆的信息<ul>
+<li>par new generation total 341376K (eden+s0), used 294492K（已被使用）</li>
+<li>eden space 273152K, 100% used - eden区满了，所以触发 Young GC</li>
+<li>from space 68224K,  31% used - 存放年龄未到（默认是15岁，<code>-XX:MaxTenuringThreshold</code>），仍存活的对象</li>
+<li>to   space 68224K,   0% used - 准备在这次YGC存放from+eden存活且未到年龄的对象</li>
+<li>concurrent mark-sweep generation total 1638400K, used 96700K - 老年代的总量和已使用的量</li>
+<li>Metaspace used 113286K, capacity 119312K, committed 119424K, reserved 1153024K - Metaspace的总量，已使用，提交和保留的量</li>
+<li>class space used 14248K, capacity 15218K, committed 15232K, reserved 1048576K - 类空间的总量，已使用，提交和保留的量</li>
+</ul>
+</li>
+<li>Young GC<ul>
+<li>2019-07-10T18:26:55.933+0800 -GC发生的时间；</li>
+<li>5756.871 – 相对于JVM启动时的间隔时间,单位是秒。</li>
+<li>GC (Allocation Failure) – YGC的原因，在这个case里边，由于新生代不满足申请的空间，因此触发了YGC;</li>
+<li>ParNew – 收集器的名称，它预示了新生代使用一个并行的 mark-copy stop-the-world 垃圾收集器；</li>
+<li>new threshold 15 (max 15) - 代表年龄的阀值为15，下面的age是各年龄的数据量</li>
+<li>294492K-&gt;17247K - 收集前后新生代的使用情况，</li>
+<li>(341376K), 0.0139261 secs - 整个新生代的容量，以及垃圾收集器在 w/o final cleanup 阶段消耗的时间</li>
+<li>391192K-&gt;114369K –  在垃圾收集之前和之后堆内存的使用情况。</li>
+<li>(1979776K), 0.0141007 secs –可用堆的总大小。以及垃圾收集器在标记和复制新生代存活对象时所消耗的时间。包括和ConcurrentMarkSweep收集器的通信开销, 提升存活时间达标的对象到老年代,以及垃圾收集后期的一些最终清理。</li>
+<li>[Times: user=0.78 sys=0.01, real=0.11 secs] -与Linux命令所输出的时间含义一致，分别代表用户态消耗的CPU时间、内核态消耗的CPU时间和操作从开始到结束所经过的墙钟时间（Wall Clock Time）。墙钟时间与 CPU时间的区别是，墙钟时间包括各种非运算的等待耗时，例如等待磁盘I/O、等待线程紫塞。而CPU时间不包括这些，但是多CPU或者多核，多线程操作会叠加这些CPU时间。</li>
+</ul>
+</li>
+<li>Heap after GC  - GC后 堆的信息<ul>
+<li>eden space 273152K,   0% used - Young GC后 eden区清空了</li>
+<li>from space 68224K,  25% used - <code>对应的是Heap before中的to</code></li>
+<li>to   space 68224K,   0% used - <code>对应的是Heap before中的from</code></li>
+</ul>
+</li>
+</ul>
+<p>从以上的信息我们可以计算出在垃圾收集期间, JVM中的内存使用情况。在GC之前总的堆内存使用量为 <strong>391192K</strong> 新生代的使用量为<strong>294492K</strong>。这意味着老年代使用量等于<strong>95M(382-287)</strong> 。GC之后,新生代的使用量减少了<strong>277245K(294492K-17247K)</strong>, 而总的堆内存使用下降了<strong>276823K(391192K-114369K)</strong>。可以算出有 <strong>422K(277245K-276823K)</strong> 的对象从新生代提升到老年代。因为这个取的是服务刚启动不就的gc日志，所以到老年代的对象并不多。</p>
+<h4 id="CMS-Old-GC"><a href="#CMS-Old-GC" class="headerlink" title="CMS/Old GC"></a>CMS/Old GC</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">11</span>T16:<span class="number">30</span>:<span class="number">06.802</span>+<span class="number">0800</span>: <span class="number">10.105</span>: [GC (CMS Initial Mark) [<span class="number">1</span> CMS-initial-mark: <span class="number">1536000</span>K(<span class="number">1638400</span>K)] <span class="number">1557852</span>K(<span class="number">1979776</span>K), <span class="number">0.0164961</span> secs] [Times: user=<span class="number">0.02</span> sys=<span class="number">0.00</span>, real=<span class="number">0.02</span> secs] </span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">11</span>T16:<span class="number">30</span>:<span class="number">06.819</span>+<span class="number">0800</span>: <span class="number">10.122</span>: [CMS-concurrent-mark-start]</span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">11</span>T16:<span class="number">30</span>:<span class="number">06.845</span>+<span class="number">0800</span>: <span class="number">10.148</span>: [CMS-concurrent-mark: <span class="number">0.026</span>/<span class="number">0.026</span> secs] [Times: user=<span class="number">0.02</span> sys=<span class="number">0.01</span>, real=<span class="number">0.03</span> secs] </span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">11</span>T16:<span class="number">30</span>:<span class="number">06.846</span>+<span class="number">0800</span>: <span class="number">10.148</span>: [CMS-concurrent-preclean-start]</span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">11</span>T16:<span class="number">30</span>:<span class="number">06.852</span>+<span class="number">0800</span>: <span class="number">10.155</span>: [CMS-concurrent-preclean: <span class="number">0.007</span>/<span class="number">0.007</span> secs] [Times: user=<span class="number">0.01</span> sys=<span class="number">0.00</span>, real=<span class="number">0.00</span> secs] </span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">11</span>T16:<span class="number">30</span>:<span class="number">06.852</span>+<span class="number">0800</span>: <span class="number">10.155</span>: [CMS-concurrent-abortable-preclean-start]</span><br><span class="line"> CMS: abort preclean due to time <span class="number">2019</span>-<span class="number">07</span>-<span class="number">11</span>T16:<span class="number">30</span>:<span class="number">11.947</span>+<span class="number">0800</span>: <span class="number">15.249</span>: [CMS-concurrent-abortable-preclean: <span class="number">0.374</span>/<span class="number">5.094</span> secs] [Times: user=<span class="number">0.36</span> sys=<span class="number">0.02</span>, real=<span class="number">5.10</span> secs] </span><br><span class="line">2019-07-11T16:30:11.948+0800: 15.250: [GC (CMS Final Remark) [YG occupancy: 21852 K (341376 K)]2019-07-11T16:30:11.948+0800: 15.250: [Rescan (parallel) , 0.0179172 secs]2019-07-11T16:30:11.966+0800: 15.268: [weak refs processing, 0.0000590 secs]2019-07-11T16:30:11.966+0800: 15.268: [class unloading, 0.0016677 secs]2019-07-11T16:30:11.968+0800: 15.270: [scrub symbol table, 0.0009642 secs]2019-07-11T16:30:11.969+0800: 15.271: [scrub string table, 0.0004421 secs][1 CMS-remark: 1536000K(1638400K)] 1557852K(1979776K), 0.0215229 secs] [Times: user=0.06 sys=0.00, real=0.02 secs] </span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">11</span>T16:<span class="number">30</span>:<span class="number">11.970</span>+<span class="number">0800</span>: <span class="number">15.273</span>: [CMS-concurrent-sweep-start]</span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">11</span>T16:<span class="number">30</span>:<span class="number">11.971</span>+<span class="number">0800</span>: <span class="number">15.273</span>: [CMS-concurrent-sweep: <span class="number">0.007</span>/<span class="number">0.007</span> secs] [Times: user=<span class="number">0.02</span> sys=<span class="number">0.00</span>, real=<span class="number">0.02</span> secs] </span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">11</span>T16:<span class="number">30</span>:<span class="number">11.971</span>+<span class="number">0800</span>: <span class="number">15.273</span>: [CMS-concurrent-reset-start]</span><br><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">11</span>T16:<span class="number">30</span>:<span class="number">11.977</span>+<span class="number">0800</span>: <span class="number">15.279</span>: [CMS-concurrent-reset: <span class="number">0.006</span>/<span class="number">0.006</span> secs] [Times: user=<span class="number">0.00</span> sys=<span class="number">0.00</span>, real=<span class="number">0.01</span> secs]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>CMS Initial Mark - 初始标记（会出现STW），主要标记所有的GC Root，在jdk&lt;1.8的时候可以设置<code>-XX:+CMSParallelInitialMarkEnabled</code>来进行并行。<ul>
+<li>1536000K – 老年代的当前使用量。</li>
+<li>(1638400K) – 老年代中可用内存总量。</li>
+<li>1557852K –  当前堆内存的使用量。</li>
+<li>(1979776K) – 可用堆的总大小。</li>
+<li>0.0164961 secs] [Times: user=0.02 sys=0.00, real=0.02 secs] – 此次暂停的持续时间, 以 user, system 和 real time 3个部分进行衡量</li>
+</ul>
+</li>
+<li>CMS Concurrent Mark - 并发预清理（与应用线程一起运行），在此阶段, 垃圾收集器遍历老年代，标记所有的存活对象。<ul>
+<li>0.026/0.026 secs - 此阶段的持续时间, 分别是运行时间和相应的实际时间。</li>
+<li>[Times: user=0.02 sys=0.01, real=0.03 secs] - 这部分对并发阶段来说没多少意义, 因为是从并发标记开始时计算的,而这段时间内不仅并发标记在运行,程序也在运行。</li>
+</ul>
+</li>
+<li>CMS Concurrent Preclean - 并发预清理 （与应用线程一起运行），因为前一阶段是与程序并发进行的,可能有一些引用已经改变。如果在并发标记过程中发生了引用关系变化,JVM会（通过Card）将发生了改变的区域标记为<strong>脏</strong>区。<ul>
+<li>0.007/0.007 secs 此阶段的持续时间, 分别是运行时间和对应的实际时间</li>
+<li>[Times: user=0.02 sys=0.00, real=0.02 secs] - 同样是与应用线程一起运行，这个时间没什么意义</li>
+</ul>
+</li>
+<li>CMS Concurrent Abortable Preclean - 并发可取消的预清理（与应用线程一起运行），本阶段尝试在 STW 的 Final Remark 之前尽可能地多做一些工作。<ul>
+<li>0.374/5.094 secs - 同样是运行时间和相应的实际时间，不同的是这里差距比之前大很多。因为这里只进行了少量的工作 — 0.374秒的CPU时间，GC线程经历了很多等待时间。</li>
+<li>[Times: user=0.36 sys=0.02, real=5.10 secs] - 同样是与应用线程一起运行，这个时间没什么意义。</li>
+</ul>
+</li>
+<li>Final Remark - 最终标记，这是此次GC事件中第二次(也是最后一次)STW阶段。本阶段的目标是完成老年代中所有存活对象的标记. 因为之前的 preclean 阶段是并发的, 有可能无法跟上应用程序的变化速度。所以需要 STW暂停来处理复杂情况。<ul>
+<li>YG occupancy: 21852 K (341376 K) - 当前新生代的使用量和总容量。</li>
+<li>[Rescan (parallel) , 0.0179172 secs] - 在程序暂停时重新进行扫描(Rescan),以完成存活对象的标记。此时 rescan 是并行执行的,消耗的时间为 0179172秒。</li>
+<li>weak refs processing, 0.0000590 secs  -  处理弱引用的第一个子阶段(sub-phases)的是持续时间。</li>
+<li>class unloading, 0.0016677 secs - 第二个子阶段, 卸载不使用的类的是持续时间。</li>
+<li>scrub string table, 0.0004421 secs - 最后一个子阶段, 清理持有class级别 metadata 的符号表(symbol tables),以及内部化字符串对应的 string tables。当然也显示了暂停的时钟时间。</li>
+<li>1536000K(1638400K) - 此阶段完成后老年代的使用量和总容量。</li>
+<li>1557852K(1979776K) - 此阶段完成后整个堆内存的使用量和总容量。</li>
+<li>0.0215229 secs - 此阶段的持续时间。</li>
+<li>[Times: user=0.06 sys=0.00, real=0.02 secs]  - GC事件的持续时间, 通过不同的类别来衡量: user, system and real time。</li>
+</ul>
+</li>
+<li>Concurrent Sweep - 并发清除（与应用线程一起运行），目的是删除未使用的对象，并收回他们占用的空间。<ul>
+<li>0.007/0.007 secs - 此阶段的持续时间, 分别是运行时间和实际时间。</li>
+<li>[Times: user=0.02 sys=0.00, real=0.02 secs] - 同样是与应用线程一起运行，这个时间没什么意义。</li>
+</ul>
+</li>
+<li>Concurrent Reset - 并发重置（与应用线程一起运行），此阶段与应用程序并发执行,重置CMS算法相关的内部数据, 为下一次GC循环做准备。<ul>
+<li>0.006/0.006 secs - 此阶段的持续时间, 分别是运行时间和实际时间。</li>
+<li>[Times: user=0.00 sys=0.00, real=0.01 secs] - 同样是与应用线程一起运行，这个时间没什么意义。</li>
+</ul>
+</li>
+</ul>
+<h4 id="Full-GC"><a href="#Full-GC" class="headerlink" title="Full GC"></a>Full GC</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">15</span>T20:<span class="number">39</span>:<span class="number">19.780</span>+<span class="number">0800</span>: <span class="number">21227.233</span>: [<span class="function">Full <span class="title">GC</span> <span class="params">(Heap Inspection Initiated GC)</span> 2019-07-15T20:39:19.780+0800: 21227.233: [CMS: 50374K-&gt;50344<span class="title">K</span><span class="params">(<span class="number">1536000</span>K)</span>, 0.2175503 secs] 59556K-&gt;50344<span class="title">K</span><span class="params">(<span class="number">1962688</span>K)</span>, [Metaspace: 82392K-&gt;82392<span class="title">K</span><span class="params">(<span class="number">1126400</span>K)</span>], 0.2181439 secs] [Times: user</span>=<span class="number">0.22</span> sys=<span class="number">0.00</span>, real=<span class="number">0.22</span> secs]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Full GC - 收集整个堆，包括young gen、old gen、perm gen（如果存在的话）等所有部分的模式。<ul>
+<li>Full GC (Heap Inspection Initiated GC) - GC触发的原因，这里我是手动触发的<code>jmap -histo:live pid</code>，除了这个和之前的Allocation Failure，一般还会有Ergonomics（表示JVM内部环境认为此时可以进行一次垃圾收集）。</li>
+<li>[CMS: 50374K-&gt;50344K(1536000K), 0.2175503 secs] - 老年代当前占用的内存-&gt;回收后占用的内存（老年代总内存）该操作持续的时间。</li>
+<li>59556K-&gt;50344K(1962688K) - 堆当前占用的内存-&gt;堆回收后占用的内存（堆的总内存） 该操作持续的时间。</li>
+<li>[Metaspace: 82392K-&gt;82392K(1126400K)], 0.2181439 secs] - Metaspace当前占用的内存-&gt;Metaspace回收后占用的内存（Metaspace总内存？MaxMetaspaceSize我明明设置的是256M，这接近有1100M了，有点奇怪，我查看了<code>jmap -heap pid</code>参数设置是有效的） 该操作持续的时间。</li>
+<li>[Times: user=0.22 sys=0.00, real=0.22 secs] - 事件的持续时间, 通过三个部分来衡量。</li>
+</ul>
+</li>
+</ul>
+<h3 id="jvm参数"><a href="#jvm参数" class="headerlink" title="jvm参数"></a>jvm参数</h3><blockquote>
+<p>有了上面查看日志的基础之后，再结合<strong>jstat、jmap</strong>，我们就可以根据这些数据在jvm参数上进行调优了（这2个工具就不具体介绍了，不然篇幅实在太长了 - -！）。</p>
+</blockquote>
+<h4 id="经验分享"><a href="#经验分享" class="headerlink" title="经验分享"></a>经验分享</h4><p>下面结合具体的参数，进行一些经验分享。这是我们线上其中一个服务的jvm参数：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-Xms2000M -Xmx2000M -XX:MetaspaceSize=<span class="number">256</span>M -XX:MaxMetaspaceSize=<span class="number">256</span>M -Xmn500M -XX:SurvivorRatio=<span class="number">4</span> -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -XX:ParallelGCThreads=<span class="number">8</span> -XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=<span class="number">0</span> -XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=<span class="number">70</span> -XX:+CMSScavengeBeforeRemark -XX:+CMSParallelInitialMarkEnabled -XX:+CMSParallelRemarkEnabled -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintHeapAtGC -XX:+PrintGCDateStamps -XX:+PrintTenuringDistribution -Xloggc:/data/logs/login/gc/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/logs/login/gc</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><code>-Xms2000M -Xmx2000M</code> - 初始堆大小和最大堆大小。将Xms和Xmx设为一样的值，可以避免jvm在内存不够时，扩容带来的性能消耗。</li>
+<li><code>-XX:MetaspaceSize=256M -XX:MaxMetaspaceSize=256M</code> - jdk&gt;=8移除了Perm，引入了Metapsace，这个参数跟-Xms -Xmx一样建议设置成一样，可以避免Metapsace在内存不够时，扩容带来的性能消耗。具体设置多大，建议稳定运行一段时间后通过<code>jstat -gc pid</code>确认且这个值大一些，对于大部分项目256M即可。</li>
+<li><code>-Xmn500M</code> - 新生代大小<ul>
+<li>响应时间优先的应用:年老代使用并发收集器,所以其大小需要小心设置,一般要考虑并发会话率和会话持续时间等一些参数.如果堆设置小了,可能会造成内存碎片,高回收频率以及应用暂停而使用传统的标记清除方式;如果设置大了,则需要较长的收集时间。最优化的方案,一般需要参考以下数据获得:并发垃圾收集信息、持久代并发收集次数、传统GC信息、花在新生代和年老代回收上的时间比例来进行设置。</li>
+<li>吞吐量优先的应用:一般吞吐量优先的应用都有一个很大的新生代和一个较小的年老代.原因是,这样可以尽可能回收掉大部分短期对象,减少中期的对象,而年老代尽存放长期存活对象。</li>
+<li>使用CMS的时候，可以将新生代设置的稍微较小，小于默认的3/8（新生代/堆），然后老年代利用CMS并行收集， 这样能保证系统低延迟的吞吐效率</li>
+</ul>
+</li>
+<li><code>-XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=0</code> - 因为老年代使用的算法是mark-copy，不会对碎片进行处理，通过这两个参数，可以对碎片进行压缩，解决碎片的问题。<ul>
+<li><code>-XX:+UseCMSCompactAtFullCollection</code> - 使用并发收集器时,开启对年老代的压缩。  </li>
+<li><code>-XX:CMSFullGCsBeforeCompaction=0</code> - 上面配置开启的情况下,这里设置多少次Full GC后,对年老代进行压缩。默认是0，就是每次Full GC(注意是Full GC而不是Old GC)都会进行内存压缩。</li>
+</ul>
+</li>
+<li><code>-XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=70</code> - 两者配合使用，在老年代使用率达到70%就会触发Old GC。主要是为了避免<strong><a href="#promotion failed/空间分配担保">promotion failed</a>（附录中会有详解）</strong>。<ul>
+<li><code>-XX:CMSInitiatingOccupancyFraction=70</code> - 这个阀值需要进行计算，采用的公式为<code>(Xmx-Xmn)*(1-CMSInitiatingOccupancyFraction/100)&gt;=(Xmn-Xmn/(SurvivorRatior+2))</code>，按着这个公式，我们的参数算出来会是72.2%，所以设置为70。</li>
+</ul>
+</li>
+<li><code>-XX:+CMSScavengeBeforeRemark</code> - 开启或关闭在CMS重新标记阶段之前的清除ygc尝试，目的在于减少old gen对ygc gen的引用。<ul>
+<li>为什么remark会耗时较大，主要因为有<a href="#跨代引用">跨代引用</a>，造成耗时较大。</li>
+<li>使用这个参数会是一个取舍，主要看性能瓶颈是否在remark上，如果是的话，该参数能在一定程度上缓解这个问题（因为这个参数并不是一定会执行），如果性能瓶颈不是remark，那就不需要开启了，毕竟会多一次ygc。</li>
+<li>一般低延时的服务，如果remark时间&gt;1s是无法忍受的，或者要求更高。因为该阶段会造成STW的，暂停所有用户线程，重新扫描堆中的对象，进行可达性分析，标记活着的对象，所以低延时的服务可以考虑加上。</li>
+</ul>
+</li>
+<li>gc日志相关的参数建议配置上，不然排查起来就是无头苍蝇了。</li>
+</ul>
+<h4 id="善用jmap"><a href="#善用jmap" class="headerlink" title="善用jmap"></a>善用jmap</h4><blockquote>
+<p>一个好的服务状态，我们会要求FullGC频率尽可能完全杜绝，但是完全杜绝是一个理想状态，所以我们退而求其次，尽量避免它在白天，甚至业务高峰期出现。</p>
+</blockquote>
+<p>我们之前在获取FGC的日志的时候就是使用了<code>jmap -histo:live pid</code>，该命令会强制进行FGC。那我们只需要有一个定时，每天在凌晨几点，业务最低峰期的时候运行改命令，结合<code>-XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=0</code>，从而优化内存碎片并压缩堆，降低在业务高峰期发生FGC的概率。</p>
+<h3 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h3><h4 id="内存分配与回收策略"><a href="#内存分配与回收策略" class="headerlink" title="内存分配与回收策略"></a>内存分配与回收策略</h4><h5 id="对象优先分配Eden区"><a href="#对象优先分配Eden区" class="headerlink" title="对象优先分配Eden区"></a>对象优先分配Eden区</h5><blockquote>
+<p>大多数情况下，对象在新生代Eden区中分配。当Eden空间不足，则会发生一次<code>Young GC</code>。</p>
+</blockquote>
+<h5 id="大对象直接进入老年代"><a href="#大对象直接进入老年代" class="headerlink" title="大对象直接进入老年代"></a>大对象直接进入老年代</h5><blockquote>
+<p>大对象是指需要大量连续内存空间的java对象（典型的如长字符串和数组），当新生代不足以存放大对象，就会跳过新生代直接老年代。</p>
+</blockquote>
+<h5 id="长期存活的对象将进入老年代"><a href="#长期存活的对象将进入老年代" class="headerlink" title="长期存活的对象将进入老年代"></a>长期存活的对象将进入老年代</h5><blockquote>
+<p>Jvm给每个对象定义了一个对象年龄(Age)计数器。如果对象在Eden出生并经过第一次<code>Young GC</code>后仍然存活，并且能被<code>Survivor</code>容纳的话，将被移动到Survivor空间中，并且对象年龄设为1。对象在Survivor区中每熬过一次<code>Young GC</code>，年龄就增加1岁。当它的年龄增加到一定程度（默认是15岁），将会被晋升到老年代。可以通过<code>-XX:MaxTenuringThreshold</code>参数设置晋升老年代的阈值</p>
+</blockquote>
+<h5 id="动态对象年龄判定"><a href="#动态对象年龄判定" class="headerlink" title="动态对象年龄判定"></a>动态对象年龄判定</h5><blockquote>
+<p>为了能更好地适应不同程序的内存情况，Jvm并不总是要求对象的年龄必须达到<code>MaxTenuringThreshold</code>才能晋升老年代。如果在Survivor空间中相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代。</p>
+</blockquote>
+<h4 id="promotion-failed-空间分配担保"><a href="#promotion-failed-空间分配担保" class="headerlink" title="promotion failed/空间分配担保"></a>promotion failed/空间分配担保</h4><p><img src="https://github.com/7le/7le.github.io/raw/master/image/jvm/space-allocation-guarantee.png" alt="空间分配担保"></p>
+<p>图中提到了是否允许担保失败，当新生代使用复制收集算法，但是为了内存利用率，只使用其中一个<code>Survivor</code>空间来作为轮换备份，因此当出现大量对象在<code>Young GC</code>后依然存活（最极端就是内存回收后新生代中所有对象都存活），就需要老年代进行分配担保，把<code>Survivor</code>无法容纳的对象直接进入老年代。但是多少会晋升到老年代在实际内存回收前是无法明确知道的，所以只好取之前每一次回收晋升到老年代对象容量的平均值作为经验值，与老年代剩余空间比较，决定是否进行<code>Full GC</code>来让老年代腾出更多空间。</p>
+<h4 id="跨代引用"><a href="#跨代引用" class="headerlink" title="跨代引用"></a>跨代引用</h4><blockquote>
+<p>新生代对象持有老年代中对象的引用，这种情况称为<strong>跨代引用</strong></p>
+</blockquote>
+<p><img src="https://github.com/7le/7le.github.io/raw/master/image/jvm/cross-reference.png" alt="跨代引用"></p>
+<p>上图中，对象A因为引用存在新生代中，Remark阶段必须扫描整个堆来判断对象是否存活，包括图中灰色的不可达对象。</p>
+<p>灰色对象已经不可达，但仍然需要扫描的原因：新生代GC和老年代的GC是各自分开独立进行的，只有YGC时才会使用根搜索算法，标记新生代对象是否可达，也就是说虽然一些对象已经不可达，但在YGC发生前不会被标记为不可达，CMS也无法辨认哪些对象存活，只能全堆扫描（新生代+老年代）。由此可见堆中对象的数目影响了Remark阶段耗时。 </p>
+<p>另外考虑到这个扫描（就是上述日志中的CMS-concurrent-preclean）可能会比较耗时，jvm提供了<code>CMSMaxAbortablePrecleanTime ，默认为5s</code>，相当于该可中断的预清理执行超过5s，不管是否发生YGC，都会中止此阶段，进入Remark。 </p>
+<p>而<code>-XX:+CMSScavengeBeforeRemark</code>可以保证Remark前强制进行一次YGC来回收不可达对象，减少remark的暂停时间。</p>
+<hr>
+<p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top">更多精彩 戳我</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/jvm/" rel="tag"># jvm</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/18/springcloud：使用总结/" rel="next" title="springcloud：使用总结">
+                <i class="fa fa-chevron-left"></i> springcloud：使用总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTIxNS81Nzgy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/image/ly.jpg" alt="7le">
+          <p class="site-author-name" itemprop="name">7le</p>
+           
+              <p class="site-description motion-element" itemprop="description">我只有一件事，就是忘记背后，努力面前的</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">27</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">17</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/7le" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://palmer.arkstack.cn" title="palmerye" target="_blank">palmerye</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#gc日志"><span class="nav-number">1.</span> <span class="nav-text">gc日志</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ParNew-Young-GC"><span class="nav-number">1.1.</span> <span class="nav-text">ParNew/Young GC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CMS-Old-GC"><span class="nav-number">1.2.</span> <span class="nav-text">CMS/Old GC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Full-GC"><span class="nav-number">1.3.</span> <span class="nav-text">Full GC</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jvm参数"><span class="nav-number">2.</span> <span class="nav-text">jvm参数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#经验分享"><span class="nav-number">2.1.</span> <span class="nav-text">经验分享</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#善用jmap"><span class="nav-number">2.2.</span> <span class="nav-text">善用jmap</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#附录"><span class="nav-number">3.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#内存分配与回收策略"><span class="nav-number">3.1.</span> <span class="nav-text">内存分配与回收策略</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#对象优先分配Eden区"><span class="nav-number">3.1.1.</span> <span class="nav-text">对象优先分配Eden区</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#大对象直接进入老年代"><span class="nav-number">3.1.2.</span> <span class="nav-text">大对象直接进入老年代</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#长期存活的对象将进入老年代"><span class="nav-number">3.1.3.</span> <span class="nav-text">长期存活的对象将进入老年代</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#动态对象年龄判定"><span class="nav-number">3.1.4.</span> <span class="nav-text">动态对象年龄判定</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#promotion-failed-空间分配担保"><span class="nav-number">3.2.</span> <span class="nav-text">promotion failed/空间分配担保</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#跨代引用"><span class="nav-number">3.3.</span> <span class="nav-text">跨代引用</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+    </script>
+<div class="copyright">
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <a class="theme-link" href="https://github.com/7le" target="view_window" style="cursor: pointer" rel="external nofollow">
+    7le
+  </a>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="http://hexo.io" rel="external nofollow">Hexo</a>
+</div>
+
+<span id="busuanzi_container_site_pv">
+  PV <span id="busuanzi_value_site_pv"></span>
+</span>
+<span id="busuanzi_container_site_uv">
+  &nbsp&nbsp | &nbsp&nbsp UV <span id="busuanzi_value_site_uv"></span>
+</span>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: window.location.pathname,
+            owner: '7le',
+            repo: '7le.github.io',
+            
+            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'c53d2248f8cd0c5003b8c92b5a9e27299cf96e99',
+            
+                client_id: '36f5a95fff3d8ff6cadd'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("tNiTejf4rdhMUUhMzh7SEzUI-gzGzoHsz", "qhTCrCTlLqVQcfs3eAwwuqqB");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  <a class="github-fork-ribbon left-bottom fixed" href="https://github.com/7le" data-ribbon="Follow me on GitHub" title="Follow me on GitHub">Follow me on GitHub</a>
+</body>
+</html>
+
+
+
