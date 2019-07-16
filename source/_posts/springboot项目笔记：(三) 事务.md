@@ -18,7 +18,7 @@ springboot 使用事务非常简单，我们只需要使用注解 @EnableTransac
 我们的依赖中添加的是spring-boot-starter-jdbc，框架会默认为我们注入DataSourceTransactionManager实例，如果是我们依赖中添加的是spring-boot-starter-data-jpa，那注入的JpaTransactionManager实例。因为他们都是实现自接口PlatformTransactionManager。
 
 具体的代码如下：
-```
+```java
 @EnableTransactionManagement
 @SpringBootApplication
 public class VideoApplication implements TransactionManagementConfigurer {
@@ -46,7 +46,7 @@ public class VideoApplication implements TransactionManagementConfigurer {
 ```
 
 配置好之后，我们只需要在需要的地方加上注释：
-```
+```java
 @Service
 public class CollectServiceImpl extends BaseServiceImpl implements CollectService {
 

@@ -17,14 +17,14 @@ tags: [springboot]
 ![成功](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-5-2.png)
 
 然后我们只需要把jar包放到linux中，然后cd到目录下输入
-```
+```java
 nohup java -jar xxx.jar > /tmp/web.log.out 2>&1 &
 ```
 就大功告成拉~
 
 如果还需要增加jvm的参数和gc日志，也可以直接跟在后面，优化的参数根据实际情况来选择，
 
-```
+```java
 nohup java -jar -XX:+UseConcMarkSweepGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/data/logs/xxx/gc/gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/logs/xxx/gc xxx.jar &```
 ```
 
@@ -35,7 +35,7 @@ nohup java -jar -XX:+UseConcMarkSweepGC -XX:+PrintGCDetails -XX:+PrintGCTimeStam
 
 需要输入服务器的地址，和你开启用来远程调试的端口号。这个端口号如何开启呢？对于springboot的项目来说
 
-``` 
+```java
 // address 端口号可以自己设置 要跟remote中的port一样，还要注意不要跟linux已经使用的端口号冲突
 java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 -jar XXX.jar &
 ```
@@ -53,7 +53,7 @@ set CATALINA_OPTS="-agentlib:jdwp=transport=dt_socket,address=8888（自定义�
 // linux
 export CATALINA_OPTS="-agentlib:jdwp=transport=dt_socket,address=8888（自定义调试端口）,server=y,suspend=n $CATALINA_OPTS"
 
-```
+```java
 这里还有个注意的点，就是别加在最末尾，嵌套在指令里面，不然会失效。
 
 ---

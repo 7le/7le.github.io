@@ -22,7 +22,7 @@ Redis作为一个高性能的key-value数据库，相较Memcache有了更加丰�
 #### 添加Redis相关配置
 
 在application.properties中添加：
-```
+```java
 #redis
 spring.redis.host=XXX.XXX.XXX.XXX
 spring.redis.password=XXXXXXXX
@@ -36,7 +36,7 @@ spring.redis.pool.max-wait=-1
 #### Redis配置类
 创建RedisConfig，相应的代码如下
 
-```
+```java
 /**
  * Redis配置类
  * Created by 7le on 2017/5/20 0020.
@@ -107,7 +107,7 @@ public class RedisConfig extends CachingConfigurationSelector{
 
 #### 简单的RedisUtil
 配置完后为了方便使用，抽象出一些简单的公用方法
-```
+```java
 /**
  * redis cache 工具类
  * Created by 7le on 2017/5/20 0020.
@@ -222,7 +222,7 @@ public class RedisUtil {
 根据项目路径配置：
 ![path](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-2-2.png)
 在application.properties中添加：
-```
+```java
 #mybatis
 mybatis.type-aliases-package=com.shine.video.dao
 mybatis.mapper-locations=classpath:mapping/*.xml
@@ -231,7 +231,7 @@ mybatis.mapper-locations=classpath:mapping/*.xml
 #### 添加MybatisConf类
 有了以上的配置，其实就可以使用mybatis了（要注意的是需要在接口加上@Mapper注释），这里一并将PageHelper集成了。
 
-```
+```java
 /*
  * 注册MyBatis分页插件PageHelper
  */
@@ -252,7 +252,7 @@ public class MybatisConf {
 ```
 
 配置完之后，只要如下使用就可以了。相当简单粗暴，爱不释手。
-```
+```java
 	/**
      * 收藏列表展示接口
      * @return
@@ -287,7 +287,7 @@ swagger的接口文档是restful的，大家要注意接口设计。以后有机
 
 #### 添加SwaggerConfig类
 
-```
+```java
 /**
  * @author 7le
  * @since 2017-05-17

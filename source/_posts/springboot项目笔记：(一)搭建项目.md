@@ -33,7 +33,7 @@ tags: [springboot]
 然后就是在大家熟知的pom.xml里面进行添加依赖
 
 这是我的依赖，之后会用到的基本都在这里
-```
+```java
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -216,7 +216,7 @@ tags: [springboot]
 
 上面的pom中 有两种springboot热部署的方式。
 
-```
+```java
 <dependency>
 	<groupId>org.springframework.boot</groupId>
 	<artifactId>spring-boot-devtools</artifactId>
@@ -226,7 +226,7 @@ tags: [springboot]
 这种方式的话，就需要修改代码后，ctrl+F9，这样就可以了。
 
 想必大家平时开发的时候，都用过一些热部署插件，比如JRebel，配合上idea的Update classes and resources，敲代码简直要起飞。所以很难忍受时不时ctrl+F9一下，而另外一种就是可以这样。
-```
+```java
 <dependency>
 	<groupId>org.springframework</groupId>
 	<artifactId>springloaded</artifactId>

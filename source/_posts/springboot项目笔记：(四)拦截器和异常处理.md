@@ -15,7 +15,7 @@ tags: [springboot]
 spring中拦截器主要分两种，一个是HandlerInterceptor，一个是MethodInterceptor。其中HandlerInterceptor是属于springmvc中的拦截器，它拦截的目标是请求的地址，比MethodInterceptor先执行。
 
 一般我们可以继承HandlerInterceptorAdapter，或者实现HandlerInterceptor接口，来完成。代码如下：
-```
+```java
 /**
  * 登录拦截器
  */
@@ -75,7 +75,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 
 拦截器写好后，我们只需要做以下的操作。我们可以自己定义需要拦截的路由，代码如下：
 
-```
+```java
 @SpringBootApplication
 public class VideoApplication implements TransactionManagementConfigurer {
 
@@ -90,7 +90,7 @@ public class VideoApplication implements TransactionManagementConfigurer {
 这里有个坑，需要大家注意，如果我们在拦截器中使用了@Autowired之类的注释，我们需要通过@Bean的声明，表明拦截器是Spring管理的bean，依赖注入工作自然Spring会做处理。不然我们的service将会为null。
 
 具体代码如下：
-```
+```java
 @SpringBootApplication
 public class VideoApplication implements TransactionManagementConfigurer {
 
@@ -113,7 +113,7 @@ public class VideoApplication implements TransactionManagementConfigurer {
 
 异常处理我们通常都是基于spring的AOP来显示。这个没什么废话，直接上代码：
 
-```
+```java
 /**
  * 全局的异常处理切面类
  * Created by 7le on 2017/5/18 0018.

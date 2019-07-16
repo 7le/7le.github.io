@@ -24,7 +24,7 @@ tags: [pgsql]
 
 于是乎，我们就可以利用Mybatis的``TypeHandler``来解决这个问题了。具体代码如下
 
-```
+```java
 /**
  * 自定义Mybatis ARRAY类型处理器
  *
@@ -98,7 +98,7 @@ mybatis:
 ```
 
 或者
-```
+```java
 @Bean(name = "sessionFactory")
 public SqlSessionFactory sessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
     SqlSessionFactoryBean bean = new SqlSessionFactoryBean();

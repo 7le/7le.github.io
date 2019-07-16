@@ -13,7 +13,7 @@ tags: [springboot]
 
 先说说在windows下如何使用ffmpeg，下面是截图视频图片的代码
 
-```
+```java
 public class VideoUtil {
 
     //截取视频第一帧windows   
@@ -93,7 +93,7 @@ make && make install
 ![成功](https://github.com/7le/7le.github.io/raw/master/image/springboot/springboot-6-1.png)
 
 安装完毕后，就可以直接上代码了
-```
+```java
 public class VideoUtil {
 
     public static String processImgLinux(String video_path,String ffmpeg_path) throws Exception {
