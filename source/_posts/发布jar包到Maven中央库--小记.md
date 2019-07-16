@@ -28,7 +28,7 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
 
 然后设置maven的配置，在``setting.xml``
 需要设置
-```
+```java
 <servers>
     <server>
       <id>oss</id>
@@ -38,7 +38,7 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
   </servers>
 ```
 以及
-```
+```java
 <profile>
   <id>shine</id>
   <activation>
@@ -52,7 +52,7 @@ Windows的话可以到[gpg](https://www.gpg4win.org/download.html)下载gpg4win�
 ```
 
 在自己的``pom.xml``中添加
-```
+```java
 <parent>
     <groupId>org.sonatype.oss</groupId>
     <artifactId>oss-parent</artifactId>

@@ -40,7 +40,7 @@ tags: [java]
 既然上面也提到了tomcant的线程池，那再写一些关于tomcant线程池的配置。
 首先打开/conf/server.xml文件,然后配置参数：
 
-```
+```java
 <Executor name="tomcatThreadPool"   
         namePrefix="tomcatThreadPool-"   
         maxThreads="500"    
@@ -54,7 +54,7 @@ minSpareThreads：Tomcat应该始终打开的最小不活跃线程数。默认�
 
 然后配置
 
-```
+```java
 <Connector executor="tomcatThreadPool"  
            port="8080" protocol="HTTP/1.1"  
                connectionTimeout="20000"
@@ -70,7 +70,7 @@ maxProcessors：最大可以创建的处理请求的线程数；
 acceptCount：指定当所有可以使用的处理请求的线程数都被使用时，可以放到处理队列中的请求数，超过这个数的请求将不予处理。
 
 再贴个jvm配置：
-```
+```java
 set JAVA_OPTS=-Xms1024m -Xmx1024m -XX:PermSize=128M -XX:MaxPermSize=256m
 ```
 

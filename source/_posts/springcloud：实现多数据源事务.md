@@ -19,7 +19,7 @@ tags: [springcloud,分布式事务]
 
 所以我们新建个自定义注解：
 
-```
+```java
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -31,7 +31,7 @@ public @interface MultiTransactional {
 
 再定义一个切面：
 
-```
+```java
 /**
  * 多数据源事务
  *

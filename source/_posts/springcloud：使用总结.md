@@ -55,7 +55,7 @@ docker run -d -p 9411:9411 openzipkin/zipkin
 > 因为采用的**消息总线rabbitmq**方式，zipkin也可以后装，在服务启动前的链路数据都会在mq的队列中。
 
 在对应微服务的pom增加依赖：
-```
+```java
 <dependency>
 	<groupId>org.springframework.cloud</groupId>
 	<artifactId>spring-cloud-starter-zipkin</artifactId>
@@ -73,7 +73,7 @@ docker run -d -p 9411:9411 openzipkin/zipkin
 ```
 
 然后增加对应的配置：
-```
+```java
 spring:
   application:
     name: login
@@ -108,7 +108,7 @@ spring:
 > 微服务架构下会衍生出非常多的服务调用，而在一些极端网络情况下，会出现服务调用超时或者失败等，这时候我们就需要加入服务重试机制，来保证好的用户体验。
 
 需要引入的依赖:
-```
+```java
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
@@ -121,7 +121,7 @@ spring:
 ```
 
 然后对应的配置文件：
-```
+```java
 feign:
   hystrix:
     enabled: true
@@ -148,7 +148,7 @@ ribbon:
 
 对于网关（zuul）来说，需要额外增加依赖：
 
-```
+```java
 <dependency>
     <groupId>org.springframework.retry</groupId>
     <artifactId>spring-retry</artifactId>
@@ -156,7 +156,7 @@ ribbon:
 ```
 
 配置稍微有些不同：
-```
+```java
 zuul:
   retryable: true
   sensitive-headers:          # 传递原始的header信息到最终的微服务
@@ -175,7 +175,7 @@ ribbon:
 > 因为平台使用的是jpa，而jpa不支持输出完整的sql，下面的方式通过依赖log4jdbc的方式可以实现。
 
 需要引入的依赖:
-```
+```java
 <dependency>
     <groupId>com.googlecode.log4jdbc</groupId>
     <artifactId>log4jdbc</artifactId>
@@ -184,7 +184,7 @@ ribbon:
 ```
 
 修改配置文件：
-```
+```java
 spring:
   datasource:
     url: jdbc:log4jdbc:postgresql://127.0.0.1:5432/shine
@@ -194,7 +194,7 @@ spring:
 ```
 
 这样就可以实现输出完整的sql（包括占位符也能替换），因为输出的日志较多，通过logback进行过滤，具体的配置如下：
-```
+```java
 <logger name="jdbc.sqlonly" level="OFF" />
 <logger name="jdbc.audit" level="OFF" />
 <logger name="jdbc.resultset" level="OFF" />
@@ -203,7 +203,7 @@ spring:
 ```
 
 最后得到的效果就是：
-```
+```java
 2019-05-22 20:22:22.129 INFO shine [elastic-2] [jdbc.sqltiming] - select * from shine m where m.type = 1 order by m.create_time limit 5 
  {executed in 11 msec} 
  ``` 

@@ -23,7 +23,7 @@ tags: [springcloud]
 两种方案选了第二种去尝试，具体实现有大佬已经写过文章了，就不赘述了 [Zuul动态路由](https://blog.csdn.net/u013815546/article/details/68944039)。看了下相应的源码，是通过事件来刷新路由。为什么要这样实现呢，其实看了源码会发现，**Spring Cloud Zuul**是基于spring的事件驱动模型。（PS. 好多组件都用了这个模式）
 
 源码中比较关键的是实现了ApplicationListener监听器的ZuulRefreshListener：
-```
+```java
 //路由刷新监听器
 private static class ZuulRefreshListener
 		implements ApplicationListener<ApplicationEvent> {
@@ -56,7 +56,7 @@ private static class ZuulRefreshListener
 上面虽然实现了动态路由，但是现在的服务为了保证**高可用**，不可能只有一个节点，网关也不例外。那每次要更新网关的路由，就要一个个节点去触发更新，那就太不优雅了。所以再折腾下，以达到触发单个节点，可以通知整个集群进行更新。
 
 首先我们需要引入
-```
+```java
 <dependency>
 	<groupId>org.springframework.cloud</groupId>
 	<artifactId>spring-cloud-starter-bus-amqp</artifactId>
@@ -71,7 +71,7 @@ private static class ZuulRefreshListener
 
 首先，我们可以参考源码中的端点，如``RefreshBusEndpoint``来实现我们自己的端点：``AutoRouteEndpoint``
 
-```
+```java
 @Endpoint(id = "route-refresh")
 public class AutoRouteEndpoint extends AbstractBusEndpoint {
 
@@ -91,7 +91,7 @@ public class AutoRouteEndpoint extends AbstractBusEndpoint {
 }
 ```
 
-```
+```java
 @Configuration
 public class ActuatorExtConfig {
 
@@ -108,7 +108,7 @@ public class ActuatorExtConfig {
 
 然后主要是注意源码中的``BusAutoConfiguration``类，下面是接受消息的代码：
 
-```
+```java
 //监听RemoteApplicationEvent事件
 @EventListener(classes = RemoteApplicationEvent.class)
 	public void acceptLocal(RemoteApplicationEvent event) {
@@ -122,7 +122,7 @@ public class ActuatorExtConfig {
 
 通过``@EventListener``来注册监听者，简化了以前需要实现``ApplicationListener``(像上面的``ZuulRefreshListener``)，我们也实现一个自己的监听。
 
-```
+```java
 @Configuration
 @RemoteApplicationEventScan({"com.cloud.gateway.event"})
 public class BusConfiguration {
@@ -139,7 +139,7 @@ public class BusConfiguration {
 
 ``@EventListener``具体是如何实现注册呢，需要通过``EventListenerFactory``的实现类，然后跟``ApplicationListenerMethodAdapter``就清晰了，这里就不展开了。
 
-```
+```java
 public class DefaultEventListenerFactory implements EventListenerFactory, Ordered {
 
 	private int order = LOWEST_PRECEDENCE;
@@ -167,7 +167,7 @@ public class DefaultEventListenerFactory implements EventListenerFactory, Ordere
 
 有了Listener来接收消息，那么我们还需要一个更新路由的event：
 
-```
+```java
 public class AutoRouteEvent extends RemoteApplicationEvent {
 
     protected AutoRouteEvent() {
@@ -188,7 +188,7 @@ public class AutoRouteEvent extends RemoteApplicationEvent {
 
 代码同样在``BusAutoConfiguration``类
 
-```
+```java
 //消息的消费，也是事件的发起
 @StreamListener(SpringCloudBusClient.INPUT)
 public void acceptRemote(RemoteApplicationEvent event) {
@@ -259,7 +259,7 @@ Actuator 部分端点：
 
 需要注意的是，对于spring-boot2.x 需要自己开放端点，配置如下：
 
-```
+```java
 management:
   endpoints:
     web:

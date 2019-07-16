@@ -15,7 +15,7 @@ tags: [springcloud]
 
 用过**vert.x**的小伙伴都知道，**vert.x**是函数式开发模式，而**spring-webflux**不但支持函数式，还很贴心的提供了webmvc注解的方式来编写web服务，这让学习和迁移代码上都有很大的便利。
 
-```
+```java
 @RestController
 public class AdController {
 
@@ -35,7 +35,7 @@ public class AdController {
 
 之前我封装过**vert.x**，通过注解的方式来声明路由并统一管理，跟webflux非常相似。有兴趣的小伙伴可以去玩耍一下 [vertx-shine](https://github.com/7le/vertx-shine)
 
-```
+```java
 @RouteHandler
 @RouteMapping(value = "/video")
 public class VideoVerticle {
@@ -70,7 +70,7 @@ public class VideoVerticle {
 不过在SpringMVC模式下使用异步类型（DeferredResult，Flux或SseEmitter），这将会是异步的，但读写仍然会被阻塞。
 
 使用的依赖版本如下，Servlet容器使用的是**undertow**:
-```
+```java
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-webflux</artifactId>
@@ -85,7 +85,7 @@ public class VideoVerticle {
 ```
 
 可以在启动的时候指定使用**REACTIVE**或**SERVLET**
-```
+```java
     SpringApplication app = new SpringApplication（MyApplication.class）;
     app.setWebApplicationType（WebApplicationType.REACTIVE）;
     app.run();
@@ -95,7 +95,7 @@ public class VideoVerticle {
 
 从``s.success()``方法进入，会经过很多类``MonoCreate``->``MonoSubscribeOn``->``ScopePassingSpanSubscriber``->``StrictSubscriber``->``ReactiveTypeHandler``，最后到``DeferredResult``的**setResultInternal**，这里很关键。
 
-```
+```java
 public class DeferredResult<T> {
     
     /**
@@ -132,7 +132,7 @@ public class DeferredResult<T> {
 
 我们继续找``DeferredResultHandler``函数式接口的实现，发现是在``WebAsyncManager``。向上去找源码会发现源头是我们熟悉的``RequestMappingHandlerAdapter``，那该方法就是在请求进来是**NIO线程**来执行的。
 
-```
+```java
 public final class WebAsyncManager {
     
     public void startDeferredResultProcessing(
@@ -191,7 +191,7 @@ public class DeferredResult<T> {
 
 那我们继续顺着代码往下，假设``resultHandlerToUse.handleResult(result);``成功回调了，就会到**setConcurrentResultAndDispatch**方法中，也是一些类的跳转，``WebAsyncManager``->``StandardServletAsyncWebRequest``->``AsyncContextImpl``的**dispatchAsyncRequest**方法。
 
-```
+```java
 public class AsyncContextImpl implements AsyncContext {
 
     private void dispatchAsyncRequest(final ServletDispatcher servletDispatcher, final ServletPathMatch pathInfo, final HttpServerExchange exchange) {

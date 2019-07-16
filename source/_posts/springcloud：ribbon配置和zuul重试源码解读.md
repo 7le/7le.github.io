@@ -16,7 +16,7 @@ springcloud最近的版本更迭很快，为了更好的契合springboot2，我�
 ### ribbon 配置问题
 
 如果要实现**zuul**重试功能是要先引入：
-```
+```java
 <dependency>
     <groupId>org.springframework.retry</groupId>
     <artifactId>spring-retry</artifactId>
@@ -24,7 +24,7 @@ springcloud最近的版本更迭很快，为了更好的契合springboot2，我�
 ```
 
 然后添加配置，我一开始的配置是这样的：
-```
+```java
 zuul:
   retryable: true
 ribbon:
@@ -36,7 +36,7 @@ ribbon:
 ```
 
 查阅源码后发现正确的写法应该是：
-```
+```java
 zuul:
   retryable: true
 ribbon:
@@ -48,7 +48,7 @@ ribbon:
 ```
 
 上面的方式是全局的配置，如果需要局部的配置，可以这样写成
-```
+```java
 （serviceId）:
   ribbon:	
     ConnectTimeout: 500                 # 请求连接的超时时间
@@ -64,7 +64,7 @@ ribbon:
 
 对应这些配置的参数查阅源码，可以发现``ribbon-core``源码里有对应的``CommonClientConfigKey``类
 
-```
+```java
 public abstract class CommonClientConfigKey<T> implements IClientConfigKey<T> {
     ......
 
@@ -80,7 +80,7 @@ public abstract class CommonClientConfigKey<T> implements IClientConfigKey<T> {
 
 这3个参数在``DefaultLoadBalancerRetryHandler``类中被使用，而这个类在``RibbonClientConfiguration``中完成初始化的，因为**@ConditionalOnMissingBean**则不会被多次加载。
 
-```
+```java
 @Bean
 @ConditionalOnMissingBean
 public RetryHandler retryHandler(IClientConfig config) {
@@ -90,7 +90,7 @@ public RetryHandler retryHandler(IClientConfig config) {
 
 其他参数也是类似，不过被使用在其他类中。它们去获得对应的value都是使用**getProperty**方法，通过调用**getInstance**获得包装过的动态属性类，再拿到对应的value。
 
-```
+```java
 public class DefaultClientConfigImpl implements IClientConfig {
     
     /**
@@ -142,7 +142,7 @@ public class DynamicProperty {
 
 其中在``DefaultClientConfigImpl``有个很重要的方法**loadProperties**，作用是来加载配置。
 
-```
+```java
 /**
  * 加载给定的客户端属性
  */
@@ -176,14 +176,14 @@ public void loadProperties(String restClientName){
 
 上面已经分析了配置的参数是如何被使用，但是还是有一个问题，那就是很关键的**loadProperties**的方法是何时被调用。查看源码可以发现该方法是在``RibbonClientConfiguration``类中被调用。查看所在的jar包的``spring.factories``，发现这个类并不会在服务启动时被加载。
 
-```
+```java
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.springframework.cloud.netflix.ribbon.RibbonAutoConfiguration
 ```
 
 那既然不是在服务启动的时候加载，那猜测是从**Zuul**进行路由转发的时候准备的，继续挖源码。很自然我们的目标就在``ZuulFilter``的子类上了。其中一个很重要的Filter就是``RibbonRoutingFilter``，它主要是完成请求的路由转发，很符合我们的想法，查看它的**run**方法，然后我们跟进到**forward**方法。
 
-```
+```java
 public class RibbonRoutingFilter extends ZuulFilter {
 
 	@Override
@@ -225,7 +225,7 @@ public class RibbonRoutingFilter extends ZuulFilter {
 
 其中有2个重要的方法，分别是**create**和**execute**。很明显配置加载的工作只有可能在**create**方法中，为了验证之前的想法，继续看**create**的源码。这里的**ribbonCommandFactory**是在``RibbonCommandFactoryConfiguration``完成初始化，查看``spring.factories``，该类会在服务启动的时候加载。上面的**@import**很重要，跟进去可以发现，会先去判断是否有``ribbon.restclient.enabled``配置，再判断是否有``okhttp3.OkHttpClient``类，如果都没有设置的话，这个**ribbonCommandFactory**将会是``HttpClientRibbonCommandFactory``。
 
-```
+```java
 @Configuration
 @Import({ RibbonCommandFactoryConfiguration.RestClientRibbonConfiguration.class,
 		RibbonCommandFactoryConfiguration.OkHttpRibbonConfiguration.class,
@@ -247,7 +247,7 @@ public class ZuulProxyAutoConfiguration extends ZuulServerAutoConfiguration {
 
 查看``HttpClientRibbonCommandFactory``的**create**方法:
 
-```
+```java
 public class HttpClientRibbonCommandFactory extends AbstractRibbonCommandFactory {
 
 	@Override
@@ -270,7 +270,7 @@ public class HttpClientRibbonCommandFactory extends AbstractRibbonCommandFactory
 
 同样的道理，准备的工作一般会在创建的时候完成，往**getClient**方法跟下去，这里涉及的类也不详细列举了，跟下去后会到``NamedContextFactory``的**createContext**方法的``context.refresh();``，刷新了context，会调用到**finishBeanFactoryInitialization**方法中的``beanFactory.preInstantiateSingletons()``，该方法会将这个上下文的bean工厂初始化，并初始化所有剩余的单例bean。这样之前的疑问就解答了，果然是在**zuul**做转发的时候完成了加载。
 
-```
+```java
 public void preInstantiateSingletons() throws BeansException {
 	if (this.logger.isDebugEnabled()) {
 		this.logger.debug("Pre-instantiating singletons in " + this);
@@ -316,7 +316,7 @@ public void preInstantiateSingletons() throws BeansException {
 
 到此，**forward**中的**create**方法已经看了，问题也解决了。那把剩余的**execute**也一并看了吧。该方法最后执行的会是``AbstractRibbonCommand``的**run**方法，里面重要的就是**executeWithLoadBalancer**方法：
 
-```
+```java
 public abstract class AbstractLoadBalancerAwareClient<S extends ClientRequest, T extends IResponse> extends LoadBalancerContext implements IClient<S, T>, IClientConfigAware {
 
 	public T executeWithLoadBalancer(final S request, final IClientConfig requestConfig) throws ClientException {
@@ -368,7 +368,7 @@ public abstract class AbstractLoadBalancerAwareClient<S extends ClientRequest, T
 
 然后就是``LoadBalancerCommand``的**submit**方法：
 
-```
+```java
 public Observable<T> submit(final ServerOperation<T> operation) {
         
 	......
@@ -415,7 +415,7 @@ public Observable<T> submit(final ServerOperation<T> operation) {
 
 最后就是``RetryableRibbonLoadBalancingHttpClient``的**execute**方法：
 
-```
+```java
 @Override
 public RibbonApacheHttpResponse execute(final RibbonApacheHttpRequest request, final IClientConfig configOverride) throws Exception {
 
