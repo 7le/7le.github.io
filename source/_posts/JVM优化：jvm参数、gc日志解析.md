@@ -1,6 +1,6 @@
 ---
 title: JVM优化：jvm参数、gc日志经验分享
-date: 2019-07-09 21:32:12
+date: 2019-07-16 21:32:12
 type: "tags"
 tags: [jvm]
 ---
@@ -21,10 +21,10 @@ tags: [jvm]
 
 下面开始分析ParNew和CMS，该搭配主要的目标是低延时，比较常用，另外我们线上也是采用这个：
 1. 新生代：采用 stop-the-world mark-copy 算法
-2. 年老代：采用 Mostly Concurrent mark-sweep 算法
+2. 老年代：采用 Mostly Concurrent mark-sweep 算法
 
 能够达成该目标主要因为以下两个原因：
-1. 它不会花时间整理压缩年老代，而是维护了一个叫做 free-lists 的数据结构，该数据结构用来管理那些回收再利用的内存空间；
+1. 它不会花时间整理压缩老年代，而是维护了一个叫做 free-lists 的数据结构，该数据结构用来管理那些回收再利用的内存空间；
 2. CMS分为四个阶段，只有initial mark和remark会触发STW，其他都是与应用线程一同运行的
 
 #### ParNew/Young GC
@@ -149,7 +149,7 @@ Heap after GC invocations=75 (full 0):
 2019-07-15T20:39:19.780+0800: 21227.233: [Full GC (Heap Inspection Initiated GC) 2019-07-15T20:39:19.780+0800: 21227.233: [CMS: 50374K->50344K(1536000K), 0.2175503 secs] 59556K->50344K(1962688K), [Metaspace: 82392K->82392K(1126400K)], 0.2181439 secs] [Times: user=0.22 sys=0.00, real=0.22 secs] 
 ```
 
-* Full GC - 收集整个堆，包括young gen、old gen、perm gen（如果存在的话）等所有部分的模式。
+* Full GC - 收集整个堆，包括young gen、old gen、perm gen（如果存在的话）等所有部分。
    * Full GC (Heap Inspection Initiated GC) - GC触发的原因，这里我是手动触发的``jmap -histo:live pid``，除了这个和之前的Allocation Failure，一般还会有Ergonomics（表示JVM内部环境认为此时可以进行一次垃圾收集）。
    * [CMS: 50374K->50344K(1536000K), 0.2175503 secs] - 老年代当前占用的内存->回收后占用的内存（老年代总内存）该操作持续的时间。
    * 59556K->50344K(1962688K) - 堆当前占用的内存->堆回收后占用的内存（堆的总内存） 该操作持续的时间。
@@ -170,12 +170,12 @@ Heap after GC invocations=75 (full 0):
 * ``-Xms2000M -Xmx2000M`` - 初始堆大小和最大堆大小。将Xms和Xmx设为一样的值，可以避免jvm在内存不够时，扩容带来的性能消耗。
 * ``-XX:MetaspaceSize=256M -XX:MaxMetaspaceSize=256M`` - jdk>=8移除了Perm，引入了Metapsace，这个参数跟-Xms -Xmx一样建议设置成一样，可以避免Metapsace在内存不够时，扩容带来的性能消耗。具体设置多大，建议稳定运行一段时间后通过``jstat -gc pid``确认且这个值大一些，对于大部分项目256M即可。
 * ``-Xmn500M `` - 新生代大小
-   * 响应时间优先的应用:年老代使用并发收集器,所以其大小需要小心设置,一般要考虑并发会话率和会话持续时间等一些参数.如果堆设置小了,可能会造成内存碎片,高回收频率以及应用暂停而使用传统的标记清除方式;如果设置大了,则需要较长的收集时间。最优化的方案,一般需要参考以下数据获得:并发垃圾收集信息、持久代并发收集次数、传统GC信息、花在新生代和年老代回收上的时间比例来进行设置。
-   * 吞吐量优先的应用:一般吞吐量优先的应用都有一个很大的新生代和一个较小的年老代.原因是,这样可以尽可能回收掉大部分短期对象,减少中期的对象,而年老代尽存放长期存活对象。
+   * 响应时间优先的应用:老年代使用并发收集器,所以其大小需要小心设置,一般要考虑并发会话率和会话持续时间等一些参数.如果堆设置小了,可能会造成内存碎片,高回收频率以及应用暂停而使用传统的标记清除方式;如果设置大了,则需要较长的收集时间。最优化的方案,一般需要参考以下数据获得:并发垃圾收集信息、持久代并发收集次数、传统GC信息、花在新生代和老年代回收上的时间比例来进行设置。
+   * 吞吐量优先的应用:一般吞吐量优先的应用都有一个很大的新生代和一个较小的老年代.原因是,这样可以尽可能回收掉大部分短期对象,减少中期的对象,而老年代尽存放长期存活对象。
    * 使用CMS的时候，可以将新生代设置的稍微较小，小于默认的3/8（新生代/堆），然后老年代利用CMS并行收集， 这样能保证系统低延迟的吞吐效率
 * ``-XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=0`` - 因为老年代使用的算法是mark-copy，不会对碎片进行处理，通过这两个参数，可以对碎片进行压缩，解决碎片的问题。
-   * ``-XX:+UseCMSCompactAtFullCollection`` - 使用并发收集器时,开启对年老代的压缩。  
-   * ``-XX:CMSFullGCsBeforeCompaction=0`` - 上面配置开启的情况下,这里设置多少次Full GC后,对年老代进行压缩。默认是0，就是每次Full GC(注意是Full GC而不是Old GC)都会进行内存压缩。
+   * ``-XX:+UseCMSCompactAtFullCollection`` - 使用并发收集器时,开启对老年代的压缩。  
+   * ``-XX:CMSFullGCsBeforeCompaction=0`` - 上面配置开启的情况下,这里设置多少次Full GC后,对老年代进行压缩。默认是0，就是每次Full GC(注意是Full GC而不是Old GC)都会进行内存压缩。
 * ``-XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=70`` - 两者配合使用，在老年代使用率达到70%就会触发Old GC。主要是为了避免**[promotion failed](#promotion failed/空间分配担保)（附录中会有详解）**。
    * ``-XX:CMSInitiatingOccupancyFraction=70`` - 这个阀值需要进行计算，采用的公式为``(Xmx-Xmn)*(1-CMSInitiatingOccupancyFraction/100)>=(Xmn-Xmn/(SurvivorRatior+2))``，按着这个公式，我们的参数算出来会是72.2%，所以设置为70。
 * ``-XX:+CMSScavengeBeforeRemark`` - 开启或关闭在CMS重新标记阶段之前的清除ygc尝试，目的在于减少old gen对ygc gen的引用。
