@@ -98,13 +98,13 @@
 <meta name="keywords" content="jvm">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JVM优化：jvm参数、gc日志经验分享">
-<meta property="og:url" content="https://7le.top/2019/07/09/JVM优化：jvm参数、gc日志解析/index.html">
+<meta property="og:url" content="https://7le.top/2019/07/16/JVM优化：jvm参数、gc日志解析/index.html">
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="从这篇开始写一些jvm调优相关的内容，一起来揭开jvm神秘的面纱吧~  🥕">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/space-allocation-guarantee.png">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/jvm/cross-reference.png">
-<meta property="og:updated_time" content="2019-07-16T17:16:35.956Z">
+<meta property="og:updated_time" content="2019-07-17T19:29:38.962Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JVM优化：jvm参数、gc日志经验分享">
 <meta name="twitter:description" content="从这篇开始写一些jvm调优相关的内容，一起来揭开jvm神秘的面纱吧~  🥕">
@@ -136,7 +136,7 @@
 
 
 
-  <link rel="canonical" href="https://7le.top/2019/07/09/JVM优化：jvm参数、gc日志解析/">
+  <link rel="canonical" href="https://7le.top/2019/07/16/JVM优化：jvm参数、gc日志解析/">
 
 
 
@@ -277,7 +277,7 @@
   
 
   <article class="post post-type-tags " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://7le.top/2019/07/09/JVM优化：jvm参数、gc日志解析/">
+    <link itemprop="mainEntityOfPage" href="https://7le.top/2019/07/16/JVM优化：jvm参数、gc日志解析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="7le">
@@ -313,8 +313,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-09T21:32:12+08:00">
-                2019-07-09
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-16T21:32:12+08:00">
+                2019-07-16
               </time>
             
 
@@ -332,8 +332,8 @@
                   <span class="post-meta-item-icon">
                     <i class="fa fa-comment-o"></i>
                   </span>
-                  <a href="/2019/07/09/JVM优化：jvm参数、gc日志解析/#comments" itemprop="discussionUrl">
-                    <span class="post-comments-count gitment-comments-count" data-xid="/2019/07/09/JVM优化：jvm参数、gc日志解析/" itemprop="commentsCount"></span>
+                  <a href="/2019/07/16/JVM优化：jvm参数、gc日志解析/#comments" itemprop="discussionUrl">
+                    <span class="post-comments-count gitment-comments-count" data-xid="/2019/07/16/JVM优化：jvm参数、gc日志解析/" itemprop="commentsCount"></span>
                   </a>
                 </span>
             
@@ -341,7 +341,7 @@
 
           
           
-             <span id="/2019/07/09/JVM优化：jvm参数、gc日志解析/" class="leancloud_visitors" data-flag-title="JVM优化：jvm参数、gc日志经验分享">
+             <span id="/2019/07/16/JVM优化：jvm参数、gc日志解析/" class="leancloud_visitors" data-flag-title="JVM优化：jvm参数、gc日志经验分享">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -383,11 +383,11 @@
 <p>下面开始分析ParNew和CMS，该搭配主要的目标是低延时，比较常用，另外我们线上也是采用这个：</p>
 <ol>
 <li>新生代：采用 stop-the-world mark-copy 算法</li>
-<li>年老代：采用 Mostly Concurrent mark-sweep 算法</li>
+<li>老年代：采用 Mostly Concurrent mark-sweep 算法</li>
 </ol>
 <p>能够达成该目标主要因为以下两个原因：</p>
 <ol>
-<li>它不会花时间整理压缩年老代，而是维护了一个叫做 free-lists 的数据结构，该数据结构用来管理那些回收再利用的内存空间；</li>
+<li>它不会花时间整理压缩老年代，而是维护了一个叫做 free-lists 的数据结构，该数据结构用来管理那些回收再利用的内存空间；</li>
 <li>CMS分为四个阶段，只有initial mark和remark会触发STW，其他都是与应用线程一同运行的</li>
 </ol>
 <h4 id="ParNew-Young-GC"><a href="#ParNew-Young-GC" class="headerlink" title="ParNew/Young GC"></a>ParNew/Young GC</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&#123;Heap before GC invocations=<span class="number">74</span> (full <span class="number">0</span>):</span><br><span class="line"> par <span class="keyword">new</span> generation   total <span class="number">341376</span>K, used <span class="number">294492</span>K [<span class="number">0x0000000083000000</span>, <span class="number">0x000000009c000000</span>, <span class="number">0x000000009c000000</span>)</span><br><span class="line">  eden space <span class="number">273152</span>K, <span class="number">100</span>% used [<span class="number">0x0000000083000000</span>, <span class="number">0x0000000093ac0000</span>, <span class="number">0x0000000093ac0000</span>)</span><br><span class="line">  from space <span class="number">68224</span>K,  <span class="number">31</span>% used [<span class="number">0x0000000093ac0000</span>, <span class="number">0x0000000094f970f8</span>, <span class="number">0x0000000097d60000</span>)</span><br><span class="line">  to   space <span class="number">68224</span>K,   <span class="number">0</span>% used [<span class="number">0x0000000097d60000</span>, <span class="number">0x0000000097d60000</span>, <span class="number">0x000000009c000000</span>)</span><br><span class="line"> concurrent mark-sweep generation total <span class="number">1638400</span>K, used <span class="number">96700</span>K [<span class="number">0x000000009c000000</span>, <span class="number">0x0000000100000000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line"> Metaspace       used <span class="number">113286</span>K, capacity <span class="number">119312</span>K, committed <span class="number">119424</span>K, reserved <span class="number">1153024</span>K</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">space</span>    <span class="title">used</span> 14248<span class="title">K</span>, <span class="title">capacity</span> 15218<span class="title">K</span>, <span class="title">committed</span> 15232<span class="title">K</span>, <span class="title">reserved</span> 1048576<span class="title">K</span></span></span><br><span class="line">2019-07-10T18:26:55.933+0800: 5756.871: [GC (Allocation Failure) 2019-07-10T18:26:55.933+0800: 5756.871: [ParNew</span><br><span class="line">Desired survivor size <span class="number">34930688</span> bytes, <span class="keyword">new</span> threshold <span class="number">15</span> (max <span class="number">15</span>)</span><br><span class="line">- age   <span class="number">1</span>:    <span class="number">1688360</span> bytes,    <span class="number">1688360</span> total</span><br><span class="line">- age   <span class="number">2</span>:      <span class="number">51552</span> bytes,    <span class="number">1739912</span> total</span><br><span class="line">- age   <span class="number">3</span>:      <span class="number">59880</span> bytes,    <span class="number">1799792</span> total</span><br><span class="line">- age   <span class="number">4</span>:      <span class="number">51472</span> bytes,    <span class="number">1851264</span> total</span><br><span class="line">- age   <span class="number">5</span>:     <span class="number">100528</span> bytes,    <span class="number">1951792</span> total</span><br><span class="line">- age   <span class="number">6</span>:     <span class="number">136576</span> bytes,    <span class="number">2088368</span> total</span><br><span class="line">- age   <span class="number">7</span>:      <span class="number">45280</span> bytes,    <span class="number">2133648</span> total</span><br><span class="line">- age   <span class="number">8</span>:     <span class="number">251688</span> bytes,    <span class="number">2385336</span> total</span><br><span class="line">- age   <span class="number">9</span>:    <span class="number">4738624</span> bytes,    <span class="number">7123960</span> total</span><br><span class="line">- age  <span class="number">10</span>:     <span class="number">173024</span> bytes,    <span class="number">7296984</span> total</span><br><span class="line">- age  <span class="number">11</span>:      <span class="number">43856</span> bytes,    <span class="number">7340840</span> total</span><br><span class="line">- age  <span class="number">12</span>:     <span class="number">297760</span> bytes,    <span class="number">7638600</span> total</span><br><span class="line">- age  <span class="number">13</span>:    <span class="number">1440080</span> bytes,    <span class="number">9078680</span> total</span><br><span class="line">- age  <span class="number">14</span>:     <span class="number">809944</span> bytes,    <span class="number">9888624</span> total</span><br><span class="line">- age  <span class="number">15</span>:    <span class="number">1862752</span> bytes,   <span class="number">11751376</span> total</span><br><span class="line">: <span class="number">294492</span>K-&gt;<span class="number">17247</span>K(<span class="number">341376</span>K), <span class="number">0.0139261</span> secs] <span class="number">391192</span>K-&gt;<span class="number">114369</span>K(<span class="number">1979776</span>K), <span class="number">0.0141007</span> secs] [Times: user=<span class="number">0.05</span> sys=<span class="number">0.00</span>, real=<span class="number">0.02</span> secs] </span><br><span class="line">Heap after GC invocations=<span class="number">75</span> (full <span class="number">0</span>):</span><br><span class="line"> par <span class="keyword">new</span> generation   total <span class="number">341376</span>K, used <span class="number">17247</span>K [<span class="number">0x0000000083000000</span>, <span class="number">0x000000009c000000</span>, <span class="number">0x000000009c000000</span>)</span><br><span class="line">  eden space <span class="number">273152</span>K,   <span class="number">0</span>% used [<span class="number">0x0000000083000000</span>, <span class="number">0x0000000083000000</span>, <span class="number">0x0000000093ac0000</span>)</span><br><span class="line">  from space <span class="number">68224</span>K,  <span class="number">25</span>% used [<span class="number">0x0000000097d60000</span>, <span class="number">0x0000000098e37ed8</span>, <span class="number">0x000000009c000000</span>)</span><br><span class="line">  to   space <span class="number">68224</span>K,   <span class="number">0</span>% used [<span class="number">0x0000000093ac0000</span>, <span class="number">0x0000000093ac0000</span>, <span class="number">0x0000000097d60000</span>)</span><br><span class="line"> concurrent mark-sweep generation total <span class="number">1638400</span>K, used <span class="number">97121</span>K [<span class="number">0x000000009c000000</span>, <span class="number">0x0000000100000000</span>, <span class="number">0x0000000100000000</span>)</span><br><span class="line"> Metaspace       used <span class="number">113286</span>K, capacity <span class="number">119312</span>K, committed <span class="number">119424</span>K, reserved <span class="number">1153024</span>K</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">space</span>    <span class="title">used</span> 14248<span class="title">K</span>, <span class="title">capacity</span> 15218<span class="title">K</span>, <span class="title">committed</span> 15232<span class="title">K</span>, <span class="title">reserved</span> 1048576<span class="title">K</span></span></span><br><span class="line"><span class="class">&#125;</span></span><br></pre></td></tr></table></figure>
@@ -473,7 +473,7 @@
 </ul>
 <h4 id="Full-GC"><a href="#Full-GC" class="headerlink" title="Full GC"></a>Full GC</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2019</span>-<span class="number">07</span>-<span class="number">15</span>T20:<span class="number">39</span>:<span class="number">19.780</span>+<span class="number">0800</span>: <span class="number">21227.233</span>: [<span class="function">Full <span class="title">GC</span> <span class="params">(Heap Inspection Initiated GC)</span> 2019-07-15T20:39:19.780+0800: 21227.233: [CMS: 50374K-&gt;50344<span class="title">K</span><span class="params">(<span class="number">1536000</span>K)</span>, 0.2175503 secs] 59556K-&gt;50344<span class="title">K</span><span class="params">(<span class="number">1962688</span>K)</span>, [Metaspace: 82392K-&gt;82392<span class="title">K</span><span class="params">(<span class="number">1126400</span>K)</span>], 0.2181439 secs] [Times: user</span>=<span class="number">0.22</span> sys=<span class="number">0.00</span>, real=<span class="number">0.22</span> secs]</span><br></pre></td></tr></table></figure>
 <ul>
-<li>Full GC - 收集整个堆，包括young gen、old gen、perm gen（如果存在的话）等所有部分的模式。<ul>
+<li>Full GC - 收集整个堆，包括young gen、old gen、perm gen（如果存在的话）等所有部分。<ul>
 <li>Full GC (Heap Inspection Initiated GC) - GC触发的原因，这里我是手动触发的<code>jmap -histo:live pid</code>，除了这个和之前的Allocation Failure，一般还会有Ergonomics（表示JVM内部环境认为此时可以进行一次垃圾收集）。</li>
 <li>[CMS: 50374K-&gt;50344K(1536000K), 0.2175503 secs] - 老年代当前占用的内存-&gt;回收后占用的内存（老年代总内存）该操作持续的时间。</li>
 <li>59556K-&gt;50344K(1962688K) - 堆当前占用的内存-&gt;堆回收后占用的内存（堆的总内存） 该操作持续的时间。</li>
@@ -490,14 +490,14 @@
 <li><code>-Xms2000M -Xmx2000M</code> - 初始堆大小和最大堆大小。将Xms和Xmx设为一样的值，可以避免jvm在内存不够时，扩容带来的性能消耗。</li>
 <li><code>-XX:MetaspaceSize=256M -XX:MaxMetaspaceSize=256M</code> - jdk&gt;=8移除了Perm，引入了Metapsace，这个参数跟-Xms -Xmx一样建议设置成一样，可以避免Metapsace在内存不够时，扩容带来的性能消耗。具体设置多大，建议稳定运行一段时间后通过<code>jstat -gc pid</code>确认且这个值大一些，对于大部分项目256M即可。</li>
 <li><code>-Xmn500M</code> - 新生代大小<ul>
-<li>响应时间优先的应用:年老代使用并发收集器,所以其大小需要小心设置,一般要考虑并发会话率和会话持续时间等一些参数.如果堆设置小了,可能会造成内存碎片,高回收频率以及应用暂停而使用传统的标记清除方式;如果设置大了,则需要较长的收集时间。最优化的方案,一般需要参考以下数据获得:并发垃圾收集信息、持久代并发收集次数、传统GC信息、花在新生代和年老代回收上的时间比例来进行设置。</li>
-<li>吞吐量优先的应用:一般吞吐量优先的应用都有一个很大的新生代和一个较小的年老代.原因是,这样可以尽可能回收掉大部分短期对象,减少中期的对象,而年老代尽存放长期存活对象。</li>
+<li>响应时间优先的应用:老年代使用并发收集器,所以其大小需要小心设置,一般要考虑并发会话率和会话持续时间等一些参数.如果堆设置小了,可能会造成内存碎片,高回收频率以及应用暂停而使用传统的标记清除方式;如果设置大了,则需要较长的收集时间。最优化的方案,一般需要参考以下数据获得:并发垃圾收集信息、持久代并发收集次数、传统GC信息、花在新生代和老年代回收上的时间比例来进行设置。</li>
+<li>吞吐量优先的应用:一般吞吐量优先的应用都有一个很大的新生代和一个较小的老年代.原因是,这样可以尽可能回收掉大部分短期对象,减少中期的对象,而老年代尽存放长期存活对象。</li>
 <li>使用CMS的时候，可以将新生代设置的稍微较小，小于默认的3/8（新生代/堆），然后老年代利用CMS并行收集， 这样能保证系统低延迟的吞吐效率</li>
 </ul>
 </li>
 <li><code>-XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=0</code> - 因为老年代使用的算法是mark-copy，不会对碎片进行处理，通过这两个参数，可以对碎片进行压缩，解决碎片的问题。<ul>
-<li><code>-XX:+UseCMSCompactAtFullCollection</code> - 使用并发收集器时,开启对年老代的压缩。  </li>
-<li><code>-XX:CMSFullGCsBeforeCompaction=0</code> - 上面配置开启的情况下,这里设置多少次Full GC后,对年老代进行压缩。默认是0，就是每次Full GC(注意是Full GC而不是Old GC)都会进行内存压缩。</li>
+<li><code>-XX:+UseCMSCompactAtFullCollection</code> - 使用并发收集器时,开启对老年代的压缩。  </li>
+<li><code>-XX:CMSFullGCsBeforeCompaction=0</code> - 上面配置开启的情况下,这里设置多少次Full GC后,对老年代进行压缩。默认是0，就是每次Full GC(注意是Full GC而不是Old GC)都会进行内存压缩。</li>
 </ul>
 </li>
 <li><code>-XX:+UseCMSInitiatingOccupancyOnly -XX:CMSInitiatingOccupancyFraction=70</code> - 两者配合使用，在老年代使用率达到70%就会触发Old GC。主要是为了避免<strong><a href="#promotion failed/空间分配担保">promotion failed</a>（附录中会有详解）</strong>。<ul>
