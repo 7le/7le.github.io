@@ -17,7 +17,7 @@ tags: [springcloud,总结]
 
 ### 安装zipkin
 
-> 直接采用**消息总线rabbitmq**方式，使服务和zipkin解耦。需要注意的是这种方式默认的队列是叫zipkin，而且是由zipkin服务端创建的。
+> 直接采用**消息总线rabbitmq**方式，使服务和zipkin解耦。需要注意的是这种方式默认的队列是叫zipkin，而且是由zipkin服务端创建的，**所以需要先启动zipkin**。
 
 下载最新版的zipkin.jar，然后就可以根据以下命令启动：
 
@@ -52,7 +52,7 @@ docker run -d -p 9411:9411 openzipkin/zipkin
 
 ### 服务接入
 
-> 因为采用的**消息总线rabbitmq**方式，zipkin也可以后装，在服务启动前的链路数据都会在mq的队列中。
+> 因为采用的**消息总线rabbitmq**方式，zipkin宕机的话，相应的链路的信息会在队列中存放，重启后又会消费掉。
 
 在对应微服务的pom增加依赖：
 ```java
