@@ -170,9 +170,7 @@ Heap after GC invocations=75 (full 0):
 * ``-Xms2000M -Xmx2000M`` - 初始堆大小和最大堆大小。将Xms和Xmx设为一样的值，可以避免jvm在内存不够时，扩容带来的性能消耗。
 * ``-XX:MetaspaceSize=256M -XX:MaxMetaspaceSize=256M`` - jdk>=8移除了Perm，引入了Metapsace，这个参数跟-Xms -Xmx一样建议设置成一样，可以避免Metapsace在内存不够时，扩容带来的性能消耗。具体设置多大，建议稳定运行一段时间后通过``jstat -gc pid``确认且这个值大一些，对于大部分项目256M即可。
 * ``-Xmn500M `` - 新生代大小
-   * 响应时间优先的应用:老年代使用并发收集器,所以其大小需要小心设置,一般要考虑并发会话率和会话持续时间等一些参数.如果堆设置小了,可能会造成内存碎片,高回收频率以及应用暂停而使用传统的标记清除方式;如果设置大了,则需要较长的收集时间。最优化的方案,一般需要参考以下数据获得:并发垃圾收集信息、持久代并发收集次数、传统GC信息、花在新生代和老年代回收上的时间比例来进行设置。
-   * 吞吐量优先的应用:一般吞吐量优先的应用都有一个很大的新生代和一个较小的老年代.原因是,这样可以尽可能回收掉大部分短期对象,减少中期的对象,而老年代尽存放长期存活对象。
-   * 使用CMS的时候，可以将新生代设置的稍微较小，小于默认的3/8（新生代/堆），然后老年代利用CMS并行收集， 这样能保证系统低延迟的吞吐效率
+   * 如何选择各分区大小应该依赖应用程序中对象生命周期的分布情况：如果应用存在大量的短期对象，应该选择较大的年轻代；如果存在相对较多的持久对象，老年代应该适当增大。
 * ``-XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=0`` - 因为老年代使用的算法是mark-copy，不会对碎片进行处理，通过这两个参数，可以对碎片进行压缩，解决碎片的问题。
    * ``-XX:+UseCMSCompactAtFullCollection`` - 使用并发收集器时,开启对老年代的压缩。  
    * ``-XX:CMSFullGCsBeforeCompaction=0`` - 上面配置开启的情况下,这里设置多少次Full GC后,对老年代进行压缩。默认是0，就是每次Full GC(注意是Full GC而不是Old GC)都会进行内存压缩。
@@ -230,6 +228,10 @@ Heap after GC invocations=75 (full 0):
 另外考虑到这个扫描（就是上述日志中的CMS-concurrent-preclean）可能会比较耗时，jvm提供了``CMSMaxAbortablePrecleanTime ，默认为5s``，相当于该可中断的预清理执行超过5s，不管是否发生YGC，都会中止此阶段，进入Remark。 
 
 而``-XX:+CMSScavengeBeforeRemark``可以保证Remark前强制进行一次YGC来回收不可达对象，减少remark的暂停时间。
+
+#### 动态年龄
+
+> Hotspot遍历所有对象时，按照年龄从小到大对其所占用的大小进行累积，当累积的某个年龄大小超过了survivor区的一半时，取这个年龄和MaxTenuringThreshold中更小的一个值，作为新的晋升年龄阈值。
 
 ---
 [Github](https://github.com/7le) 不要吝啬你的star ^.^
