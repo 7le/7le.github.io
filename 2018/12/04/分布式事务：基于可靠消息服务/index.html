@@ -106,7 +106,8 @@
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other1.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other2.jpg">
 <meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/other3.jpg">
-<meta property="og:updated_time" content="2019-12-17T11:50:14.682Z">
+<meta property="og:image" content="https://github.com/7le/7le.github.io/raw/master/image/dis/time.png">
+<meta property="og:updated_time" content="2019-12-25T14:46:01.801Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式事务：基于可靠消息服务">
 <meta name="twitter:description" content="微服务倡导将复杂的单体应用拆分为若干个功能简单、松耦合的服务，而于此同时就会引入多个服务之间的分布式事务的问题。 🥕">
@@ -427,6 +428,7 @@
 <p>上面已经分析了一些异常情况，对于下游服务和消息中间件的原子性，我们可以通过消息中间件投递的可靠性来保证（就是ACK模式，失败或未收到应答进行重试）。 那么我们要实现分布式事务，剩下的就是要保证上游服务执行的任务和向消息中间件投递消息这2个操作的原子性。</p>
 <p>这时候一般就会有两种方案，同步和异步通信。通过之前的时序图，很显然上游系统和消息中间件之间采用的是异步通信，也就是说当上游服务提交完消息后便可以去做别的事情，接下来提交、回滚就完全交给消息中间件来完成，并且完全信任消息中间件，认为它一定能正确地完成事务的提交或回滚。这主要是为了提高系统并发度，另外业务系统直接和用户打交道，用户体验尤为重要，因此这种异步通信方式能够极大程度地降低用户等待时间。</p>
 <p>Rabbitmq其实有提供事务机制，使用txSelect(), txCommit()以及txRollback()来实现，通过测试抓包发现，一个简单的事务（从Tx.select到Tx.commit-OK），两者之间的时间间隔会比较长，简单的测试能到80~180ms，这相对于直接发送消息（几ms）是很耗时的。所以我没有用这种方式，而是引入一个Coordinator（协调者）来实现。</p>
+<p><img src="https://github.com/7le/7le.github.io/raw/master/image/dis/time.png" alt="time"></p>
 <p>事务提交的代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Connection conn = factory.newConnection();</span><br><span class="line">// 创建信道</span><br><span class="line">Channel channel = conn.createChannel();</span><br><span class="line">// 声明队列</span><br><span class="line">channel.queueDeclare(&quot;test_tr&quot;, true, false, false, null);</span><br><span class="line">String message = String.format(&quot;时间 =&gt; %s&quot;, new Date());</span><br><span class="line">try &#123;</span><br><span class="line">    channel.txSelect(); // 声明事务</span><br><span class="line">    // 发送消息</span><br><span class="line">    channel.basicPublish(&quot;&quot;, &quot;test_tr&quot;, MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">    channel.txCommit(); // 提交事务</span><br><span class="line">&#125; catch (Exception e) &#123;</span><br><span class="line">    channel.txRollback();</span><br><span class="line">&#125; finally &#123;</span><br><span class="line">    channel.close();</span><br><span class="line">    conn.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>另外还有一个比较关键的daemon（守护线程），是处理在Coordinator一些错误超时的记录（类似Rocketmq的超时询问机制）。所以服务A除了实现正常的业务流程外，还需提供一个事务询问的接口，供Coordinator调用，来保障服务A在执行任务出现宕机的情况。当有prepare超时就会触发访问这个回查接口，该接口会返回三种结果：                                                                                                              </p>
 <ul>
