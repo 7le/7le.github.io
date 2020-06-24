@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Shine">
 <meta property="og:description" content="距离上一篇数据库索引，已经快有一年了，以前洋洋洒洒写了一大堆，可读性不高，现在换个角度用另种方式来讲。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-24T19:32:36.489Z">
+<meta property="og:updated_time" content="2020-06-24T19:42:52.833Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库索引(续)">
 <meta name="twitter:description" content="距离上一篇数据库索引，已经快有一年了，以前洋洋洒洒写了一大堆，可读性不高，现在换个角度用另种方式来讲。">
@@ -375,13 +375,13 @@
 <p>我们将场景稍微复杂化一些，好切入主题<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">name</span> <span class="keyword">from</span> student <span class="keyword">where</span> age=<span class="number">18</span> <span class="keyword">and</span> sex=<span class="number">1</span> <span class="keyword">order</span> <span class="keyword">by</span> score;</span><br></pre></td></tr></table></figure></p>
 <p>对于这种场景，我们如何建立索引呢？（不考虑其他情况，单谈论这个场景）</p>
 <p><strong>一：</strong><br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> index_age_sex <span class="keyword">on</span> student(age, sex);</span><br></pre></td></tr></table></figure></p>
-<p>根据where后面等值或者范围条件来建立索引，是我们比较常用的方式。通过索引来尽可能过滤不需要的索引，需要注意的是最左原则，建议离散<br>程度越高的放在越左边。</p>
+<p>根据where后面等值或者范围条件来建立索引，是我们比较常用的方式。通过索引来尽可能过滤不需要的索引，需要注意的是最左原则，建议离散程度越高的放在越左边。</p>
 <p><strong>二：</strong><br>对于上面的case，可以更进一步的优化<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> index_age_sex_score <span class="keyword">on</span> student(age, sex, score);</span><br></pre></td></tr></table></figure></p>
-<p>我们知道数据库排序是非常消耗cpu资源的，大量的排序会导致cpu飙高。如果数据量比较大，需要排序的数据超过sort buffer，就会导致<br>和外村换进换出，性能下降严重。所以可以利用索引的有序性，消除order by和group的排序操作。</p>
+<p>我们知道数据库排序是非常消耗cpu资源的，大量的排序会导致cpu飙高。如果数据量比较大，需要排序的数据超过sort buffer，就会导致和外村换进换出，性能下降严重。所以可以利用索引的有序性，消除order by和group的排序操作。</p>
 <p><strong>三：</strong><br>再进一步的优化，就是之前文章提到过的索引覆盖：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">index</span> index_age_sex_score_name <span class="keyword">on</span> student(age, sex, score, <span class="keyword">name</span>);</span><br></pre></td></tr></table></figure></p>
-<p>非聚簇索引（b+tree）在叶子节点存放的是对应的主键值，所以要查询到真正的数据还需要一个回查的操作。而在索引覆盖的情况下，<br>非聚簇索引在叶子节点就能查询到sql需要的数据了，避免了回查。如果内存足够的话，整个索引直接在内存完成操作，可以减少物理IO的消耗。</p>
+<p>非聚簇索引（b+tree）在叶子节点存放的是对应的主键值，所以要查询到真正的数据还需要一个回查的操作。而在索引覆盖的情况下，非聚簇索引在叶子节点就能查询到sql需要的数据了，避免了回查。如果内存足够的话，整个索引直接在内存完成操作，可以减少物理IO的消耗。</p>
 <p><strong>总结：</strong></p>
-<p>上面建索引的方法是一种理想的情况，实际的业务查询场景千变万化，那就需要在这样的基础上见招拆招，本质其实差不多。文章内容不多，希望通过这样的<br>角度切入，能更好的帮助大家了解索引的原理和如何构建合适的索引。</p>
+<p>上面建索引的方法是一种理想的情况，实际的业务查询场景千变万化，那就需要在这样的基础上见招拆招，本质其实差不多。文章内容不多，希望通过这样的角度切入，能更好的帮助大家了解索引的原理和如何构建合适的索引。</p>
 <hr>
 <p><a href="https://github.com/7le" target="_blank" rel="noopener">Github</a> 不要吝啬你的star ^.^<br><a href="https://7le.top">更多精彩 戳我</a></p>
 
